@@ -572,7 +572,7 @@
     </div>
 
     <section class="hero">
-        <h1>36-37. HAFTA MAÇ HEYECANI</h1>
+        <h1>30. HAFTA MAÇ HEYECANI</h1>
         <p>İstanbul Altyapı Basketbol Ligleri ve Kişisel Gelişim Programları</p>
     </section>
 
@@ -580,28 +580,70 @@
     <section id="matches">
         <h2>🏀 İstanbul Altyapı 36-37. Hafta Programı</h2>
 
+        <!-- TAKIM ARAMA ÇUBUĞU -->
+        <div id="takimAramaKutusu" style="
+            max-width: 600px;
+            margin: 0 auto 36px;
+            position: relative;
+        ">
+            <div style="position:relative;">
+                <span style="
+                    position: absolute; left: 18px; top: 50%;
+                    transform: translateY(-50%);
+                    font-size: 1.1rem; opacity: 0.5; pointer-events: none;
+                ">🔍</span>
+                <input
+                    id="takimAramaInput"
+                    type="text"
+                    placeholder="Takım adı ile maç ara... (örn: Fenerbahçe, Beşiktaş)"
+                    autocomplete="off"
+                    oninput="takimArama(this.value)"
+                    style="
+                        width: 100%;
+                        padding: 16px 48px 16px 52px;
+                        background: #1e293b;
+                        border: 1.5px solid #334155;
+                        border-radius: 50px;
+                        color: #f1f5f9;
+                        font-size: 0.95rem;
+                        font-family: Inter, sans-serif;
+                        outline: none;
+                        transition: border-color 0.2s, box-shadow 0.2s;
+                    "
+                    onfocus="this.style.borderColor='#ff4d05';this.style.boxShadow='0 0 0 3px rgba(255,77,5,0.15)'"
+                    onblur="this.style.borderColor='#334155';this.style.boxShadow='none'"
+                />
+                <button
+                    id="takimAramaSil"
+                    onclick="takimAramaTemizle()"
+                    style="
+                        display: none;
+                        position: absolute; right: 16px; top: 50%;
+                        transform: translateY(-50%);
+                        background: none; border: none;
+                        color: #64748b; font-size: 1.1rem;
+                        cursor: pointer; padding: 4px 8px;
+                        border-radius: 50%; transition: color 0.2s;
+                    "
+                    onmouseover="this.style.color='#ff4d05'"
+                    onmouseout="this.style.color='#64748b'"
+                >✕</button>
+            </div>
+            <div id="takimAramaSonuc" style="display:none; margin-top:16px;"></div>
+        </div>
+
         <!-- KATEGORİ SEÇİCİ -->
         <div id="katFiltre"></div>
 
-        <!-- TAKIM ARAMA ÇUBUĞU -->
-        <div id="aramaSarici" style="display:flex;align-items:center;gap:12px;max-width:520px;margin:0 auto 32px;background:#1e293b;border:1.5px solid #334155;border-radius:50px;padding:10px 18px;transition:border-color 0.2s;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
-            <span style="font-size:1.1rem;flex-shrink:0;">🔍</span>
-            <input id="takimArama" type="text" placeholder="Takım ara… (örn: Fenerbahçe, Nova, Beşiktaş)" autocomplete="off" spellcheck="false"
-                style="flex:1;background:transparent;border:none;outline:none;color:#f1f5f9;font-family:'Inter',sans-serif;font-size:0.92rem;font-weight:500;padding:0;" />
-            <button id="aramaSil" onclick="aramayiTemizle()" title="Temizle"
-                style="display:none;background:none;border:none;cursor:pointer;color:#64748b;font-size:1.1rem;padding:0 4px;line-height:1;flex-shrink:0;">✕</button>
-        </div>
-
-        <!-- ARAMA SONUÇLARI -->
-        <div id="aramaListesi" style="display:none;max-width:960px;margin:0 auto 24px;min-height:600px;"></div>
-        <p id="aramaBos" style="display:none;text-align:center;color:#64748b;padding:32px;font-size:0.95rem;min-height:600px;">
-            🏀 <span id="aramaBosMetin"></span> için maç bulunamadı.
-        </p>
-
-        <!-- TARİH ACCORDION (normal mod) -->
+        <!-- TARİH ACCORDION -->
         <div id="macListesi"></div>
 
         <p id="macYok" style="text-align:center;color:#64748b;display:none;padding:40px;">Bu kategoride maç bulunamadı.</p>
+        <div id="macSecilmedi" style="text-align:center;color:#64748b;padding:60px 20px;">
+            <div style="font-size:2.5rem;margin-bottom:16px;">🏀</div>
+            <div style="font-size:1.05rem;font-weight:700;color:#94a3b8;margin-bottom:8px;">Maçları görmek için bir kategori seçin</div>
+            <div style="font-size:0.85rem;">Yukarıdaki yaş kartlarından bir lig seçin ya da takım adıyla arama yapın</div>
+        </div>
     </section>
 
     <script>
@@ -756,6 +798,10 @@
             secilenYas = null;
             panel.classList.remove('ac');
             panel.innerHTML = '';
+            document.getElementById('macListesi').innerHTML = '';
+            var ph = document.getElementById('macSecilmedi');
+            if (ph) ph.style.display = 'block';
+            document.getElementById('macYok').style.display = 'none';
             return;
         }
 
@@ -796,6 +842,10 @@
                 k.style.borderColor = yr + '55'; k.style.boxShadow = '';
                 k.classList.remove('aktif');
             });
+            document.getElementById('macListesi').innerHTML = '';
+            var ph = document.getElementById('macSecilmedi');
+            if (ph) ph.style.display = 'block';
+            document.getElementById('macYok').style.display = 'none';
         };
         ust.appendChild(kapatBtn);
         panel.appendChild(ust);
@@ -869,7 +919,12 @@
                 k.style.borderColor = yr + '55'; k.style.boxShadow = '';
                 k.classList.remove('aktif');
             });
-            renderMaclar(null);
+            // Tüm Maçlar seçildiğinde listeyi gizle
+            document.getElementById('macListesi').innerHTML = '';
+            document.getElementById('macListesi').style.display = 'block';
+            document.getElementById('macYok').style.display = 'none';
+            var ph = document.getElementById('macSecilmedi');
+            if (ph) ph.style.display = 'block';
             return;
         }
         tumuBtn.classList.remove('aktif');
@@ -895,6 +950,8 @@
     function renderMaclar(kat) {
         var liste = document.getElementById('macListesi');
         var yok   = document.getElementById('macYok');
+        var placeholder = document.getElementById('macSecilmedi');
+        if (placeholder) placeholder.style.display = 'none';
         var filtered = kat ? MACLAR.filter(function(m){ return m.kat === kat; }) : MACLAR;
 
         liste.innerHTML = '';
@@ -1014,189 +1071,117 @@
 
 
     initKatFiltre();
-    renderMaclar(null);
+    // Sayfa açıldığında maç listesi gizli — kategori seçilince gösterilir
 
-    // ========== TAKIM ARAMA SİSTEMİ ==========
-    (function(){
-        var aramaInput  = document.getElementById('takimArama');
-        var aramaSil    = document.getElementById('aramaSil');
-        var aramaSarici = document.getElementById('aramaSarici');
-        var aramaListe  = document.getElementById('aramaListesi');
-        var aramaBos    = document.getElementById('aramaBos');
-        var aramaBosM   = document.getElementById('aramaBosMetin');
-        var macListesi  = document.getElementById('macListesi');
-        var macYok      = document.getElementById('macYok');
-        var katFiltre   = document.getElementById('katFiltre');
+    // ===== TAKIM ARAMA =====
+    function normalizeText(str) {
+        var map = {'İ':'I','Ş':'S','Ğ':'G','Ü':'U','Ö':'O','Ç':'C',
+                   'ı':'I','ş':'S','ğ':'G','ü':'U','ö':'O','ç':'C','i':'I'};
+        return str.replace(/[İŞĞÜÖÇışğüöçi]/g, function(c){ return map[c] || c; }).toUpperCase();
+    }
 
-        // Takım renklerini kategoriye göre al
-        function katRenk(kat) {
-            if (!kat) return '#94a3b8';
-            var p = parseKat(kat);
-            if (p.cinsiyet === 'Kiz') return '#ec4899';
-            var yr = {'U10':'#6366f1','U11':'#f59e0b','U12':'#10b981','U14':'#ef4444','U16':'#ff4d05','U18':'#3b82f6'};
-            return yr[p.yas] || '#94a3b8';
+    function takimArama(val) {
+        var silBtn = document.getElementById('takimAramaSil');
+        var sonucDiv = document.getElementById('takimAramaSonuc');
+        var katFiltre = document.getElementById('katFiltre');
+        var macListesi = document.getElementById('macListesi');
+        var macYok = document.getElementById('macYok');
+        var placeholder = document.getElementById('macSecilmedi');
+
+        if (!val || val.trim().length < 2) {
+            silBtn.style.display = 'none';
+            sonucDiv.style.display = 'none';
+            sonucDiv.innerHTML = '';
+            katFiltre.style.display = '';
+            macListesi.style.display = '';
+            if (macYok) macYok.style.display = 'none';
+            if (placeholder) placeholder.style.display = 'block';
+            return;
+        }
+        if (placeholder) placeholder.style.display = 'none';
+
+        silBtn.style.display = 'block';
+        var q = normalizeText(val.trim());
+
+        var eslesen = MACLAR.filter(function(m) {
+            return normalizeText(m.a).indexOf(q) !== -1 || normalizeText(m.b).indexOf(q) !== -1;
+        });
+
+        katFiltre.style.display = 'none';
+        macListesi.style.display = 'none';
+        if (macYok) macYok.style.display = 'none';
+
+        sonucDiv.style.display = 'block';
+        sonucDiv.innerHTML = '';
+
+        if (eslesen.length === 0) {
+            sonucDiv.innerHTML = '<div style="text-align:center;color:#64748b;padding:32px 0;font-size:0.95rem;">Bu takım adı ile eşleşen maç bulunamadı.</div>';
+            return;
         }
 
-        // Normalize: Türkçe karakterleri koru, küçük harf yap, noktalama sil
-        function norm(str) {
-            return (str || '').toLowerCase()
-                .replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s')
-                .replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c')
-                .replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
-        }
+        var gruplar = {};
+        eslesen.forEach(function(m) {
+            if (!gruplar[m.tarih]) gruplar[m.tarih] = [];
+            gruplar[m.tarih].push(m);
+        });
+        var tarihler = Object.keys(gruplar).sort();
 
-        function katEtiket(kat) {
-            if (!kat) return kat;
-            var m = kat.match(/^(U\d+)([EK])([A-C])$/);
-            if (!m) return kat;
-            var cins = m[2] === 'E' ? '♂' : '♀';
-            var lig  = {A:'A Ligi', B:'B Ligi', C:'C Ligi'}[m[3]] || m[3];
-            return m[1] + ' ' + cins + ' ' + lig;
-        }
+        var ozet = document.createElement('div');
+        ozet.style.cssText = 'font-size:0.82rem;color:#64748b;margin-bottom:14px;text-align:center;';
+        ozet.textContent = eslesen.length + ' maç bulundu — ' + tarihler.length + ' farklı günde';
+        sonucDiv.appendChild(ozet);
 
-        function renderAramaSonuc(maclar, arama) {
-            katFiltre.style.display  = 'none';
-            if (maclar.length === 0) {
-                aramaListe.style.display = 'none';
-                aramaBosM.textContent    = '"' + arama + '"';
-                aramaBos.style.display   = 'block';
-                macListesi.style.display = 'none';
-                macYok.style.display     = 'none';
-                return;
-            }
-            aramaBos.style.display = 'none';
+        tarihler.forEach(function(t) {
+            var maclar = gruplar[t].sort(function(a, b) { return a.saat.localeCompare(b.saat); });
+            var ilk = maclar[0];
 
-            // Tarihe göre grupla
-            var gruplar = {};
+            var gun = document.createElement('div');
+            gun.style.cssText = 'margin-bottom:6px;background:#1e293b;border-radius:14px;overflow:hidden;border:1px solid #1e3a5f;';
+
+            var gunBaslik = document.createElement('div');
+            gunBaslik.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 18px;background:#243044;border-bottom:1px solid #1a2d4a;';
+            gunBaslik.innerHTML =
+                '<div style="width:3px;height:30px;background:#ff4d05;border-radius:2px;flex-shrink:0;"></div>' +
+                '<div>' +
+                    '<div style="font-size:0.95rem;font-weight:800;color:#f1f5f9;">' + ilk.gun + ', ' + ilk.td + '</div>' +
+                    '<div style="font-size:0.72rem;color:#64748b;">' + maclar.length + ' maç</div>' +
+                '</div>';
+            gun.appendChild(gunBaslik);
+
             maclar.forEach(function(m) {
-                var k = m.tarih;
-                if (!gruplar[k]) gruplar[k] = { td: m.td, gun: m.gun, maclar: [] };
-                gruplar[k].maclar.push(m);
+                var kr = getKatRenk(m.kat);
+                var satir = document.createElement('div');
+                satir.style.cssText = 'display:flex;align-items:stretch;border-bottom:1px solid #111827;min-height:56px;';
+                satir.innerHTML =
+                    '<div style="flex:0 0 68px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:800;color:' + kr + ';border-right:1px solid #1a2540;">' + m.saat + '</div>' +
+                    '<div style="flex:1;display:flex;align-items:center;gap:6px;padding:12px 14px;min-width:0;">' +
+                        '<div style="flex:1;font-size:0.85rem;font-weight:700;color:#e2e8f0;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + m.a + '</div>' +
+                        '<div style="flex:0 0 30px;text-align:center;font-size:0.62rem;font-weight:900;color:#2d3d55;">VS</div>' +
+                        '<div style="flex:1;font-size:0.85rem;font-weight:700;color:#e2e8f0;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + m.b + '</div>' +
+                    '</div>' +
+                    '<div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:4px;padding:10px 14px 10px 8px;border-left:1px solid #1a2540;">' +
+                        '<span style="font-size:0.67rem;font-weight:700;padding:2px 9px;border-radius:20px;color:' + kr + ';border:1px solid ' + kr + '33;background:' + kr + '11;">' + m.kat + '</span>' +
+                        '<div style="font-size:0.67rem;color:#3d5068;text-align:right;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + m.salon + '</div>' +
+                        (m.grup ? '<span style="font-size:0.64rem;font-weight:600;padding:1px 7px;border-radius:8px;background:#151f30;color:#475569;">' + m.grup + '</span>' : '') +
+                    '</div>';
+                gun.appendChild(satir);
             });
 
-            var html = '<div style="margin-bottom:12px;color:#64748b;font-size:0.82rem;text-align:center;">'
-                + '<strong style="color:#f1f5f9;">' + maclar.length + '</strong> maç bulundu'
-                + ' · <strong style="color:#ff4d05;">"' + arama + '"</strong>'
-                + '</div>';
-
-            Object.keys(gruplar).sort().forEach(function(tarih) {
-                var g = gruplar[tarih];
-                html += '<div style="margin-bottom:20px;">';
-                html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;padding:10px 16px;background:#1a2540;border-radius:12px;">'
-                      + '<span style="font-size:1rem;">📅</span>'
-                      + '<strong style="color:#f1f5f9;font-size:0.95rem;">' + g.td + '</strong>'
-                      + '<span style="color:#64748b;font-size:0.82rem;">' + g.gun + '</span>'
-                      + '</div>';
-
-                g.maclar.forEach(function(mac) {
-                    var renk   = katRenk(mac.kat);
-                    var etiket = katEtiket(mac.kat);
-
-                    // İsim vurgula
-                    function vurgula(isim) {
-                        var normIsim = norm(isim);
-                        var normAra  = norm(arama);
-                        if (normIsim.indexOf(normAra) === -1) return isim;
-                        // Basit vurgulama
-                        var idx = normIsim.indexOf(normAra);
-                        return isim.substring(0, idx)
-                            + '<mark style="background:#ff4d0530;color:#ff7733;border-radius:3px;padding:0 2px;">'
-                            + isim.substring(idx, idx + normAra.length)
-                            + '</mark>'
-                            + isim.substring(idx + normAra.length);
-                    }
-
-                    html += '<div style="display:flex;align-items:stretch;background:#1e293b;border-radius:12px;margin-bottom:8px;overflow:hidden;border:1px solid #2d3f55;">';
-                    // Sol çizgi
-                    html += '<div style="width:4px;background:' + renk + ';flex-shrink:0;"></div>';
-                    // İçerik
-                    html += '<div style="flex:1;padding:12px 16px;display:flex;flex-direction:column;gap:6px;">';
-                    // Takımlar
-                    html += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
-                          + '<span style="font-weight:700;color:#f1f5f9;font-size:0.92rem;">' + vurgula(mac.a) + '</span>'
-                          + '<span style="color:#64748b;font-size:0.75rem;font-weight:700;">VS</span>'
-                          + '<span style="font-weight:700;color:#f1f5f9;font-size:0.92rem;">' + vurgula(mac.b) + '</span>'
-                          + '</div>';
-                    // Meta
-                    html += '<div style="display:flex;gap:12px;flex-wrap:wrap;">'
-                          + '<span style="color:#94a3b8;font-size:0.78rem;">⏰ ' + mac.saat + '</span>'
-                          + '<span style="color:#94a3b8;font-size:0.78rem;">📍 ' + mac.salon + '</span>'
-                          + '<span style="font-size:0.72rem;padding:2px 8px;border-radius:20px;border:1px solid ' + renk + '44;color:' + renk + ';font-weight:700;">' + etiket + '</span>'
-                          + '<span style="color:#64748b;font-size:0.75rem;">' + mac.grup + '</span>'
-                          + '</div>';
-                    html += '</div></div>';
-                });
-
-                html += '</div>';
-            });
-
-            aramaListe.innerHTML = html;
-            aramaListe.style.display  = 'block';
-            macListesi.style.display  = 'none';
-            macYok.style.display      = 'none';
-        }
-
-        function aramaYap(deger) {
-            var temiz = deger.trim();
-            if (temiz.length < 2) {
-                // Arama yok → normal görünüm
-                aramaListe.style.display = 'none';
-                aramaBos.style.display   = 'none';
-                macListesi.style.display = 'block';
-                katFiltre.style.display  = 'block';
-                aramaSarici.style.borderColor = '#334155';
-                aramaSil.style.display   = temiz.length ? 'block' : 'none';
-                return;
-            }
-
-            aramaSil.style.display        = 'block';
-            aramaSarici.style.borderColor = '#3b82f6';
-
-            var normAra = norm(temiz);
-            var sonuclar = MACLAR.filter(function(m) {
-                return norm(m.a).indexOf(normAra) !== -1 || norm(m.b).indexOf(normAra) !== -1;
-            });
-            renderAramaSonuc(sonuclar, temiz);
-        }
-
-        var debounceTimer;
-        aramaInput.addEventListener('input', function() {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(function() {
-                aramaYap(aramaInput.value);
-            }, 220);
+            sonucDiv.appendChild(gun);
         });
+    }
 
-        aramaInput.addEventListener('focus', function() {
-            aramaSarici.style.borderColor = '#3b82f6';
-            aramaSarici.style.boxShadow   = '0 0 0 3px rgba(59,130,246,0.15)';
-        });
-        aramaInput.addEventListener('blur', function() {
-            if (!aramaInput.value.trim()) {
-                aramaSarici.style.borderColor = '#334155';
-                aramaSarici.style.boxShadow   = '0 4px 20px rgba(0,0,0,0.3)';
-            }
-        });
-
-        window.aramayiTemizle = function() {
-            aramaInput.value              = '';
-            aramaSil.style.display        = 'none';
-            aramaListe.style.display      = 'none';
-            aramaBos.style.display        = 'none';
-            macListesi.style.display      = 'block';
-            katFiltre.style.display       = 'block';
-            aramaSarici.style.borderColor = '#334155';
-            aramaSarici.style.boxShadow   = '0 4px 20px rgba(0,0,0,0.3)';
-            aramaInput.focus();
-        };
-    })();
-    // ========== /TAKIM ARAMA ==========
-
+    function takimAramaTemizle() {
+        var input = document.getElementById('takimAramaInput');
+        input.value = '';
+        takimArama('');
+        input.focus();
+    }
     </script>
 
         <!-- ANTRENMAN BÖLÜMÜ -->
     <section id="training" style="background: #111827;">
-        <h2>💪 Hazır Antrenman Programları</h2>
+        <h2>💪 Özel Antrenman Programları</h2>
 
         <!-- SPOR KARTLARI GRİDİ -->
         <div class="grid-container" style="margin-bottom:40px;">
