@@ -415,76 +415,124 @@
 
         /* === 768px === */
         @media (max-width: 768px) {
+            /* --- HEADER --- */
             header { padding: 0.85rem 4%; }
             #desktopNav { display: none; }
             .hamburger { display: flex; }
 
-            .hero { height: 46vh; margin-top: 58px; }
-            .hero h1 { font-size: 1.65rem; line-height: 1.2; padding: 0 14px; }
-            .hero p { font-size: 0.88rem; padding: 0 18px; }
+            /* --- HERO --- */
+            .hero { height: 42vh; margin-top: 56px; }
+            .hero h1 { font-size: 1.5rem; line-height: 1.25; padding: 0 16px; }
+            .hero p { font-size: 0.85rem; padding: 0 20px; }
 
-            section { padding: 44px 4%; }
-            h2 { font-size: 1.5rem; margin-bottom: 22px; }
+            /* --- GENEL BÖLÜMLER --- */
+            section { padding: 40px 4%; }
+            h2 { font-size: 1.4rem; margin-bottom: 18px; }
 
-            .grid-container { grid-template-columns: 1fr; gap: 14px; }
-            .card { padding: 20px; border-radius: 14px; }
+            /* --- KARTLAR / GRİD --- */
+            .grid-container { grid-template-columns: 1fr; gap: 12px; }
+            .card { padding: 18px; border-radius: 14px; }
             .card:hover { transform: none; }
+            .card h3 { font-size: 1rem; margin-bottom: 10px; }
 
-            .program-creator-banner { padding: 26px 18px; margin-top: 28px; border-radius: 16px; }
-            .program-creator-banner h3 { font-size: 1.2rem; }
-            .program-creator-banner p { font-size: 0.86rem; margin-bottom: 18px; }
-            .btn-creator { font-size: 0.92rem; padding: 12px 22px; }
+            /* --- ARAMA ÇUBUĞU --- */
+            #takimAramaKutusu { margin-bottom: 22px; }
 
-            .modal { padding: 20px 16px; border-radius: 18px; max-height: 92vh; }
-            .modal h2 { font-size: 1.2rem; }
-            .modal .subtitle { font-size: 0.82rem; margin-bottom: 20px; }
-            .step-dot { width: 26px; height: 26px; font-size: 0.75rem; }
-            .sport-options { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-            .sport-card { padding: 11px 6px; border-radius: 10px; }
-            .sport-card .sport-icon { font-size: 1.4rem; }
-            .sport-card .sport-name { font-size: 0.7rem; }
-            .option-pills { gap: 7px; }
-            .pill { padding: 8px 12px; font-size: 0.8rem; }
-            .modal-actions { gap: 8px; margin-top: 20px; }
-            .btn-next, .btn-back { padding: 11px 18px; font-size: 0.88rem; }
-            .days-picker { gap: 8px; }
-            .day-btn { padding: 9px 13px; font-size: 0.84rem; }
-            .form-group { margin-bottom: 16px; }
-
-            .yas-grid { gap: 7px; }
-            .yas-kart { padding: 11px 13px; min-width: 60px; border-radius: 12px; }
-            .yas-kart .yk-yas { font-size: 0.95rem; }
-            .yas-kart .yk-sayi { font-size: 0.6rem; }
-            .lig-panel { padding: 16px 14px; border-radius: 12px; }
+            /* --- KATEGORİ SEÇİCİ --- */
+            .yas-grid { gap: 7px; justify-content: flex-start; }
+            .yas-kart { padding: 10px 12px; min-width: 58px; border-radius: 12px; }
+            .yas-kart .yk-yas { font-size: 0.9rem; }
+            .yas-kart .yk-sayi { font-size: 0.58rem; }
+            .lig-panel { padding: 14px 12px; border-radius: 12px; }
             .cins-satirlar { gap: 6px; }
-            .lig-btn { padding: 8px 11px; border-radius: 9px; }
-            .lig-btn .lb-kod { font-size: 0.8rem; }
-            .tum-btn { font-size: 0.82rem; padding: 9px 14px; }
+            .lig-btn { padding: 8px 10px; border-radius: 9px; }
+            .lig-btn .lb-kod { font-size: 0.78rem; }
+            .lig-btn .lb-lig { font-size: 0.65rem; }
+            .tum-btn { font-size: 0.8rem; padding: 9px 14px; }
 
-            .mg-hdr { padding: 13px 14px; }
-            .mg-tarih { font-size: 0.88rem; }
-            .mg-bar { height: 28px; }
-            .ms-saat { flex: 0 0 50px; font-size: 0.75rem; padding-left: 10px; }
-            .ms-orta { padding: 10px 8px; gap: 3px; }
-            .ms-takim-isim { font-size: 0.78rem; }
-            .ms-vs { flex: 0 0 22px; font-size: 0.58rem; }
-            .ms-meta { display: none !important; }
+            /* --- MAÇ ACCORDION BAŞLIĞI --- */
+            .mg-hdr { padding: 12px 14px; }
+            .mg-tarih { font-size: 0.85rem; }
+            .mg-sayi { font-size: 0.72rem; }
+            .mg-bar { height: 26px; }
 
-            #dietForm > div { padding: 20px 16px !important; border-radius: 16px !important; }
-            #dietStats { grid-template-columns: repeat(3,1fr) !important; gap: 10px !important; }
+            /* --- MAÇ SATIRI (KATEGORİ & ARAMA) --- */
+            .ms-saat,
+            .ar-saat { flex: 0 0 64px; padding: 0 8px; }
+            .ms-saat-val,
+            .ar-saat-val { font-size: 0.82rem; }
+            .ms-saat-ico,
+            .ar-saat-ico { display: none; }
+            .ms-takim,
+            .ar-takim { padding: 0 8px; }
+            .ms-takim-isim,
+            .ar-takim-isim { font-size: 0.8rem; }
+            .ms-vs,
+            .ar-vs { flex: 0 0 36px; }
+            .ms-vs-ic,
+            .ar-vs-ic { width: 26px; height: 26px; font-size: 0.5rem; }
+            .ms-meta,
+            .ar-meta { display: none !important; }
+
+            /* --- ARAMA BAŞLIK --- */
+            .ar-gun-hdr { padding: 12px 16px; }
+            .ar-gun-tarih { font-size: 0.88rem; }
+            .ar-gun-bar { height: 28px; }
+            .ar-gun-sayi { font-size: 0.7rem; padding: 3px 9px; }
+
+            /* --- PROGRAM YARATICI BANNER --- */
+            .program-creator-banner { padding: 22px 16px; margin-top: 24px; border-radius: 14px; }
+            .program-creator-banner h3 { font-size: 1.1rem; }
+            .program-creator-banner p { font-size: 0.84rem; margin-bottom: 16px; }
+            .btn-creator { font-size: 0.88rem; padding: 11px 20px; }
+
+            /* --- MODAL --- */
+            .modal { padding: 18px 14px; border-radius: 16px; max-height: 92vh; }
+            .modal h2 { font-size: 1.15rem; }
+            .modal .subtitle { font-size: 0.8rem; margin-bottom: 18px; }
+            .step-dot { width: 26px; height: 26px; font-size: 0.72rem; }
+            .sport-options { grid-template-columns: repeat(3, 1fr); gap: 7px; }
+            .sport-card { padding: 10px 5px; border-radius: 10px; }
+            .sport-card .sport-icon { font-size: 1.3rem; }
+            .sport-card .sport-name { font-size: 0.68rem; }
+            .option-pills { gap: 6px; }
+            .pill { padding: 7px 11px; font-size: 0.78rem; }
+            .modal-actions { gap: 8px; margin-top: 18px; }
+            .btn-next, .btn-back { padding: 10px 16px; font-size: 0.86rem; }
+            .days-picker { gap: 7px; }
+            .day-btn { padding: 8px 12px; font-size: 0.82rem; }
+            .form-group { margin-bottom: 14px; }
+
+            /* --- DİYET FORMU --- */
+            #dietForm > div { padding: 18px 14px !important; border-radius: 14px !important; }
+            #dietStats { grid-template-columns: repeat(3,1fr) !important; gap: 8px !important; }
             #dietMeals { grid-template-columns: 1fr !important; }
-            .stat-card .stat-val { font-size: 1.4rem !important; }
+            .stat-card .stat-val { font-size: 1.3rem !important; }
+            .diet-tab { padding: 8px 14px; font-size: 0.8rem; }
+            .meal-tab { padding: 7px 13px; font-size: 0.78rem; }
+
+            /* --- ANTRENMAN SEKME BUTONLARI --- */
+            .stab { font-size: 0.72rem; padding: 6px 11px; }
+            .plan-day { gap: 8px; padding: 8px 0; }
+            .pday { width: 30px; height: 20px; font-size: 0.65rem; }
+            .pact { font-size: 0.78rem; }
+            .pact small { font-size: 0.7rem; }
+
+            /* --- SPOR PLAN SEKME BUTONLARI --- */
+            .sport-tab-btns { gap: 5px !important; }
         }
 
         @media (max-width: 400px) {
-            .hero h1 { font-size: 1.3rem; }
-            h2 { font-size: 1.25rem; }
-            .logo { font-size: 1.05rem; }
-            .yas-kart { padding: 9px 9px; min-width: 50px; }
-            .yas-kart .yk-yas { font-size: 0.82rem; }
+            .hero h1 { font-size: 1.2rem; }
+            h2 { font-size: 1.2rem; }
+            .logo { font-size: 1rem; }
+            .yas-kart { padding: 8px 8px; min-width: 48px; }
+            .yas-kart .yk-yas { font-size: 0.78rem; }
             .sport-options { grid-template-columns: repeat(2,1fr); }
             #dietStats { grid-template-columns: repeat(2,1fr) !important; }
-            .modal { padding: 16px 12px; }
+            .modal { padding: 14px 10px; }
+            .ms-saat, .ar-saat { flex: 0 0 54px; }
+            .ms-takim-isim, .ar-takim-isim { font-size: 0.72rem; }
         }
 
         /* ===== SPOR PLAN SEKME CSS ===== */
@@ -582,7 +630,7 @@
 
         <!-- TAKIM ARAMA ÇUBUĞU -->
         <div id="takimAramaKutusu" style="
-            max-width: 600px;
+            max-width: 900px;
             margin: 0 auto 36px;
             position: relative;
         ">
@@ -629,8 +677,10 @@
                     onmouseout="this.style.color='#64748b'"
                 >✕</button>
             </div>
-            <div id="takimAramaSonuc" style="display:none; margin-top:16px;"></div>
         </div>
+
+        <!-- TAKIM ARAMA SONUÇLARI - tam genişlik -->
+        <div id="takimAramaSonuc" style="display:none; margin-top:20px; width:100%;"></div>
 
         <!-- KATEGORİ SEÇİCİ -->
         <div id="katFiltre"></div>
@@ -978,20 +1028,25 @@
                 '.mg-chev.ac{transform:rotate(180deg);}' +
                 '.mg-body{display:none;background:#0c1221;}' +
                 '.mg-body.ac{display:block;}' +
-                '.ms{display:flex;align-items:stretch;border-bottom:1px solid #111827;min-height:56px;}' +
+                '.ms{display:flex;align-items:stretch;border-bottom:1px solid #0d1826;min-height:76px;transition:background 0.15s;}' +
                 '.ms:last-child{border-bottom:none;}' +
-                '.ms:hover{background:#0f1929;}' +
-                '.ms-saat{flex:0 0 68px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:800;letter-spacing:0.3px;border-right:1px solid #1a2540;}' +
-                '.ms-orta{flex:1;display:flex;align-items:center;gap:6px;padding:12px 16px;min-width:0;}' +
-                '.ms-takim{flex:1;min-width:0;font-size:0.88rem;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}' +
-                '.ms-takim-a{text-align:right;}' +
-                '.ms-takim-b{text-align:left;}' +
-                '.ms-vs{flex:0 0 30px;text-align:center;font-size:0.65rem;font-weight:900;color:#2d3d55;letter-spacing:1px;}' +
-                '.ms-meta{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:5px;padding:10px 18px 10px 10px;border-left:1px solid #1a2540;}' +
-                '.ms-rozet{font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:20px;border:1px solid;white-space:nowrap;}' +
-                '.ms-salon{font-size:0.68rem;color:#3d5068;text-align:right;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}' +
-                '.ms-grup{font-size:0.65rem;font-weight:600;padding:1px 7px;border-radius:8px;background:#151f30;color:#475569;}' +
-                '@media(max-width:680px){.ms-meta{display:none;}.ms-saat{flex:0 0 54px;}.ms-takim{font-size:0.8rem;}}';
+                '.ms:hover{background:rgba(255,255,255,0.03);}' +
+                '.ms-saat{flex:0 0 110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-right:1px solid #0d1826;padding:0 12px;}' +
+                '.ms-saat-val{font-size:1.05rem;font-weight:900;letter-spacing:0.5px;}' +
+                '.ms-saat-ico{font-size:0.7rem;opacity:0.4;}' +
+                '.ms-orta{flex:1;display:flex;align-items:center;gap:0;min-width:0;}' +
+                '.ms-takim{flex:1;display:flex;align-items:center;min-width:0;padding:0 20px;}' +
+                '.ms-takim-a{justify-content:flex-end;}' +
+                '.ms-takim-b{justify-content:flex-start;}' +
+                '.ms-takim-isim{font-size:1rem;font-weight:700;color:#e2e8f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+                '.ms-vs{flex:0 0 52px;display:flex;align-items:center;justify-content:center;}' +
+                '.ms-vs-ic{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#0a1628;border:1.5px solid #1e3050;font-size:0.65rem;font-weight:900;color:#2d4060;letter-spacing:1px;}' +
+                '.ms-meta{flex:0 0 230px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:7px;padding:14px 24px 14px 14px;border-left:1px solid #0d1826;}' +
+                '.ms-rozet{font-size:0.74rem;font-weight:800;padding:4px 14px;border-radius:20px;white-space:nowrap;}' +
+                '.ms-salon{font-size:0.72rem;color:#3d5068;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:210px;}' +
+                '.ms-salon::before{content:"📍 ";font-size:0.65rem;}' +
+                '.ms-grup{font-size:0.68rem;font-weight:700;padding:2px 10px;border-radius:8px;background:#0f1929;color:#475569;border:1px solid #1e293b;}' +
+                '@media(max-width:680px){.ms-meta{display:none;}.ms-saat{flex:0 0 80px;}.ms-takim-isim{font-size:0.88rem;}.ms-vs-ic{width:30px;height:30px;font-size:0.58rem;}}';
             document.head.appendChild(st);
         }
 
@@ -1034,14 +1089,17 @@
                 var satir = document.createElement('div');
                 satir.className = 'ms';
                 satir.innerHTML =
-                    '<div class="ms-saat" style="color:' + kr + ';">' + m.saat + '</div>' +
+                    '<div class="ms-saat" style="background:linear-gradient(180deg,' + kr + '0a 0%,transparent 100%);">' +
+                        '<span class="ms-saat-val" style="color:' + kr + ';">' + m.saat + '</span>' +
+                        '<span class="ms-saat-ico">⏱</span>' +
+                    '</div>' +
                     '<div class="ms-orta">' +
-                        '<div class="ms-takim ms-takim-a">' + m.a + '</div>' +
-                        '<div class="ms-vs">VS</div>' +
-                        '<div class="ms-takim ms-takim-b">' + m.b + '</div>' +
+                        '<div class="ms-takim ms-takim-a"><span class="ms-takim-isim">' + m.a + '</span></div>' +
+                        '<div class="ms-vs"><div class="ms-vs-ic">VS</div></div>' +
+                        '<div class="ms-takim ms-takim-b"><span class="ms-takim-isim">' + m.b + '</span></div>' +
                     '</div>' +
                     '<div class="ms-meta">' +
-                        '<span class="ms-rozet" style="color:' + kr + ';border-color:' + kr + '33;background:' + kr + '11;">' + m.kat + '</span>' +
+                        '<span class="ms-rozet" style="color:' + kr + ';border:1px solid ' + kr + '44;background:' + kr + '18;">' + m.kat + '</span>' +
                         '<div class="ms-salon">' + m.salon + '</div>' +
                         (m.grup ? '<span class="ms-grup">' + m.grup + '</span>' : '') +
                     '</div>';
@@ -1080,6 +1138,85 @@
         return str.replace(/[İŞĞÜÖÇışğüöçi]/g, function(c){ return map[c] || c; }).toUpperCase();
     }
 
+    // Arama sonuç stilleri — bir kez inject edilir
+    function injectAramaStil() {
+        if (document.getElementById('aramaSt')) return;
+        var s = document.createElement('style');
+        s.id = 'aramaSt';
+        s.textContent = [
+            /* ---- ozet banner ---- */
+            '.ar-ozet{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;}',
+            '.ar-ozet-ic{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#1e293b,#162032);',
+            'border:1px solid #334155;border-radius:50px;padding:10px 24px;}',
+            '.ar-ozet-top{font-size:0.82rem;color:#94a3b8;letter-spacing:0.3px;}',
+            '.ar-ozet-badge{background:linear-gradient(135deg,#ff4d05,#ff7738);color:white;font-size:0.78rem;font-weight:800;',
+            'padding:3px 12px;border-radius:20px;}',
+            /* ---- gun grubu ---- */
+            '.ar-gun{margin-bottom:14px;border-radius:20px;overflow:hidden;',
+            'border:1px solid #1e3a5f;box-shadow:0 4px 24px rgba(0,0,0,0.35);transition:box-shadow 0.2s;}',
+            '.ar-gun:hover{box-shadow:0 8px 32px rgba(0,0,0,0.5);}',
+            /* ---- gun baslik ---- */
+            '.ar-gun-hdr{display:flex;align-items:center;justify-content:space-between;',
+            'padding:18px 28px;background:linear-gradient(90deg,#1e3050 0%,#1a2740 100%);',
+            'border-bottom:1px solid #1e3a5f;}',
+            '.ar-gun-sol{display:flex;align-items:center;gap:16px;}',
+            '.ar-gun-bar{width:4px;border-radius:3px;height:38px;flex-shrink:0;}',
+            '.ar-gun-tarih{font-size:1.05rem;font-weight:800;color:#f1f5f9;letter-spacing:-0.2px;}',
+            '.ar-gun-sayi{display:inline-flex;align-items:center;gap:5px;',
+            'background:rgba(255,255,255,0.06);border-radius:20px;padding:4px 12px;',
+            'font-size:0.75rem;font-weight:700;color:#64748b;}',
+            /* ---- satır ---- */
+            '.ar-satir{display:flex;align-items:stretch;border-bottom:1px solid #0d1826;',
+            'min-height:76px;transition:background 0.15s;}',
+            '.ar-satir:last-child{border-bottom:none;}',
+            '.ar-satir:hover{background:rgba(255,255,255,0.03);}',
+            /* saat */
+            '.ar-saat{flex:0 0 110px;display:flex;flex-direction:column;align-items:center;justify-content:center;',
+            'gap:3px;border-right:1px solid #0d1826;padding:0 12px;}',
+            '.ar-saat-val{font-size:1.05rem;font-weight:900;letter-spacing:0.5px;}',
+            '.ar-saat-ico{font-size:0.7rem;opacity:0.4;}',
+            /* orta */
+            '.ar-orta{flex:1;display:flex;align-items:center;gap:0;min-width:0;}',
+            '.ar-takim{flex:1;display:flex;align-items:center;min-width:0;padding:0 20px;}',
+            '.ar-takim-a{justify-content:flex-end;}',
+            '.ar-takim-b{justify-content:flex-start;}',
+            '.ar-takim-isim{font-size:1rem;font-weight:700;color:#e2e8f0;',
+            'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}',
+            '.ar-vs{flex:0 0 52px;display:flex;align-items:center;justify-content:center;}',
+            '.ar-vs-ic{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;',
+            'background:#0a1628;border:1.5px solid #1e3050;',
+            'font-size:0.65rem;font-weight:900;color:#2d4060;letter-spacing:1px;}',
+            /* meta */
+            '.ar-meta{flex:0 0 230px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;',
+            'gap:7px;padding:14px 24px 14px 14px;border-left:1px solid #0d1826;}',
+            '.ar-rozet{font-size:0.74rem;font-weight:800;padding:4px 14px;border-radius:20px;white-space:nowrap;}',
+            '.ar-salon{font-size:0.72rem;color:#3d5068;text-align:right;',
+            'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:210px;}',
+            '.ar-salon::before{content:"📍 ";font-size:0.65rem;}',
+            '.ar-grup{font-size:0.68rem;font-weight:700;padding:2px 10px;border-radius:8px;',
+            'background:#0f1929;color:#475569;border:1px solid #1e293b;}',
+            /* bos sonuc */
+            '.ar-bos{text-align:center;padding:60px 20px;}',
+            '.ar-bos-ico{font-size:3rem;margin-bottom:16px;}',
+            '.ar-bos-txt{font-size:1rem;font-weight:700;color:#475569;margin-bottom:6px;}',
+            '.ar-bos-alt{font-size:0.85rem;color:#334155;}',
+            /* mobil */
+            '@media(max-width:768px){',
+            '.ar-meta{display:none;}',
+            '.ar-saat{flex:0 0 64px;padding:0 8px;}',
+            '.ar-saat-val{font-size:0.82rem;}',
+            '.ar-saat-ico{display:none;}',
+            '.ar-takim{padding:0 8px;}',
+            '.ar-takim-isim{font-size:0.8rem;}',
+            '.ar-vs{flex:0 0 36px;}',
+            '.ar-vs-ic{width:26px;height:26px;font-size:0.5rem;}',
+            '.ar-gun-hdr{padding:12px 16px;}',
+            '.ar-gun-tarih{font-size:0.88rem;}',
+            '}'
+        ].join('');
+        document.head.appendChild(s);
+    }
+
     function takimArama(val) {
         var silBtn = document.getElementById('takimAramaSil');
         var sonucDiv = document.getElementById('takimAramaSonuc');
@@ -1100,6 +1237,7 @@
         }
         if (placeholder) placeholder.style.display = 'none';
 
+        injectAramaStil();
         silBtn.style.display = 'block';
         var q = normalizeText(val.trim());
 
@@ -1115,7 +1253,12 @@
         sonucDiv.innerHTML = '';
 
         if (eslesen.length === 0) {
-            sonucDiv.innerHTML = '<div style="text-align:center;color:#64748b;padding:32px 0;font-size:0.95rem;">Bu takım adı ile eşleşen maç bulunamadı.</div>';
+            sonucDiv.innerHTML =
+                '<div class="ar-bos">' +
+                    '<div class="ar-bos-ico">🔍</div>' +
+                    '<div class="ar-bos-txt">Eşleşen maç bulunamadı</div>' +
+                    '<div class="ar-bos-alt">"' + val + '" için sonuç yok — farklı bir takım adı deneyin</div>' +
+                '</div>';
             return;
         }
 
@@ -1126,43 +1269,59 @@
         });
         var tarihler = Object.keys(gruplar).sort();
 
+        // Özet banner
         var ozet = document.createElement('div');
-        ozet.style.cssText = 'font-size:0.82rem;color:#64748b;margin-bottom:14px;text-align:center;';
-        ozet.textContent = eslesen.length + ' maç bulundu — ' + tarihler.length + ' farklı günde';
+        ozet.className = 'ar-ozet';
+        ozet.innerHTML =
+            '<div class="ar-ozet-ic">' +
+                '<span class="ar-ozet-badge">' + eslesen.length + ' maç</span>' +
+                '<span class="ar-ozet-top">' + tarihler.length + ' farklı günde bulundu</span>' +
+            '</div>';
         sonucDiv.appendChild(ozet);
 
         tarihler.forEach(function(t) {
             var maclar = gruplar[t].sort(function(a, b) { return a.saat.localeCompare(b.saat); });
             var ilk = maclar[0];
+            var gunRenk = '#ff4d05';
 
             var gun = document.createElement('div');
-            gun.style.cssText = 'margin-bottom:6px;background:#1e293b;border-radius:14px;overflow:hidden;border:1px solid #1e3a5f;';
+            gun.className = 'ar-gun';
 
-            var gunBaslik = document.createElement('div');
-            gunBaslik.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 18px;background:#243044;border-bottom:1px solid #1a2d4a;';
-            gunBaslik.innerHTML =
-                '<div style="width:3px;height:30px;background:#ff4d05;border-radius:2px;flex-shrink:0;"></div>' +
-                '<div>' +
-                    '<div style="font-size:0.95rem;font-weight:800;color:#f1f5f9;">' + ilk.gun + ', ' + ilk.td + '</div>' +
-                    '<div style="font-size:0.72rem;color:#64748b;">' + maclar.length + ' maç</div>' +
-                '</div>';
-            gun.appendChild(gunBaslik);
+            // Gün başlığı
+            var hdr = document.createElement('div');
+            hdr.className = 'ar-gun-hdr';
+            hdr.innerHTML =
+                '<div class="ar-gun-sol">' +
+                    '<div class="ar-gun-bar" style="background:' + gunRenk + ';box-shadow:0 0 8px ' + gunRenk + '66;"></div>' +
+                    '<div>' +
+                        '<div class="ar-gun-tarih">🗓 ' + ilk.gun + ' — ' + ilk.td + '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="ar-gun-sayi">🏀 ' + maclar.length + ' maç</div>';
+            gun.appendChild(hdr);
 
             maclar.forEach(function(m) {
                 var kr = getKatRenk(m.kat);
                 var satir = document.createElement('div');
-                satir.style.cssText = 'display:flex;align-items:stretch;border-bottom:1px solid #111827;min-height:56px;';
+                satir.className = 'ar-satir';
                 satir.innerHTML =
-                    '<div style="flex:0 0 68px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:800;color:' + kr + ';border-right:1px solid #1a2540;">' + m.saat + '</div>' +
-                    '<div style="flex:1;display:flex;align-items:center;gap:6px;padding:12px 14px;min-width:0;">' +
-                        '<div style="flex:1;font-size:0.85rem;font-weight:700;color:#e2e8f0;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + m.a + '</div>' +
-                        '<div style="flex:0 0 30px;text-align:center;font-size:0.62rem;font-weight:900;color:#2d3d55;">VS</div>' +
-                        '<div style="flex:1;font-size:0.85rem;font-weight:700;color:#e2e8f0;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + m.b + '</div>' +
+                    '<div class="ar-saat" style="background:linear-gradient(180deg,' + kr + '0a 0%,transparent 100%);">' +
+                        '<span class="ar-saat-val" style="color:' + kr + ';">' + m.saat + '</span>' +
+                        '<span class="ar-saat-ico">⏱</span>' +
                     '</div>' +
-                    '<div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:4px;padding:10px 14px 10px 8px;border-left:1px solid #1a2540;">' +
-                        '<span style="font-size:0.67rem;font-weight:700;padding:2px 9px;border-radius:20px;color:' + kr + ';border:1px solid ' + kr + '33;background:' + kr + '11;">' + m.kat + '</span>' +
-                        '<div style="font-size:0.67rem;color:#3d5068;text-align:right;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + m.salon + '</div>' +
-                        (m.grup ? '<span style="font-size:0.64rem;font-weight:600;padding:1px 7px;border-radius:8px;background:#151f30;color:#475569;">' + m.grup + '</span>' : '') +
+                    '<div class="ar-orta">' +
+                        '<div class="ar-takim ar-takim-a">' +
+                            '<span class="ar-takim-isim">' + m.a + '</span>' +
+                        '</div>' +
+                        '<div class="ar-vs"><div class="ar-vs-ic">VS</div></div>' +
+                        '<div class="ar-takim ar-takim-b">' +
+                            '<span class="ar-takim-isim">' + m.b + '</span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="ar-meta">' +
+                        '<span class="ar-rozet" style="color:' + kr + ';border:1px solid ' + kr + '44;background:' + kr + '18;">' + m.kat + '</span>' +
+                        '<div class="ar-salon">' + m.salon + '</div>' +
+                        (m.grup ? '<span class="ar-grup">' + m.grup + '</span>' : '') +
                     '</div>';
                 gun.appendChild(satir);
             });
