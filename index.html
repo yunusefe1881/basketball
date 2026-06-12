@@ -4,441 +4,588 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pro-Athlete | Diyet, Antrenman ve Maç Takvimi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* ============================================================
+           IST-BASKEPORTAL · PREMIUM UI SYSTEM
+           Athletic / performance-tech direction — deep midnight canvas,
+           molten-orange signature, glass surfaces, ambient depth.
+           Structural hexes (#0f172a/#1e293b/#334155/#ff4d05) preserved
+           for compatibility with JS-injected inline styles.
+        ============================================================ */
         :root {
             --primary-color: #ff4d05;
             --secondary-color: #2ecc71;
             --bg-dark: #0f172a;
             --card-bg: #1e293b;
             --text-light: #f8fafc;
+
+            /* premium tokens */
+            --canvas: #080c17;
+            --accent: #ff5a18;
+            --accent-soft: #ff8a45;
+            --accent-grad: linear-gradient(135deg, #ff6322 0%, #ff9248 100%);
+            --accent-glow: rgba(255, 90, 24, 0.45);
+            --green: #2ecc71;
+            --blue: #60a5fa;
+            --pink: #f472b6;
+            --line: rgba(148, 163, 184, 0.14);
+            --line-strong: rgba(148, 163, 184, 0.22);
+            --surface: rgba(30, 41, 59, 0.72);
+            --surface-2: rgba(15, 23, 42, 0.6);
+            --muted: #8a99b0;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.35);
+            --shadow-md: 0 16px 40px -12px rgba(0,0,0,0.6);
+            --shadow-lg: 0 30px 70px -20px rgba(0,0,0,0.7);
+            --ring: 0 0 0 3px rgba(255,90,24,0.22);
+            --radius: 18px;
+            --font-display: 'Space Grotesk', 'Inter', sans-serif;
+            --font-body: 'Inter', sans-serif;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-body); }
 
-        body { background-color: var(--bg-dark); color: var(--text-light); line-height: 1.6; }
+        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
+        body {
+            background-color: var(--canvas);
+            background-image:
+                radial-gradient(1100px 600px at 78% -8%, rgba(255, 90, 24, 0.14), transparent 60%),
+                radial-gradient(900px 600px at 8% 8%, rgba(56, 102, 220, 0.13), transparent 55%),
+                radial-gradient(900px 700px at 92% 102%, rgba(46, 204, 113, 0.07), transparent 55%);
+            background-attachment: fixed;
+            color: var(--text-light);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            overflow-x: hidden;
+        }
+
+        ::selection { background: rgba(255, 90, 24, 0.32); color: #fff; }
+
+        /* custom scrollbar */
+        ::-webkit-scrollbar { width: 11px; height: 11px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(#384154, #232c3d);
+            border-radius: 20px; border: 2px solid transparent; background-clip: padding-box;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(var(--accent), #c93d04); background-clip: padding-box; }
+
+        :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+        /* ===================== HEADER ===================== */
         header {
-            background: rgba(15, 23, 42, 0.9);
-            padding: 1rem 5%;
+            background: rgba(9, 13, 24, 0.72);
+            padding: 0.85rem 5%;
             position: fixed;
             width: 100%; top: 0; z-index: 1000;
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid #334155;
-            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--line);
+            backdrop-filter: blur(18px) saturate(140%);
+            -webkit-backdrop-filter: blur(18px) saturate(140%);
+        }
+        header::after {
+            content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,90,24,0.5), transparent);
+            opacity: .7;
         }
 
-        .logo { font-weight: 800; font-size: 1.5rem; color: var(--primary-color); text-transform: uppercase; }
+        .logo {
+            font-family: var(--font-display);
+            font-weight: 700; font-size: 1.35rem; letter-spacing: -0.01em;
+            color: var(--text-light); text-transform: uppercase;
+            display: inline-flex; align-items: center; gap: 11px;
+        }
+        .logo .logo-mark {
+            width: 34px; height: 34px; border-radius: 11px; flex-shrink: 0;
+            display: grid; place-items: center; font-size: 1rem;
+            background: var(--accent-grad);
+            box-shadow: 0 6px 18px -4px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.35);
+        }
+        .logo .logo-accent {
+            background: var(--accent-grad); -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; color: transparent;
+        }
 
-        nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: 500; transition: 0.3s; }
-        nav a:hover { color: var(--primary-color); }
+        nav a {
+            color: #c7d2e1; text-decoration: none; margin-left: 26px;
+            font-weight: 500; font-size: 0.92rem; position: relative; transition: color .25s;
+        }
+        nav a::after {
+            content: ""; position: absolute; left: 0; bottom: -6px; height: 2px; width: 0;
+            background: var(--accent-grad); border-radius: 2px; transition: width .28s ease;
+        }
+        nav a:hover { color: #fff; }
+        nav a:hover::after { width: 100%; }
 
+        /* ===================== HERO ===================== */
         .hero {
-            height: 60vh; display: flex; flex-direction: column;
+            position: relative; height: 70vh; min-height: 460px;
+            display: flex; flex-direction: column;
             justify-content: center; align-items: center; text-align: center;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1546519638-68e109498ffc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover; background-position: center; margin-top: 60px;
+            background:
+                linear-gradient(180deg, rgba(8,12,23,0.55) 0%, rgba(8,12,23,0.72) 45%, rgba(8,12,23,0.97) 100%),
+                radial-gradient(120% 90% at 50% 0%, rgba(255,90,24,0.22), transparent 55%),
+                url('https://images.unsplash.com/photo-1546519638-68e109498ffc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background-size: cover; background-position: center; margin-top: 61px;
+            overflow: hidden; padding: 0 20px;
+        }
+        .hero::before {
+            content: ""; position: absolute; inset: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(148,163,184,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148,163,184,0.05) 1px, transparent 1px);
+            background-size: 52px 52px;
+            mask-image: radial-gradient(70% 70% at 50% 40%, #000 0%, transparent 72%);
+            -webkit-mask-image: radial-gradient(70% 70% at 50% 40%, #000 0%, transparent 72%);
+            opacity: .6;
+        }
+        .hero-inner { position: relative; z-index: 2; max-width: 920px; }
+        .hero-eyebrow {
+            display: inline-flex; align-items: center; gap: 9px;
+            padding: 7px 16px 7px 12px; margin-bottom: 22px;
+            background: rgba(255,90,24,0.1); border: 1px solid rgba(255,90,24,0.3);
+            border-radius: 50px; font-size: 0.74rem; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase; color: #ffb98f;
+            backdrop-filter: blur(6px);
+        }
+        .hero-eyebrow .dot {
+            width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+            box-shadow: 0 0 0 0 var(--accent-glow); animation: pulseDot 2.1s infinite;
+        }
+        @keyframes pulseDot {
+            0% { box-shadow: 0 0 0 0 rgba(255,90,24,0.6); }
+            70% { box-shadow: 0 0 0 9px rgba(255,90,24,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,90,24,0); }
+        }
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.1rem, 6vw, 4.2rem); line-height: 1.02;
+            font-weight: 700; letter-spacing: -0.02em; margin-bottom: 18px;
+            background: linear-gradient(180deg, #ffffff 30%, #c3cad8 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; color: transparent;
+            text-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        .hero h1 .hl {
+            background: var(--accent-grad); -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; color: transparent;
+        }
+        .hero p { font-size: clamp(0.95rem, 1.6vw, 1.22rem); color: #aebbcd; max-width: 640px; margin: 0 auto; }
+        .hero-cta {
+            display: inline-flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 30px;
+        }
+        .hero-btn {
+            padding: 13px 28px; border-radius: 50px; font-weight: 700; font-size: 0.95rem;
+            text-decoration: none; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s;
+            display: inline-flex; align-items: center; gap: 8px; border: none; font-family: var(--font-body);
+        }
+        .hero-btn.primary {
+            background: var(--accent-grad); color: #fff;
+            box-shadow: 0 12px 30px -8px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+        .hero-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 18px 40px -8px var(--accent-glow); }
+        .hero-btn.ghost {
+            background: rgba(255,255,255,0.06); color: #e6ecf5; border: 1px solid rgba(255,255,255,0.16);
+            backdrop-filter: blur(8px);
+        }
+        .hero-btn.ghost:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .scroll-cue {
+            position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 2;
+            width: 26px; height: 42px; border: 2px solid rgba(255,255,255,0.3); border-radius: 14px;
+            display: grid; place-items: start center; padding-top: 7px;
+        }
+        .scroll-cue::after {
+            content: ""; width: 4px; height: 8px; border-radius: 3px; background: var(--accent);
+            animation: scrollDot 1.7s infinite;
+        }
+        @keyframes scrollDot { 0% { transform: translateY(0); opacity: 1; } 75% { transform: translateY(13px); opacity: 0; } 100% { opacity: 0; } }
+
+        /* ===================== SECTIONS ===================== */
+        section { padding: 92px 5%; position: relative; }
+        h2 {
+            font-family: var(--font-display);
+            text-align: center; margin-bottom: 46px;
+            font-size: clamp(1.6rem, 3.4vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em;
+            color: var(--text-light); position: relative; line-height: 1.15;
+        }
+        h2::after {
+            content: ""; display: block; width: 64px; height: 4px; margin: 18px auto 0;
+            background: var(--accent-grad); border-radius: 4px;
+            box-shadow: 0 4px 16px -2px var(--accent-glow);
         }
 
-        .hero h1 { font-size: 3.5rem; margin-bottom: 10px; }
-        .hero p { font-size: 1.2rem; color: #cbd5e1; }
-
-        section { padding: 80px 5%; }
-        h2 { text-align: center; margin-bottom: 40px; font-size: 2.5rem; color: var(--primary-color); }
-
+        /* ===================== MATCH TABLE ===================== */
         .match-container {
-            overflow-x: auto; background: var(--card-bg);
-            padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow-x: auto; background: var(--surface);
+            padding: 22px; border-radius: 20px; box-shadow: var(--shadow-md);
+            border: 1px solid var(--line); backdrop-filter: blur(12px);
         }
-
         table { width: 100%; border-collapse: collapse; min-width: 800px; }
-        th { background: var(--primary-color); color: white; padding: 15px; text-align: left; }
-        td { padding: 15px; border-bottom: 1px solid #334155; }
-        tr:hover { background: #334155; }
-        .status-live { color: #2ecc71; font-weight: bold; }
+        th {
+            background: var(--accent-grad); color: white; padding: 15px; text-align: left;
+            font-family: var(--font-display); font-weight: 600; font-size: 0.85rem;
+            letter-spacing: 0.03em; text-transform: uppercase;
+        }
+        th:first-child { border-top-left-radius: 12px; }
+        th:last-child { border-top-right-radius: 12px; }
+        td { padding: 15px; border-bottom: 1px solid var(--line); }
+        tr { transition: background .2s; }
+        tr:hover { background: rgba(51, 65, 85, 0.5); }
+        .status-live { color: var(--green); font-weight: bold; }
 
+        /* ===================== GRID + CARDS ===================== */
         .grid-container {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 26px;
         }
 
         .card {
-            background: var(--card-bg); padding: 30px; border-radius: 20px;
-            border: 1px solid #334155; transition: transform 0.3s;
+            position: relative; isolation: isolate;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0) 38%),
+                var(--card-bg);
+            padding: 30px; border-radius: 22px;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-sm);
+            transition: transform .35s cubic-bezier(.2,.7,.2,1), border-color .35s, box-shadow .35s;
         }
-        .card:hover { transform: translateY(-10px); border-color: var(--primary-color); }
-        .card h3 { margin-bottom: 15px; color: var(--primary-color); }
+        .card::before {
+            content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+            background: linear-gradient(160deg, rgba(255,90,24,0.5), transparent 40%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            opacity: 0; transition: opacity .35s; pointer-events: none; z-index: -1;
+        }
+        .card:hover { transform: translateY(-8px); border-color: rgba(255,90,24,0.35); box-shadow: var(--shadow-lg); }
+        .card:hover::before { opacity: 1; }
+        .card h3 { margin-bottom: 15px; color: var(--accent); font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; }
         .card.football h3 { color: var(--secondary-color); }
 
+        /* ===================== BUTTONS ===================== */
         .btn {
-            display: inline-block; padding: 10px 20px; background: var(--primary-color);
-            color: white; text-decoration: none; border-radius: 5px; margin-top: 15px;
-            cursor: pointer; border: none; font-size: 1rem; font-family: 'Inter', sans-serif;
+            display: inline-block; padding: 11px 22px; background: var(--accent-grad);
+            color: white; text-decoration: none; border-radius: 10px; margin-top: 15px;
+            cursor: pointer; border: none; font-size: 0.95rem; font-weight: 600; font-family: var(--font-body);
+            box-shadow: 0 8px 22px -8px var(--accent-glow); transition: transform .2s, box-shadow .2s;
         }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -8px var(--accent-glow); }
 
         /* ========== KENDİN PROGRAMINI YARAT ========== */
         .program-creator-banner {
-            margin-top: 60px;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 2px dashed #ff4d05;
-            border-radius: 20px;
-            padding: 40px;
+            position: relative; overflow: hidden;
+            margin-top: 64px;
+            background:
+                radial-gradient(120% 140% at 0% 0%, rgba(255,90,24,0.16), transparent 55%),
+                linear-gradient(135deg, #1c2740 0%, #0d1424 100%);
+            border: 1px solid rgba(255,90,24,0.32);
+            border-radius: 24px;
+            padding: 48px 40px;
             text-align: center;
+            box-shadow: var(--shadow-md);
         }
-
+        .program-creator-banner::before {
+            content: ""; position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,90,24,0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,90,24,0.06) 1px, transparent 1px);
+            background-size: 38px 38px;
+            mask-image: radial-gradient(80% 80% at 50% 0%, #000, transparent 75%);
+            -webkit-mask-image: radial-gradient(80% 80% at 50% 0%, #000, transparent 75%);
+            opacity: .5;
+        }
+        .program-creator-banner > * { position: relative; }
         .program-creator-banner h3 {
-            font-size: 1.8rem;
-            color: #ff4d05;
-            margin-bottom: 10px;
+            font-family: var(--font-display);
+            font-size: clamp(1.3rem, 2.6vw, 1.85rem); font-weight: 700; letter-spacing: -0.01em;
+            color: #fff; margin-bottom: 12px;
         }
-
-        .program-creator-banner p {
-            color: #94a3b8;
-            margin-bottom: 25px;
-            font-size: 1rem;
-        }
+        .program-creator-banner p { color: #9fb0c6; margin-bottom: 26px; font-size: 1rem; }
 
         .btn-creator {
-            display: inline-block; padding: 14px 36px;
-            background: linear-gradient(135deg, #ff4d05, #ff7738);
+            display: inline-flex; align-items: center; gap: 9px; padding: 15px 38px;
+            background: var(--accent-grad);
             color: white; border: none; border-radius: 50px;
-            font-size: 1.1rem; font-weight: 700; cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            font-family: 'Inter', sans-serif;
-            box-shadow: 0 4px 20px rgba(255, 77, 5, 0.4);
+            font-size: 1.05rem; font-weight: 700; cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+            font-family: var(--font-body);
+            box-shadow: 0 10px 34px -6px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.3);
         }
+        .btn-creator:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 16px 44px -6px var(--accent-glow); }
 
-        .btn-creator:hover { transform: scale(1.05); box-shadow: 0 6px 30px rgba(255, 77, 5, 0.6); }
-
-        /* MODAL OVERLAY */
+        /* ===================== MODAL ===================== */
         .modal-overlay {
             display: none; position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(5, 8, 16, 0.78);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             z-index: 9999; justify-content: center; align-items: center;
             padding: 20px;
         }
-
-        .modal-overlay.active { display: flex; }
+        .modal-overlay.active { display: flex; animation: fadeOverlay .25s ease; }
+        @keyframes fadeOverlay { from { opacity: 0; } to { opacity: 1; } }
 
         .modal {
-            background: #1e293b;
-            border-radius: 24px;
+            background:
+                radial-gradient(120% 60% at 50% 0%, rgba(255,90,24,0.1), transparent 60%),
+                #141d31;
+            border-radius: 26px;
             padding: 40px;
             width: 100%; max-width: 680px;
             max-height: 90vh; overflow-y: auto;
-            border: 1px solid #334155;
+            border: 1px solid var(--line-strong);
+            box-shadow: var(--shadow-lg);
             position: relative;
-            animation: slideUp 0.3s ease;
+            animation: slideUp 0.35s cubic-bezier(.2,.7,.2,1);
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(34px) scale(.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .modal-close {
-            position: absolute; top: 20px; right: 24px;
-            background: none; border: none; color: #94a3b8;
-            font-size: 1.8rem; cursor: pointer; line-height: 1;
-            transition: color 0.2s;
+            position: absolute; top: 20px; right: 22px;
+            background: rgba(148,163,184,0.1); border: 1px solid var(--line);
+            width: 38px; height: 38px; border-radius: 50%;
+            color: #aab6c8; font-size: 1.3rem; cursor: pointer; line-height: 1;
+            display: grid; place-items: center; transition: all .2s;
         }
-        .modal-close:hover { color: #ff4d05; }
+        .modal-close:hover { color: #fff; background: var(--accent); border-color: var(--accent); transform: rotate(90deg); }
 
         .modal h2 {
-            font-size: 1.6rem; margin-bottom: 8px;
-            color: #ff4d05; text-align: left;
+            font-size: 1.55rem; margin-bottom: 8px;
+            color: #fff; text-align: left;
         }
+        .modal h2::after { display: none; }
 
-        .modal .subtitle {
-            color: #64748b; font-size: 0.9rem; margin-bottom: 30px;
-        }
+        .modal .subtitle { color: var(--muted); font-size: 0.92rem; margin-bottom: 30px; }
 
         /* STEP INDICATOR */
-        .steps-indicator {
-            display: flex; align-items: center; margin-bottom: 30px; gap: 0;
-        }
-
+        .steps-indicator { display: flex; align-items: center; margin-bottom: 32px; gap: 0; }
         .step-dot {
-            width: 32px; height: 32px; border-radius: 50%;
-            background: #334155; color: #64748b;
+            width: 34px; height: 34px; border-radius: 50%;
+            background: #283447; color: #7e8ca3;
             display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-display);
             font-size: 0.85rem; font-weight: 700; flex-shrink: 0;
-            transition: all 0.3s;
+            border: 1px solid var(--line); transition: all 0.35s;
         }
-
-        .step-dot.active { background: #ff4d05; color: white; }
-        .step-dot.done { background: #2ecc71; color: white; }
-
-        .step-line {
-            flex: 1; height: 2px; background: #334155; transition: background 0.3s;
-        }
-        .step-line.done { background: #2ecc71; }
+        .step-dot.active { background: var(--accent-grad); color: white; border-color: transparent; box-shadow: 0 6px 18px -4px var(--accent-glow); transform: scale(1.08); }
+        .step-dot.done { background: var(--green); color: white; border-color: transparent; }
+        .step-line { flex: 1; height: 2px; background: #283447; transition: background 0.35s; }
+        .step-line.done { background: var(--green); }
 
         /* FORM ELEMENTS */
         .form-step { display: none; }
-        .form-step.active { display: block; }
-
+        .form-step.active { display: block; animation: fadeInPlan .3s ease; }
         .form-group { margin-bottom: 22px; }
-
-        .form-group label {
-            display: block; font-weight: 600; margin-bottom: 10px;
-            color: #e2e8f0; font-size: 0.95rem;
-        }
-
-        .form-group .hint {
-            font-size: 0.8rem; color: #64748b; margin-top: 5px;
-        }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 10px; color: #dfe6f0; font-size: 0.95rem; }
+        .form-group .hint { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
 
         /* GÜN SEÇİCİ */
-        .days-picker {
-            display: flex; gap: 10px; flex-wrap: wrap;
-        }
-
+        .days-picker { display: flex; gap: 10px; flex-wrap: wrap; }
         .day-btn {
-            padding: 10px 16px; border-radius: 10px;
-            border: 1.5px solid #334155; background: transparent;
-            color: #94a3b8; cursor: pointer; font-size: 0.9rem;
-            font-family: 'Inter', sans-serif; transition: all 0.2s;
+            padding: 10px 17px; border-radius: 12px;
+            border: 1.5px solid var(--line-strong); background: rgba(15,23,42,0.5);
+            color: #aab6c8; cursor: pointer; font-size: 0.9rem; font-weight: 500;
+            font-family: var(--font-body); transition: all 0.2s;
         }
-
-        .day-btn:hover { border-color: #ff4d05; color: #ff4d05; }
-        .day-btn.selected { background: #ff4d05; border-color: #ff4d05; color: white; font-weight: 700; }
+        .day-btn:hover { border-color: var(--accent); color: var(--accent-soft); transform: translateY(-1px); }
+        .day-btn.selected { background: var(--accent-grad); border-color: transparent; color: white; font-weight: 700; box-shadow: 0 6px 16px -6px var(--accent-glow); }
 
         /* SPOR SEÇİCİ */
-        .sport-options {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px;
-        }
-
+        .sport-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
         .sport-card {
-            padding: 16px 12px; border-radius: 14px;
-            border: 1.5px solid #334155; background: #0f172a;
-            cursor: pointer; text-align: center; transition: all 0.2s;
+            padding: 18px 12px; border-radius: 16px;
+            border: 1.5px solid var(--line-strong); background: rgba(15,23,42,0.7);
+            cursor: pointer; text-align: center; transition: all 0.22s;
         }
-
-        .sport-card:hover { border-color: #ff4d05; }
-        .sport-card.selected { background: rgba(255,77,5,0.12); border-color: #ff4d05; }
-
+        .sport-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+        .sport-card.selected { background: rgba(255,90,24,0.12); border-color: var(--accent); box-shadow: 0 8px 22px -8px var(--accent-glow); }
         .sport-card .sport-icon { font-size: 2rem; display: block; margin-bottom: 8px; }
         .sport-card .sport-name { font-size: 0.85rem; font-weight: 600; color: #e2e8f0; }
 
         /* HEDEF ve SEVİYE SEÇİCİ */
         .option-pills { display: flex; gap: 10px; flex-wrap: wrap; }
-
         .pill {
-            padding: 9px 18px; border-radius: 50px;
-            border: 1.5px solid #334155; background: transparent;
-            color: #94a3b8; cursor: pointer; font-size: 0.85rem;
-            font-family: 'Inter', sans-serif; transition: all 0.2s;
+            padding: 10px 19px; border-radius: 50px;
+            border: 1.5px solid var(--line-strong); background: rgba(15,23,42,0.5);
+            color: #aab6c8; cursor: pointer; font-size: 0.85rem; font-weight: 500;
+            font-family: var(--font-body); transition: all 0.2s;
         }
-
-        .pill:hover { border-color: #ff4d05; color: #ff4d05; }
-        .pill.selected { background: #ff4d05; border-color: #ff4d05; color: white; font-weight: 600; }
+        .pill:hover { border-color: var(--accent); color: var(--accent-soft); }
+        .pill.selected { background: var(--accent-grad); border-color: transparent; color: white; font-weight: 600; box-shadow: 0 6px 16px -6px var(--accent-glow); }
 
         /* SÜRE SLIDER */
         .duration-slider {
             width: 100%; margin-top: 8px;
             -webkit-appearance: none; appearance: none;
             height: 6px; border-radius: 3px;
-            background: linear-gradient(to right, #ff4d05 0%, #ff4d05 50%, #334155 50%, #334155 100%);
+            background: linear-gradient(to right, #ff5a18 0%, #ff5a18 50%, #283447 50%, #283447 100%);
             outline: none; cursor: pointer;
         }
-
         .duration-slider::-webkit-slider-thumb {
             -webkit-appearance: none; appearance: none;
             width: 22px; height: 22px; border-radius: 50%;
-            background: #ff4d05; cursor: pointer;
-            border: 3px solid #1e293b;
-            box-shadow: 0 0 0 2px #ff4d05;
+            background: var(--accent); cursor: pointer;
+            border: 3px solid #141d31;
+            box-shadow: 0 0 0 2px var(--accent), 0 4px 12px -2px var(--accent-glow);
         }
-
-        .duration-value {
-            text-align: center; font-size: 1.4rem; font-weight: 800;
-            color: #ff4d05; margin-top: 10px;
-        }
+        .duration-value { text-align: center; font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--accent); margin-top: 12px; }
 
         /* EKIPMAN */
         .equip-options { display: flex; gap: 10px; flex-wrap: wrap; }
 
         /* MODAL BUTTONS */
-        .modal-actions {
-            display: flex; gap: 12px; justify-content: flex-end; margin-top: 30px;
-        }
-
+        .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 32px; }
         .btn-back {
             padding: 12px 28px; background: transparent;
-            border: 1.5px solid #334155; border-radius: 10px;
-            color: #94a3b8; cursor: pointer; font-size: 0.95rem;
-            font-family: 'Inter', sans-serif; transition: all 0.2s;
+            border: 1.5px solid var(--line-strong); border-radius: 12px;
+            color: #aab6c8; cursor: pointer; font-size: 0.95rem; font-weight: 600;
+            font-family: var(--font-body); transition: all 0.2s;
         }
-        .btn-back:hover { border-color: #94a3b8; color: #e2e8f0; }
-
+        .btn-back:hover { border-color: #aab6c8; color: #fff; }
         .btn-next {
-            padding: 12px 32px; background: #ff4d05;
-            border: none; border-radius: 10px;
+            padding: 12px 34px; background: var(--accent-grad);
+            border: none; border-radius: 12px;
             color: white; cursor: pointer; font-size: 0.95rem; font-weight: 700;
-            font-family: 'Inter', sans-serif; transition: all 0.2s;
+            font-family: var(--font-body); transition: all 0.2s;
+            box-shadow: 0 8px 22px -8px var(--accent-glow);
         }
-        .btn-next:hover { background: #e03d00; }
-        .btn-next:disabled { background: #475569; cursor: not-allowed; }
+        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -8px var(--accent-glow); }
+        .btn-next:disabled { background: #3a4658; cursor: not-allowed; box-shadow: none; transform: none; }
 
         /* OLUŞTURULAN PROGRAM */
-        .program-result {
-            display: none; margin-top: 30px;
-        }
-
+        .program-result { display: none; margin-top: 30px; }
         .program-result.active { display: block; }
 
-        .loading-dots {
-            text-align: center; padding: 40px;
-            color: #94a3b8; font-size: 1rem;
-        }
-
+        .loading-dots { text-align: center; padding: 44px; color: var(--muted); font-size: 1rem; }
         .loading-dots span {
-            display: inline-block;
-            width: 10px; height: 10px; border-radius: 50%;
-            background: #ff4d05; margin: 0 4px;
-            animation: bounce 1.2s infinite;
+            display: inline-block; width: 11px; height: 11px; border-radius: 50%;
+            background: var(--accent); margin: 0 4px; animation: bounce 1.2s infinite;
         }
-
         .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
         .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-
         @keyframes bounce {
             0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
             40% { transform: scale(1); opacity: 1; }
         }
 
         .program-day {
-            background: #0f172a; border-radius: 14px;
-            border-left: 4px solid #ff4d05;
-            padding: 20px; margin-bottom: 16px;
+            background: rgba(15,23,42,0.75); border-radius: 16px;
+            border-left: 4px solid var(--accent);
+            padding: 22px; margin-bottom: 16px; border: 1px solid var(--line); border-left: 4px solid var(--accent);
         }
-
-        .program-day h4 {
-            color: #ff4d05; font-size: 1rem;
-            font-weight: 700; margin-bottom: 12px;
-        }
-
+        .program-day h4 { color: var(--accent); font-family: var(--font-display); font-size: 1.02rem; font-weight: 700; margin-bottom: 12px; }
         .program-day ul { list-style: none; }
-
         .program-day ul li {
-            padding: 6px 0; color: #cbd5e1; font-size: 0.9rem;
-            border-bottom: 1px solid #1e293b; display: flex; align-items: flex-start; gap: 8px;
+            padding: 7px 0; color: #cbd5e1; font-size: 0.9rem;
+            border-bottom: 1px solid var(--line); display: flex; align-items: flex-start; gap: 8px;
         }
-
         .program-day ul li:last-child { border-bottom: none; }
-        .program-day ul li::before { content: "▸"; color: #ff4d05; flex-shrink: 0; }
+        .program-day ul li::before { content: "▸"; color: var(--accent); flex-shrink: 0; }
 
-        .program-summary-badges {
-            display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px;
-        }
-
-        .badge {
-            padding: 6px 14px; border-radius: 50px; font-size: 0.8rem; font-weight: 600;
-        }
-
-        .badge-orange { background: rgba(255,77,5,0.15); color: #ff7738; border: 1px solid rgba(255,77,5,0.3); }
+        .program-summary-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 26px; }
+        .badge { padding: 7px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; }
+        .badge-orange { background: rgba(255,90,24,0.15); color: var(--accent-soft); border: 1px solid rgba(255,90,24,0.3); }
         .badge-green  { background: rgba(46,204,113,0.15); color: #2ecc71; border: 1px solid rgba(46,204,113,0.3); }
         .badge-blue   { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
         .badge-purple { background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
 
         .btn-print {
-            padding: 12px 28px; background: #2ecc71; border: none;
-            border-radius: 10px; color: white; font-size: 0.95rem;
-            font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif;
-            margin-right: 10px;
+            padding: 12px 28px; background: var(--green); border: none;
+            border-radius: 12px; color: white; font-size: 0.95rem;
+            font-weight: 700; cursor: pointer; font-family: var(--font-body);
+            margin-right: 10px; box-shadow: 0 8px 20px -8px rgba(46,204,113,0.6); transition: transform .2s;
         }
-        .btn-print:hover { background: #27ae60; }
+        .btn-print:hover { background: #27ae60; transform: translateY(-2px); }
 
-        footer { text-align: center; padding: 40px; background: #020617; border-top: 1px solid #334155; }
+        /* ===================== FOOTER ===================== */
+        footer {
+            text-align: center; padding: 56px 40px; background: #060a14;
+            border-top: 1px solid var(--line); color: #7e8ca3; position: relative;
+        }
+        footer::before {
+            content: ""; position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+            width: 160px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
 
+        /* DIET PILLS */
         .dpill {
-            padding: 9px 18px; border-radius: 50px;
-            border: 1.5px solid #334155; background: transparent;
-            color: #94a3b8; cursor: pointer; font-size: 0.85rem;
-            font-family: 'Inter', sans-serif; transition: all 0.2s;
+            padding: 10px 19px; border-radius: 50px;
+            border: 1.5px solid var(--line-strong); background: rgba(15,23,42,0.5);
+            color: #aab6c8; cursor: pointer; font-size: 0.85rem; font-weight: 500;
+            font-family: var(--font-body); transition: all 0.2s;
         }
-        .dpill:hover { border-color: #ff4d05; color: #ff4d05; }
-        .dpill.dsel { background: #ff4d05; border-color: #ff4d05; color: white; font-weight: 600; }
+        .dpill:hover { border-color: var(--accent); color: var(--accent-soft); }
+        .dpill.dsel { background: var(--accent-grad); border-color: transparent; color: white; font-weight: 600; box-shadow: 0 6px 16px -6px var(--accent-glow); }
 
         .stat-card {
-            background: #1e293b; border-radius: 14px; padding: 20px;
-            text-align: center; border: 1px solid #334155;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent 50%), var(--card-bg);
+            border-radius: 16px; padding: 22px;
+            text-align: center; border: 1px solid var(--line);
         }
-        .stat-card .stat-val { font-size: 1.8rem; font-weight: 800; color: #ff4d05; }
-        .stat-card .stat-lbl { font-size: 0.8rem; color: #64748b; margin-top: 4px; }
+        .stat-card .stat-val { font-family: var(--font-display); font-size: 1.9rem; font-weight: 700; color: var(--accent); }
+        .stat-card .stat-lbl { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
 
         /* ===== HAMBURGER ===== */
         .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            padding: 6px;
-            border: none;
-            background: transparent;
-            z-index: 1001;
+            display: none; flex-direction: column; gap: 5px; cursor: pointer;
+            padding: 6px; border: none; background: transparent; z-index: 1001;
         }
         .hamburger span {
-            display: block;
-            width: 24px; height: 2px;
-            background: #f8fafc;
-            border-radius: 2px;
-            transition: all 0.28s ease;
+            display: block; width: 24px; height: 2px; background: #f8fafc;
+            border-radius: 2px; transition: all 0.28s ease;
         }
         .hamburger.ac span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
         .hamburger.ac span:nth-child(2) { opacity: 0; }
         .hamburger.ac span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
 
         .mob-menu {
-            display: none;
-            position: fixed;
-            top: 61px; left: 0; right: 0;
-            background: rgba(10,17,35,0.97);
-            border-bottom: 1px solid #1e293b;
-            flex-direction: column;
-            z-index: 998;
-            backdrop-filter: blur(14px);
+            display: none; position: fixed; top: 60px; left: 0; right: 0;
+            background: rgba(8,12,23,0.97);
+            border-bottom: 1px solid var(--line);
+            flex-direction: column; z-index: 998;
+            backdrop-filter: blur(16px);
         }
         .mob-menu.ac { display: flex; }
         .mob-menu a {
-            color: #cbd5e1;
-            text-decoration: none;
-            padding: 15px 6%;
-            font-size: 1rem;
-            font-weight: 600;
-            border-bottom: 1px solid #1a2744;
-            display: block;
+            color: #cbd5e1; text-decoration: none; padding: 16px 6%; font-size: 1rem;
+            font-weight: 600; border-bottom: 1px solid var(--line); display: block; transition: all .2s;
         }
         .mob-menu a:last-child { border-bottom: none; }
-        .mob-menu a:active { color: #ff4d05; }
+        .mob-menu a:active, .mob-menu a:hover { color: var(--accent); background: rgba(255,90,24,0.06); }
 
         /* === 768px === */
         @media (max-width: 768px) {
-            /* --- HEADER --- */
-            header { padding: 0.85rem 4%; }
+            header { padding: 0.8rem 4%; }
             #desktopNav { display: none; }
             .hamburger { display: flex; }
+            .logo { font-size: 1.1rem; }
+            .logo .logo-mark { width: 30px; height: 30px; }
 
-            /* --- HERO --- */
-            .hero { height: 42vh; margin-top: 56px; }
-            .hero h1 { font-size: 1.5rem; line-height: 1.25; padding: 0 16px; }
-            .hero p { font-size: 0.85rem; padding: 0 20px; }
+            .hero { height: 56vh; min-height: 380px; margin-top: 56px; }
+            .hero h1 { padding: 0 6px; }
+            .hero p { font-size: 0.9rem; padding: 0 16px; }
+            .hero-eyebrow { font-size: 0.66rem; margin-bottom: 16px; }
+            .hero-cta { margin-top: 22px; }
+            .hero-btn { padding: 11px 22px; font-size: 0.88rem; }
+            .scroll-cue { display: none; }
 
-            /* --- GENEL BÖLÜMLER --- */
-            section { padding: 40px 4%; }
-            h2 { font-size: 1.4rem; margin-bottom: 18px; }
+            section { padding: 52px 4%; }
+            h2 { margin-bottom: 26px; }
+            h2::after { margin-top: 14px; }
 
-            /* --- KARTLAR / GRİD --- */
-            .grid-container { grid-template-columns: 1fr; gap: 12px; }
-            .card { padding: 18px; border-radius: 14px; }
+            .grid-container { grid-template-columns: 1fr; gap: 14px; }
+            .card { padding: 20px; border-radius: 16px; }
             .card:hover { transform: none; }
-            .card h3 { font-size: 1rem; margin-bottom: 10px; }
+            .card h3 { font-size: 1.05rem; margin-bottom: 10px; }
 
-            /* --- ARAMA ÇUBUĞU --- */
             #takimAramaKutusu { margin-bottom: 22px; }
 
-            /* --- KATEGORİ SEÇİCİ --- */
             .yas-grid { gap: 7px; justify-content: flex-start; }
             .yas-kart { padding: 10px 12px; min-width: 58px; border-radius: 12px; }
             .yas-kart .yk-yas { font-size: 0.9rem; }
@@ -450,178 +597,482 @@
             .lig-btn .lb-lig { font-size: 0.65rem; }
             .tum-btn { font-size: 0.8rem; padding: 9px 14px; }
 
-            /* --- MAÇ ACCORDION BAŞLIĞI --- */
             .mg-hdr { padding: 12px 14px; }
             .mg-tarih { font-size: 0.85rem; }
             .mg-sayi { font-size: 0.72rem; }
             .mg-bar { height: 26px; }
 
-            /* --- MAÇ SATIRI (KATEGORİ & ARAMA) --- */
-            .ms-saat,
-            .ar-saat { flex: 0 0 64px; padding: 0 8px; }
-            .ms-saat-val,
-            .ar-saat-val { font-size: 0.82rem; }
-            .ms-saat-ico,
-            .ar-saat-ico { display: none; }
-            .ms-takim,
-            .ar-takim { padding: 0 8px; }
-            .ms-takim-isim,
-            .ar-takim-isim { font-size: 0.8rem; }
-            .ms-vs,
-            .ar-vs { flex: 0 0 36px; }
-            .ms-vs-ic,
-            .ar-vs-ic { width: 26px; height: 26px; font-size: 0.5rem; }
-            .ms-meta,
-            .ar-meta { display: none !important; }
+            .ms-saat, .ar-saat { flex: 0 0 64px; padding: 0 8px; }
+            .ms-saat-val, .ar-saat-val { font-size: 0.82rem; }
+            .ms-saat-ico, .ar-saat-ico { display: none; }
+            .ms-takim, .ar-takim { padding: 0 8px; }
+            .ms-takim-isim, .ar-takim-isim { font-size: 0.8rem; }
+            .ms-vs, .ar-vs { flex: 0 0 36px; }
+            .ms-vs-ic, .ar-vs-ic { width: 26px; height: 26px; font-size: 0.5rem; }
+            .ms-meta, .ar-meta { display: none !important; }
 
-            /* --- ARAMA BAŞLIK --- */
             .ar-gun-hdr { padding: 12px 16px; }
             .ar-gun-tarih { font-size: 0.88rem; }
             .ar-gun-bar { height: 28px; }
             .ar-gun-sayi { font-size: 0.7rem; padding: 3px 9px; }
 
-            /* --- PROGRAM YARATICI BANNER --- */
-            .program-creator-banner { padding: 22px 16px; margin-top: 24px; border-radius: 14px; }
-            .program-creator-banner h3 { font-size: 1.1rem; }
-            .program-creator-banner p { font-size: 0.84rem; margin-bottom: 16px; }
-            .btn-creator { font-size: 0.88rem; padding: 11px 20px; }
+            .program-creator-banner { padding: 28px 18px; margin-top: 28px; border-radius: 18px; }
+            .program-creator-banner h3 { font-size: 1.2rem; }
+            .program-creator-banner p { font-size: 0.86rem; margin-bottom: 18px; }
+            .btn-creator { font-size: 0.92rem; padding: 12px 24px; }
 
-            /* --- MODAL --- */
-            .modal { padding: 18px 14px; border-radius: 16px; max-height: 92vh; }
-            .modal h2 { font-size: 1.15rem; }
-            .modal .subtitle { font-size: 0.8rem; margin-bottom: 18px; }
-            .step-dot { width: 26px; height: 26px; font-size: 0.72rem; }
-            .sport-options { grid-template-columns: repeat(3, 1fr); gap: 7px; }
-            .sport-card { padding: 10px 5px; border-radius: 10px; }
-            .sport-card .sport-icon { font-size: 1.3rem; }
-            .sport-card .sport-name { font-size: 0.68rem; }
-            .option-pills { gap: 6px; }
-            .pill { padding: 7px 11px; font-size: 0.78rem; }
-            .modal-actions { gap: 8px; margin-top: 18px; }
-            .btn-next, .btn-back { padding: 10px 16px; font-size: 0.86rem; }
+            .modal { padding: 22px 16px; border-radius: 20px; max-height: 92vh; }
+            .modal h2 { font-size: 1.2rem; }
+            .modal .subtitle { font-size: 0.82rem; margin-bottom: 20px; }
+            .step-dot { width: 28px; height: 28px; font-size: 0.74rem; }
+            .sport-options { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .sport-card { padding: 12px 5px; border-radius: 12px; }
+            .sport-card .sport-icon { font-size: 1.35rem; }
+            .sport-card .sport-name { font-size: 0.7rem; }
+            .option-pills { gap: 7px; }
+            .pill { padding: 8px 13px; font-size: 0.8rem; }
+            .modal-actions { gap: 8px; margin-top: 20px; }
+            .btn-next, .btn-back { padding: 11px 18px; font-size: 0.88rem; }
             .days-picker { gap: 7px; }
-            .day-btn { padding: 8px 12px; font-size: 0.82rem; }
-            .form-group { margin-bottom: 14px; }
+            .day-btn { padding: 9px 13px; font-size: 0.83rem; }
+            .form-group { margin-bottom: 16px; }
 
-            /* --- DİYET FORMU --- */
-            #dietForm > div { padding: 18px 14px !important; border-radius: 14px !important; }
+            #dietForm > div { padding: 20px 16px !important; border-radius: 16px !important; }
             #dietStats { grid-template-columns: repeat(3,1fr) !important; gap: 8px !important; }
             #dietMeals { grid-template-columns: 1fr !important; }
-            .stat-card .stat-val { font-size: 1.3rem !important; }
-            .diet-tab { padding: 8px 14px; font-size: 0.8rem; }
-            .meal-tab { padding: 7px 13px; font-size: 0.78rem; }
+            .stat-card .stat-val { font-size: 1.4rem !important; }
+            .diet-tab { padding: 9px 16px; font-size: 0.82rem; }
+            .meal-tab { padding: 8px 14px; font-size: 0.8rem; }
 
-            /* --- ANTRENMAN SEKME BUTONLARI --- */
-            .stab { font-size: 0.72rem; padding: 6px 11px; }
-            .plan-day { gap: 8px; padding: 8px 0; }
+            .stab { font-size: 0.74rem; padding: 7px 12px; }
+            .plan-day { gap: 8px; padding: 9px 0; }
             .pday { width: 30px; height: 20px; font-size: 0.65rem; }
-            .pact { font-size: 0.78rem; }
-            .pact small { font-size: 0.7rem; }
+            .pact { font-size: 0.8rem; }
+            .pact small { font-size: 0.72rem; }
 
-            /* --- SPOR PLAN SEKME BUTONLARI --- */
             .sport-tab-btns { gap: 5px !important; }
         }
 
         @media (max-width: 400px) {
-            .hero h1 { font-size: 1.2rem; }
-            h2 { font-size: 1.2rem; }
-            .logo { font-size: 1rem; }
+            h2 { font-size: 1.25rem; }
+            .logo { font-size: 0.95rem; }
             .yas-kart { padding: 8px 8px; min-width: 48px; }
             .yas-kart .yk-yas { font-size: 0.78rem; }
             .sport-options { grid-template-columns: repeat(2,1fr); }
             #dietStats { grid-template-columns: repeat(2,1fr) !important; }
-            .modal { padding: 14px 10px; }
+            .modal { padding: 16px 12px; }
             .ms-saat, .ar-saat { flex: 0 0 54px; }
             .ms-takim-isim, .ar-takim-isim { font-size: 0.72rem; }
         }
 
-        /* ===== SPOR PLAN SEKME CSS ===== */
+        /* ===== SPOR PLAN SEKME ===== */
         .stab {
-            padding: 7px 14px; border-radius: 50px; border: 1.5px solid #334155;
-            background: transparent; color: #64748b; cursor: pointer;
-            font-size: 0.78rem; font-weight: 600; font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
+            padding: 8px 16px; border-radius: 50px; border: 1.5px solid var(--line-strong);
+            background: rgba(15,23,42,0.4); color: #8a99b0; cursor: pointer;
+            font-size: 0.78rem; font-weight: 600; font-family: var(--font-body); transition: all 0.2s;
         }
-        .stab:hover { border-color: #ff4d05; color: #ff4d05; }
-        .stab.active { background: #ff4d05; border-color: #ff4d05; color: white; }
+        .stab:hover { border-color: var(--accent); color: var(--accent-soft); }
+        .stab.active { background: var(--accent-grad); border-color: transparent; color: white; box-shadow: 0 6px 16px -6px var(--accent-glow); }
 
         .sport-plan { animation: fadeInPlan 0.3s ease; }
         @keyframes fadeInPlan { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        .plan-day {
-            display: flex; gap: 10px; align-items: flex-start;
-            padding: 9px 0; border-bottom: 1px solid #1e293b;
-        }
+        .plan-day { display: flex; gap: 12px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid var(--line); }
         .plan-day:last-child { border-bottom: none; }
-        .plan-day.pday-rest .pday { background: #2ecc71; }
+        .plan-day.pday-rest .pday { background: var(--green); }
         .plan-day.pday-rest .pact { color: #86efac; }
-
         .pday {
-            flex-shrink: 0; width: 34px; height: 22px; border-radius: 6px;
-            background: #ff4d05; color: white; font-size: 0.7rem; font-weight: 800;
+            flex-shrink: 0; width: 36px; height: 24px; border-radius: 7px;
+            background: var(--accent-grad); color: white; font-family: var(--font-display);
+            font-size: 0.7rem; font-weight: 700;
             display: flex; align-items: center; justify-content: center;
             text-transform: uppercase; margin-top: 2px;
         }
-        .pact { font-size: 0.82rem; color: #cbd5e1; line-height: 1.4; }
-        .pact small { color: #64748b; font-size: 0.75rem; display: block; margin-top: 3px; }
+        .pact { font-size: 0.84rem; color: #cbd5e1; line-height: 1.5; }
+        .pact small { color: var(--muted); font-size: 0.76rem; display: block; margin-top: 4px; }
 
         /* DIET SEKMELER */
         .diet-tab {
-            padding: 10px 22px; border-radius: 50px; border: 1.5px solid #334155;
-            background: transparent; color: #64748b; cursor: pointer;
-            font-size: 0.88rem; font-weight: 600; font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
+            padding: 11px 24px; border-radius: 50px; border: 1.5px solid var(--line-strong);
+            background: rgba(15,23,42,0.4); color: #8a99b0; cursor: pointer;
+            font-size: 0.88rem; font-weight: 600; font-family: var(--font-body); transition: all 0.2s;
         }
-        .diet-tab:hover { border-color: #ff4d05; color: #ff4d05; }
-        .diet-tab.active { background: linear-gradient(135deg,#ff4d05,#ff7738); border-color: #ff4d05; color: white; }
+        .diet-tab:hover { border-color: var(--accent); color: var(--accent-soft); }
+        .diet-tab.active { background: var(--accent-grad); border-color: transparent; color: white; box-shadow: 0 8px 20px -8px var(--accent-glow); }
 
         /* MEAL TAB */
         .meal-tab {
-            padding: 9px 18px; border-radius: 50px; border: 1.5px solid #334155;
-            background: transparent; color: #64748b; cursor: pointer;
-            font-size: 0.84rem; font-weight: 600; font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
+            padding: 9px 19px; border-radius: 50px; border: 1.5px solid var(--line-strong);
+            background: rgba(15,23,42,0.4); color: #8a99b0; cursor: pointer;
+            font-size: 0.84rem; font-weight: 600; font-family: var(--font-body); transition: all 0.2s;
         }
-        .meal-tab:hover { border-color: #2ecc71; color: #2ecc71; }
-        .meal-tab.active { background: #2ecc71; border-color: #2ecc71; color: #0f172a; font-weight: 700; }
+        .meal-tab:hover { border-color: var(--green); color: var(--green); }
+        .meal-tab.active { background: var(--green); border-color: var(--green); color: #06210f; font-weight: 700; box-shadow: 0 8px 20px -8px rgba(46,204,113,0.5); }
 
         /* MEAL LIST */
         .meal-list { list-style: none; padding: 0; margin: 0 0 12px 0; }
-        .meal-list li {
-            padding: 6px 0; border-bottom: 1px solid #334155;
-            font-size: 0.85rem; color: #cbd5e1;
-        }
+        .meal-list li { padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 0.85rem; color: #cbd5e1; }
         .meal-list li:last-child { border-bottom: none; }
-        .meal-list li::before { content: "▸ "; color: #ff4d05; }
+        .meal-list li::before { content: "▸ "; color: var(--accent); }
 
         .meal-tip {
-            font-size: 0.78rem; color: #64748b; background: #0f172a;
-            border-radius: 8px; padding: 8px 12px; margin-top: 8px; line-height: 1.4;
+            font-size: 0.78rem; color: var(--muted); background: rgba(15,23,42,0.7);
+            border-radius: 10px; padding: 10px 13px; margin-top: 8px; line-height: 1.45; border: 1px solid var(--line);
         }
+
+        /* ===================== APP NAV · VIEWS · DRAWER ===================== */
+        .hamburger { display: flex; }           /* hamburger is primary nav on every size */
+        .logo { cursor: pointer; }
+
+        .view-label {
+            display: none; align-items: center; gap: 7px;
+            font-family: var(--font-display); font-weight: 600; font-size: 0.92rem;
+            color: #cfd8e6; margin-left: 16px; padding-left: 16px;
+            border-left: 1px solid var(--line); white-space: nowrap;
+        }
+        @media (min-width: 620px){ .view-label.show { display: inline-flex; } }
+
+        .drawer-backdrop {
+            position: fixed; inset: 0; background: rgba(4,7,14,0.62);
+            backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+            opacity: 0; visibility: hidden; transition: opacity .3s, visibility .3s; z-index: 1100;
+        }
+        .drawer-backdrop.ac { opacity: 1; visibility: visible; }
+
+        /* right-side slide-in drawer (element #mobMenu) */
+        .mob-menu {
+            display: flex; position: fixed; top: 0; right: 0; left: auto; bottom: 0;
+            width: 350px; max-width: 87vw; height: 100%;
+            background: linear-gradient(180deg, #0e1626 0%, #0a0f1c 100%);
+            border-left: 1px solid var(--line-strong); border-bottom: none;
+            flex-direction: column; z-index: 1101; padding: 0; overflow-y: auto;
+            transform: translateX(106%); transition: transform .34s cubic-bezier(.2,.7,.2,1);
+            backdrop-filter: blur(20px);
+            box-shadow: -34px 0 80px -24px rgba(0,0,0,0.75);
+        }
+        .mob-menu.ac { display: flex; transform: translateX(0); }
+
+        .drawer-head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 20px 22px; border-bottom: 1px solid var(--line); flex-shrink: 0;
+        }
+        .drawer-brand {
+            font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+            display: flex; align-items: center; gap: 10px; color: #fff;
+        }
+        .drawer-brand .logo-mark { width: 30px; height: 30px; font-size: 0.9rem; }
+        .drawer-x {
+            background: rgba(148,163,184,0.1); border: 1px solid var(--line);
+            width: 36px; height: 36px; border-radius: 11px; color: #aab6c8;
+            font-size: 1.15rem; cursor: pointer; display: grid; place-items: center; transition: all .2s;
+        }
+        .drawer-x:hover { color: #fff; background: var(--accent); border-color: var(--accent); transform: rotate(90deg); }
+
+        .drawer-section-label {
+            font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase;
+            color: #5d6b82; font-weight: 700; padding: 22px 24px 6px;
+        }
+
+        .mob-menu a, .drawer-item {
+            display: flex; align-items: center; gap: 14px; text-decoration: none;
+            color: #cdd6e4; padding: 12px 14px; margin: 3px 12px; border-radius: 14px;
+            border: 1px solid transparent; font-weight: 600; cursor: pointer;
+            background: transparent; transition: all 0.2s;
+        }
+        .drawer-item:hover { background: rgba(255,255,255,0.045); border-color: var(--line); color: #fff; }
+        .drawer-item.active { background: rgba(255,90,24,0.12); border-color: rgba(255,90,24,0.32); color: #fff; }
+        .drawer-item .di-ico {
+            width: 44px; height: 44px; border-radius: 13px; flex-shrink: 0;
+            display: grid; place-items: center; font-size: 1.3rem;
+            background: rgba(148,163,184,0.08); border: 1px solid var(--line); transition: all .25s;
+        }
+        .drawer-item.active .di-ico { background: var(--accent-grad); border-color: transparent; box-shadow: 0 6px 16px -4px var(--accent-glow); }
+        .drawer-item .di-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .drawer-item .di-title { font-size: 0.97rem; font-weight: 700; }
+        .drawer-item .di-desc { font-size: 0.76rem; color: var(--muted); font-weight: 500; }
+        .drawer-item .di-chev { margin-left: auto; color: #5d6b82; font-size: 1.3rem; transition: transform .2s, color .2s; }
+        .drawer-item:hover .di-chev { transform: translateX(3px); color: var(--accent-soft); }
+
+        .drawer-foot {
+            margin-top: auto; padding: 20px 24px; border-top: 1px solid var(--line);
+            font-size: 0.75rem; color: #5d6b82; flex-shrink: 0;
+        }
+
+        /* ===================== HOME HUB ===================== */
+        #homeHub { padding-top: 8px; }
+        .hub-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 22px; max-width: 1100px; margin: 0 auto;
+        }
+        .hub-card {
+            position: relative; overflow: hidden; cursor: pointer; text-align: left;
+            font-family: var(--font-body);
+            background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0) 42%), var(--card-bg);
+            border: 1px solid var(--line); border-radius: 22px; padding: 30px;
+            transition: transform .35s cubic-bezier(.2,.7,.2,1), border-color .35s, box-shadow .35s;
+        }
+        .hub-card:hover { transform: translateY(-8px); border-color: rgba(255,90,24,0.4); box-shadow: var(--shadow-lg); }
+        .hub-card .hub-ico {
+            width: 60px; height: 60px; border-radius: 17px; display: grid; place-items: center;
+            font-size: 1.75rem; margin-bottom: 18px;
+            background: var(--accent-grad); box-shadow: 0 12px 28px -8px var(--accent-glow);
+        }
+        .hub-card.green .hub-ico { background: linear-gradient(135deg,#2ecc71,#1f9d57); box-shadow: 0 12px 28px -8px rgba(46,204,113,.5); }
+        .hub-card.blue  .hub-ico { background: linear-gradient(135deg,#3b82f6,#60a5fa); box-shadow: 0 12px 28px -8px rgba(59,130,246,.5); }
+        .hub-card h3 { font-family: var(--font-display); font-size: 1.28rem; font-weight: 700; margin-bottom: 8px; color: #fff; }
+        .hub-card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 18px; line-height: 1.55; }
+        .hub-card .hub-go { display: inline-flex; align-items: center; gap: 7px; font-weight: 700; font-size: 0.9rem; color: var(--accent-soft); transition: gap .2s; }
+        .hub-card.green .hub-go { color: #4ade80; }
+        .hub-card.blue  .hub-go { color: #7cb0ff; }
+        .hub-card:hover .hub-go { gap: 12px; }
+        .hub-card .hub-tag {
+            position: absolute; top: 20px; right: 20px; font-size: 0.66rem; font-weight: 700;
+            letter-spacing: 0.08em; text-transform: uppercase; color: #7a89a0;
+            background: rgba(148,163,184,0.08); border: 1px solid var(--line);
+            padding: 4px 11px; border-radius: 50px;
+        }
+
+        @media (max-width: 600px){
+            .hub-grid { grid-template-columns: 1fr; gap: 14px; }
+            .hub-card { padding: 22px; }
+            .hub-card .hub-ico { width: 52px; height: 52px; font-size: 1.5rem; margin-bottom: 14px; }
+            .mob-menu { width: 320px; }
+            .view-label { margin-left: 12px; padding-left: 12px; font-size: 0.8rem; }
+        }
+
+        /* ===================== BMI / VÜCUT YAĞI HESAPLAYICI ===================== */
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 560px){ .calc-grid { grid-template-columns: 1fr; } }
+        .calc-field label { display: block; font-size: 0.82rem; color: #94a3b8; margin-bottom: 6px; font-weight: 600; }
+        .calc-input, .calc-select {
+            width: 100%; padding: 12px 14px; background: #0f172a; border: 1px solid var(--line-strong);
+            border-radius: 11px; color: #f8fafc; font-size: 0.95rem; outline: none; font-family: var(--font-body);
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .calc-input:focus, .calc-select:focus { border-color: var(--accent); box-shadow: var(--ring); }
+        .calc-hint { font-size: 0.74rem; color: #5d6b82; margin-top: 5px; line-height: 1.4; }
+
+        .meter {
+            position: relative; height: 12px; border-radius: 50px; margin: 14px 0 7px;
+            background: linear-gradient(90deg, #3b82f6, #2ecc71 32%, #facc15 62%, #f97316 80%, #ef4444);
+        }
+        .meter-marker {
+            position: absolute; top: 50%; width: 18px; height: 18px; border-radius: 50%;
+            background: #fff; border: 3px solid #0f172a; transform: translate(-50%, -50%);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.55); transition: left .55s cubic-bezier(.2,.7,.2,1);
+        }
+        .meter-scale { display: flex; justify-content: space-between; font-size: 0.68rem; color: #5d6b82; }
+        .result-cat { display: inline-flex; align-items: center; gap: 8px; padding: 7px 15px; border-radius: 50px; font-weight: 700; font-size: 0.88rem; }
+
+        /* ===================== PRATİK TARİFLER ===================== */
+        .recipe-filter { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 28px; }
+        .rfilter {
+            padding: 8px 16px; border-radius: 50px; border: 1.5px solid var(--line-strong);
+            background: rgba(15,23,42,0.4); color: #8a99b0; cursor: pointer;
+            font-size: 0.82rem; font-weight: 600; font-family: var(--font-body); transition: all .2s;
+        }
+        .rfilter:hover { border-color: var(--accent); color: var(--accent-soft); }
+        .rfilter.active { background: var(--accent-grad); border-color: transparent; color: #fff; box-shadow: 0 6px 16px -6px var(--accent-glow); }
+
+        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .recipe-card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent 40%), var(--card-bg);
+            border: 1px solid var(--line); border-radius: 20px; overflow: hidden;
+            display: flex; flex-direction: column; transition: transform .3s, border-color .3s, box-shadow .3s;
+        }
+        .recipe-card:hover { transform: translateY(-6px); border-color: rgba(255,90,24,0.32); box-shadow: var(--shadow-md); }
+        .recipe-head { display: flex; align-items: center; gap: 14px; padding: 20px 20px 0; }
+        .recipe-emoji {
+            width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0; display: grid; place-items: center;
+            font-size: 1.6rem; background: rgba(255,90,24,0.1); border: 1px solid rgba(255,90,24,0.2);
+        }
+        .recipe-card.green .recipe-emoji { background: rgba(46,204,113,0.1); border-color: rgba(46,204,113,0.22); }
+        .recipe-card.blue  .recipe-emoji { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.22); }
+        .recipe-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: #fff; line-height: 1.2; }
+        .recipe-time { font-size: 0.78rem; color: var(--accent-soft); font-weight: 600; margin-top: 3px; }
+        .recipe-card.green .recipe-time { color: #4ade80; }
+        .recipe-card.blue  .recipe-time { color: #7cb0ff; }
+        .recipe-body { padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 13px; flex: 1; }
+        .recipe-macros { display: flex; gap: 8px; flex-wrap: wrap; }
+        .rmacro { font-size: 0.72rem; font-weight: 700; padding: 5px 11px; border-radius: 50px; }
+        .rmacro.kcal { background: rgba(255,90,24,0.13); color: var(--accent-soft); border: 1px solid rgba(255,90,24,0.25); }
+        .rmacro.prot { background: rgba(46,204,113,0.13); color: #4ade80; border: 1px solid rgba(46,204,113,0.25); }
+        .rmacro.carb { background: rgba(59,130,246,0.13); color: #7cb0ff; border: 1px solid rgba(59,130,246,0.25); }
+        .recipe-sec-label { font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase; color: #5d6b82; font-weight: 700; margin-bottom: 6px; }
+        .recipe-ing { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+        .recipe-ing li { font-size: 0.77rem; color: #cbd5e1; background: rgba(15,23,42,0.7); border: 1px solid var(--line); padding: 4px 10px; border-radius: 8px; }
+        .recipe-steps { list-style: none; counter-reset: step; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+        .recipe-steps li { position: relative; padding-left: 31px; font-size: 0.83rem; color: #cbd5e1; line-height: 1.45; counter-increment: step; }
+        .recipe-steps li::before {
+            content: counter(step); position: absolute; left: 0; top: 0; width: 22px; height: 22px;
+            border-radius: 50%; background: var(--accent-grad); color: #fff; font-size: 0.72rem; font-weight: 700;
+            display: grid; place-items: center;
+        }
+
+        /* ===================== HESAPLAYICI HUB ===================== */
+        .calc-picker { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 36px; }
+        .calc-pick {
+            display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; font-family: var(--font-body);
+            background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 60%), var(--card-bg);
+            border: 1px solid var(--line); border-radius: 16px; padding: 13px 18px; transition: all .25s; min-width: 190px;
+        }
+        .calc-pick:hover { border-color: rgba(255,90,24,0.35); transform: translateY(-3px); }
+        .calc-pick.active { border-color: rgba(255,90,24,0.55); box-shadow: 0 12px 32px -14px var(--accent-glow), inset 0 0 0 1px rgba(255,90,24,0.22); }
+        .calc-pick .cp-ic {
+            width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; font-size: 1.35rem; flex-shrink: 0;
+            background: rgba(148,163,184,0.08); border: 1px solid var(--line); transition: all .25s;
+        }
+        .calc-pick.active .cp-ic { background: var(--accent-grad); border-color: transparent; box-shadow: 0 6px 16px -4px var(--accent-glow); }
+        .calc-pick .cp-tx { display: flex; flex-direction: column; line-height: 1.25; }
+        .calc-pick .cp-tx b { font-size: 0.92rem; color: #fff; font-weight: 700; }
+        .calc-pick .cp-tx small { font-size: 0.74rem; color: var(--muted); }
+
+        .calc-panel { display: none; }
+        .calc-panel.active { display: block; animation: fadeInPlan .3s ease; }
+
+        .calc-card { background: #1e293b; border: 1px solid var(--line); border-radius: 20px; padding: 32px; }
+        @media (max-width: 560px){ .calc-card { padding: 22px 18px; } }
+        .calc-lead { color: #94a3b8; text-align: center; margin-bottom: 24px; line-height: 1.55; }
+        .calc-btn {
+            width: 100%; padding: 14px; background: var(--accent-grad); border: none; border-radius: 12px;
+            color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: var(--font-body);
+            box-shadow: 0 8px 22px -8px var(--accent-glow); transition: transform .2s, box-shadow .2s; margin-top: 6px;
+        }
+        .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -8px var(--accent-glow); }
+        .calc-err { color: #f87171; text-align: center; margin-top: 12px; font-size: 0.85rem; display: none; }
+        .calc-result { margin-top: 24px; }
+        .calc-note { font-size: 0.74rem; color: #5d6b82; text-align: center; margin-top: 18px; line-height: 1.55; }
+
+        .calc-result-card { background: #1e293b; border: 1px solid var(--line); border-radius: 18px; padding: 24px; }
+        .zrow {
+            display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line);
+        }
+        .zrow:last-child { border-bottom: none; }
+        .zdot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+        .zname { font-weight: 700; color: #e2e8f0; font-size: 0.9rem; }
+        .zsub { font-size: 0.74rem; color: var(--muted); }
+        .zbpm { margin-left: auto; font-family: var(--font-display); font-weight: 700; color: #fff; font-size: 0.95rem; white-space: nowrap; }
+        .rmrow { display: flex; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
+        .rmrow:last-child { border-bottom: none; }
+        .rmrow .rm-pct { width: 64px; color: var(--accent-soft); font-weight: 700; }
+        .rmrow .rm-kg { font-family: var(--font-display); font-weight: 700; color: #fff; }
+        .rmrow .rm-rep { margin-left: auto; color: var(--muted); font-size: 0.82rem; }
+
+        @media (max-width: 600px){
+            .calc-pick { flex: 1 1 100%; min-width: 0; }
+            .calc-picker { gap: 9px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+        }
+
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">IST-BASKEPORTAL</div>
-        <nav id="desktopNav">
-            <a href="#matches">Maç Takvimi</a>
-            <a href="#training">Antrenman</a>
-            <a href="#diet">Beslenme</a>
-        </nav>
-        <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menü">
+        <div class="logo" onclick="showView('home')"><span class="logo-mark">🏀</span><span>IST-<span class="logo-accent">BASKE</span>PORTAL</span><span class="view-label" id="currentViewLabel"></span></div>
+        <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menüyü aç/kapat">
             <span></span><span></span><span></span>
         </button>
     </header>
-    <div class="mob-menu" id="mobMenu">
-        <a href="#matches" onclick="closeMenu()">🏀 Maç Takvimi</a>
-        <a href="#training" onclick="closeMenu()">💪 Antrenman</a>
-        <a href="#diet" onclick="closeMenu()">🥗 Beslenme</a>
-    </div>
 
-    <section class="hero">
-        <h1>30. HAFTA MAÇ HEYECANI</h1>
-        <p>İstanbul Altyapı Basketbol Ligleri ve Kişisel Gelişim Programları</p>
+    <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeMenu()"></div>
+
+    <nav class="mob-menu" id="mobMenu" aria-label="Ana menü">
+        <div class="drawer-head">
+            <span class="drawer-brand"><span class="logo-mark">🏀</span> Menü</span>
+            <button class="drawer-x" onclick="closeMenu()" aria-label="Kapat">✕</button>
+        </div>
+        <div class="drawer-section-label">Keşfet</div>
+        <a class="drawer-item" data-view="home" onclick="showView('home',event)">
+            <span class="di-ico">🏠</span>
+            <span class="di-txt"><span class="di-title">Ana Sayfa</span><span class="di-desc">Genel bakış ve hızlı erişim</span></span>
+            <span class="di-chev">›</span>
+        </a>
+        <a class="drawer-item" data-view="matches" onclick="showView('matches',event)">
+            <span class="di-ico">🏀</span>
+            <span class="di-txt"><span class="di-title">Maç Takvimi</span><span class="di-desc">Lig programı ve takım araması</span></span>
+            <span class="di-chev">›</span>
+        </a>
+        <a class="drawer-item" data-view="training" onclick="showView('training',event)">
+            <span class="di-ico">💪</span>
+            <span class="di-txt"><span class="di-title">Antrenman</span><span class="di-desc">Spora özel haftalık programlar</span></span>
+            <span class="di-chev">›</span>
+        </a>
+        <a class="drawer-item" data-view="diet" onclick="showView('diet',event)">
+            <span class="di-ico">🥗</span>
+            <span class="di-txt"><span class="di-title">Beslenme</span><span class="di-desc">Öğün planları ve takviye rehberi</span></span>
+            <span class="di-chev">›</span>
+        </a>
+        <a class="drawer-item" data-view="calc" onclick="showView('calc',event)">
+            <span class="di-ico">🧮</span>
+            <span class="di-txt"><span class="di-title">Hesaplayıcılar</span><span class="di-desc">Kalori, BMI, su, nabız, 1RM</span></span>
+            <span class="di-chev">›</span>
+        </a>
+        <div class="drawer-section-label">Araçlar</div>
+        <a class="drawer-item" onclick="closeMenu();openModal();">
+            <span class="di-ico">🚀</span>
+            <span class="di-txt"><span class="di-title">Kişisel Program</span><span class="di-desc">Sana özel plan oluştur</span></span>
+            <span class="di-chev">›</span>
+        </a>
+        <div class="drawer-foot">İstanbul Altyapı Basketbol · IST-BASKEPORTAL</div>
+    </nav>
+
+    <section class="hero" id="heroSection">
+        <div class="hero-inner">
+            <span class="hero-eyebrow"><span class="dot"></span>İstanbul Altyapı Basketbol · Canlı Lig Takibi</span>
+            <h1>30. Hafta <span class="hl">Maç Heyecanı</span></h1>
+            <p>İstanbul Altyapı Basketbol Ligleri, kişiye özel antrenman programları ve sporcu beslenme planları — tek bir uygulamada.</p>
+            <div class="hero-cta">
+                <a href="#matches" class="hero-btn primary" onclick="showView('matches',event)">🏀 Maç Takvimini Gör</a>
+                <a href="#training" class="hero-btn ghost" onclick="showView('training',event)">💪 Antrenman Programları</a>
+            </div>
+        </div>
+        <div class="scroll-cue" aria-hidden="true"></div>
+    </section>
+
+    <!-- ANA SAYFA HUB -->
+    <section id="homeHub">
+        <h2>Ne yapmak istersin?</h2>
+        <div class="hub-grid">
+            <button class="hub-card" onclick="showView('matches')">
+                <span class="hub-tag">Lig</span>
+                <span class="hub-ico">🏀</span>
+                <h3>Maç Takvimi</h3>
+                <p>U10–U18 altyapı liglerinin tüm haftalık programı. Yaş ve lige göre filtrele, takım adıyla ara.</p>
+                <span class="hub-go">Takvimi aç <span>→</span></span>
+            </button>
+            <button class="hub-card blue" onclick="showView('training')">
+                <span class="hub-tag">Program</span>
+                <span class="hub-ico">💪</span>
+                <h3>Antrenman</h3>
+                <p>Basketbol, futbol, voleybol, fitness ve koşu için seviyeye göre 7 günlük programlar ve PDF'ler.</p>
+                <span class="hub-go">Programları gör <span>→</span></span>
+            </button>
+            <button class="hub-card green" onclick="showView('diet')">
+                <span class="hub-tag">Beslenme</span>
+                <span class="hub-ico">🥗</span>
+                <h3>Beslenme</h3>
+                <p>Hazır öğün planları, sporcu takviye rehberi ve 10 dakikalık pratik tarifler.</p>
+                <span class="hub-go">Planları gör <span>→</span></span>
+            </button>
+            <button class="hub-card blue" onclick="showView('calc')">
+                <span class="hub-tag">Araçlar</span>
+                <span class="hub-ico">🧮</span>
+                <h3>Hesaplayıcılar</h3>
+                <p>Kalori &amp; makro, BMI &amp; yağ oranı, su ihtiyacı, kalp atışı bölgeleri ve 1RM kuvvet hesabı.</p>
+                <span class="hub-go">Hesapla <span>→</span></span>
+            </button>
+            <button class="hub-card" onclick="openModal()">
+                <span class="hub-tag">Yeni</span>
+                <span class="hub-ico">🚀</span>
+                <h3>Kişisel Program</h3>
+                <p>Günün, sporun, seviyen ve hedefine göre sana özel haftalık antrenman planı oluştur.</p>
+                <span class="hub-go">Hemen başla <span>→</span></span>
+            </button>
+        </div>
     </section>
 
     <!-- MAÇ PROGRAMI -->
@@ -697,21 +1148,65 @@
     </section>
 
     <script>
-    // ===== HAMBURGER MENU =====
-    function toggleMenu() {
-        document.getElementById('hamburger').classList.toggle('ac');
-        document.getElementById('mobMenu').classList.toggle('ac');
+    // ===== DRAWER NAV =====
+    function openMenu() {
+        document.getElementById('hamburger').classList.add('ac');
+        document.getElementById('mobMenu').classList.add('ac');
+        var bd = document.getElementById('drawerBackdrop'); if (bd) bd.classList.add('ac');
+        document.body.style.overflow = 'hidden';
     }
     function closeMenu() {
         document.getElementById('hamburger').classList.remove('ac');
         document.getElementById('mobMenu').classList.remove('ac');
+        var bd = document.getElementById('drawerBackdrop'); if (bd) bd.classList.remove('ac');
+        document.body.style.overflow = '';
     }
-    document.addEventListener('click', function(e) {
-        var hb = document.getElementById('hamburger');
-        var mn = document.getElementById('mobMenu');
-        if (mn.classList.contains('ac') && !hb.contains(e.target) && !mn.contains(e.target)) {
-            closeMenu();
+    function toggleMenu() {
+        var open = document.getElementById('mobMenu').classList.contains('ac');
+        if (open) { closeMenu(); } else { openMenu(); }
+    }
+
+    // ===== VIEW ROUTER (uygulama gibi ayrı ekranlar) =====
+    var VIEW_MAP = {
+        home:     { els: ['heroSection', 'homeHub'], label: 'Ana Sayfa',   icon: '🏠' },
+        matches:  { els: ['matches'],                label: 'Maç Takvimi', icon: '🏀' },
+        training: { els: ['training'],               label: 'Antrenman',   icon: '💪' },
+        diet:     { els: ['diet'],                   label: 'Beslenme',    icon: '🥗' },
+        calc:     { els: ['calc'],                   label: 'Hesaplayıcılar', icon: '🧮' }
+    };
+    var ALL_VIEW_ELS = ['heroSection', 'homeHub', 'matches', 'training', 'diet', 'calc'];
+
+    function showView(name, ev) {
+        if (ev && ev.preventDefault) ev.preventDefault();
+        if (!VIEW_MAP[name]) name = 'home';
+
+        ALL_VIEW_ELS.forEach(function (id) {
+            var el = document.getElementById(id); if (el) el.style.display = 'none';
+        });
+        VIEW_MAP[name].els.forEach(function (id) {
+            var el = document.getElementById(id); if (el) el.style.display = '';
+        });
+
+        document.querySelectorAll('.drawer-item').forEach(function (d) {
+            d.classList.toggle('active', d.getAttribute('data-view') === name);
+        });
+
+        var lbl = document.getElementById('currentViewLabel');
+        if (lbl) {
+            if (name === 'home') { lbl.classList.remove('show'); lbl.innerHTML = ''; }
+            else { lbl.innerHTML = VIEW_MAP[name].icon + ' ' + VIEW_MAP[name].label; lbl.classList.add('show'); }
         }
+
+        closeMenu();
+        try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (e) { window.scrollTo(0, 0); }
+        if (history.replaceState) { try { history.replaceState(null, '', '#' + name); } catch (e) {} }
+    }
+
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+
+    window.addEventListener('DOMContentLoaded', function () {
+        var initial = (location.hash || '').replace('#', '');
+        showView(VIEW_MAP[initial] ? initial : 'home');
     });
 
     var MACLAR = [{"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "18:30", "salon": "BGM SALON C3", "a": "İSTBOL", "b": "ENERJİ MOTİVASYON ADRENALİN (A)", "kat": "U14EC", "grup": "FİNAL 5"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "20:00", "salon": "BGM SALON C3", "a": "BAHÇEŞEHİR SİSTEM", "b": "ATLETİK SPORTİF", "kat": "U14EC", "grup": "FİNAL 5"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "17:00", "salon": "AHMET CÖMERT S.S", "a": "BEŞİKTAŞ (B)", "b": "ATAKENT ATLETİK", "kat": "U14EB", "grup": "ÇEYREK FİNAL"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "18:30", "salon": "AHMET CÖMERT S.S", "a": "BEST BASKETBOL (B)", "b": "ÇENGEL AKADEMİ", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "20:00", "salon": "AHMET CÖMERT S.S", "a": "BAKIRKÖY KARTALTEPE", "b": "ASYA KARTALLARI (A)", "kat": "U16EB", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "17:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "MAVİLER S.K (A)", "b": "ESENLER EROKSPOR", "kat": "U16EB", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "18:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "BAHÇELİEVLER BLD. (A)", "b": "DEV ATAŞEHİR (A)", "kat": "U16EB", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "20:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "İTÜ (A)", "b": "GENÇ PAŞABAHÇE", "kat": "U16EB", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "17:00", "salon": "KÜÇÜKÇEKMECE HALKALI S.S", "a": "AVCILAR TANYILDIZI", "b": "BEYLİKDÜZÜ ULUS S.K", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "18:30", "salon": "KÜÇÜKÇEKMECE HALKALI S.S", "a": "AÇI OKULLARI", "b": "AYKA YETENEK S.K", "kat": "U12EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "20:00", "salon": "KÜÇÜKÇEKMECE HALKALI S.S", "a": "BAHÇEŞEHİR BASKET ve İHT. (B)", "b": "SİLİVRİ BASKET", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "17:00", "salon": "CAFERAĞA S.S", "a": "FAST AKADEMİ S.K", "b": "BAHÇEŞEHİR SİSTEM S.K", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "18:30", "salon": "CAFERAĞA S.S", "a": "HIGH TOUCH", "b": "SMAÇ SPOR", "kat": "U16EB", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "20:00", "salon": "CAFERAĞA S.S", "a": "ÜMRANİYE BLD. S.K", "b": "MİMAR SİNAN KOLEJİ S.K (B)", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "17:00", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "DAÇKA ÜSKÜDAR", "b": "DUDULLU OSB (A)", "kat": "U16EB", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "18:30", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "FESA (B)", "b": "İSTANBUL HALKALI S.K", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "17:00", "salon": "YAKACIK İTO S.S", "a": "İTO EĞT. ve SOS. HİZM. (B)", "b": "EVOLOG DAÇKA ŞERİFALİ", "kat": "U18EB", "grup": "ÇEYREK FİNAL"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "18:30", "salon": "YAKACIK İTO S.S", "a": "CAAN S.K (A)", "b": "KIZILTOPRAK 2004", "kat": "U12EB", "grup": "ASYA B GR."}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "20:00", "salon": "YAKACIK İTO S.S", "a": "SUADİYE BASKETBOL (A)", "b": "AVRUPA KARŞIYAKA (A)", "kat": "U16EB", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "18:30", "salon": "KURTKÖY S.S", "a": "ANKA BASKETBOL AKADEMİ (A)", "b": "ARENA ANKA (B)", "kat": "U12EC", "grup": "ASYA E GR."}, {"tarih": "2026-05-11", "td": "11 Mayıs 2026", "gun": "Pazartesi", "saat": "20:00", "salon": "KURTKÖY S.S", "a": "BOĞAZİÇİ AKADEMİ S.K.", "b": "ELİT AKADEMİ SPORTİF SK", "kat": "U12EC", "grup": "ASYA D GR."}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "18:30", "salon": "BGM SALON C2", "a": "AÇI GENÇLİK", "b": "MAVİ BİRLİK", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "20:00", "salon": "BGM SALON C2", "a": "GELECEK NESİL", "b": "İSTANBUL ÇEKMEKÖY SPORTİF", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "17:00", "salon": "BGM SALON C3", "a": "ŞİŞLİ S.K", "b": "ELİT AKADEMİ", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "18:30", "salon": "BGM SALON C3", "a": "ESENLER YAVUZ SELİM", "b": "SPOR VİZYON", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "20:00", "salon": "BGM SALON C3", "a": "DEV ADAMLAR", "b": "BEŞİKTAŞ (B)", "kat": "U16EB", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "18:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "SİLİVRİ AKADEMİ", "b": "UFUKCAN AYDIN BASK. (B)", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "20:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "EYÜP BASKET", "b": "POTANIN KARTALLARI", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "18:30", "salon": "KÜÇÜKÇEKMECE HALKALI S.S", "a": "BÜYÜKÇEKMECE ATLETİK BASKETBOL", "b": "BASKETS", "kat": "U12EC", "grup": "AVRUPA F GR."}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "20:00", "salon": "KÜÇÜKÇEKMECE HALKALI S.S", "a": "FAVORİ SK", "b": "YEŞİLKÖY YILDIZLARI SK", "kat": "U10EC", "grup": "AVRUPA E GR."}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "17:30", "salon": "CAFERAĞA S.S", "a": "DEĞİŞİM S.K", "b": "TEŞVİKİYE AKADEMİ (B)", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "19:00", "salon": "CAFERAĞA S.S", "a": "ATLETİK SPORTİF", "b": "ANKA AVRUPA (A)", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "20:30", "salon": "CAFERAĞA S.S", "a": "DİNAMO S.K", "b": "GENÇ ATAKENT", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "18:30", "salon": "YAKACIK İTO S.S", "a": "KADIKÖY İSTANBUL SK", "b": "DAÇKA MALTEPE S.K (A)", "kat": "U12EB", "grup": "ASYA A GR."}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "20:00", "salon": "YAKACIK İTO S.S", "a": "AKADEMİ İSTANBUL (B)", "b": "ASYA KARTALLARI (B)", "kat": "U12EB", "grup": "ASYA A GR."}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "18:30", "salon": "KURTKÖY S.S", "a": "FORM AKADEMİ SK (B)", "b": "BESRA İSTANBUL", "kat": "U12EC", "grup": "ASYA C GR."}, {"tarih": "2026-05-12", "td": "12 Mayıs 2026", "gun": "Salı", "saat": "20:00", "salon": "KURTKÖY S.S", "a": "ANKA BASKETBOL AKADEMİ (B)", "b": "BEYKOZ KARTALLARI", "kat": "U12EC", "grup": "ASYA C GR."}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "18:30", "salon": "BGM SALON C2", "a": "BİZİMKENT", "b": "BAHÇEŞEHİR SİSTEM", "kat": "U14EC", "grup": "FİNAL 5"}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "20:00", "salon": "BGM SALON C2", "a": "ATLETİK SPORTİF", "b": "İSTBOL", "kat": "U14EC", "grup": "FİNAL 5"}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "18:30", "salon": "BGM SALON C3", "a": "YEŞİL SİYAH 1914 (B)", "b": "BEŞ YILDIZ SPOR KULÜBÜ (B)", "kat": "U12EC", "grup": "AVRUPA D GR."}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "20:00", "salon": "BGM SALON C3", "a": "BEŞİKTAŞ", "b": "ATLETİK SPORTİF", "kat": "U12KA", "grup": "A GR."}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "17:00", "salon": "AHMET CÖMERT S.S", "a": "CİHANGİR OKULLARI S.K", "b": "FLORYA ELİT", "kat": "U14EB", "grup": "YARI FİNAL"}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "18:30", "salon": "AHMET CÖMERT S.S", "a": "CİHANGİR OKULLARI S.K (A)", "b": "YEŞİLKÖY YILDIZLARI SK (B)", "kat": "U12EC", "grup": "AVRUPA G GR."}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "18:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "DOSTLUK SPOR", "b": "GÖKTÜRK ATLETİK", "kat": "U12EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "20:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "İTÜ GVO SPOR KULÜBÜ", "b": "ATLAS OLİMPİK S.K.", "kat": "U12EC", "grup": "AVRUPA F GR."}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "18:30", "salon": "KÜÇÜKÇEKMECE HALKALI S.S", "a": "YENİ LEVENT SK", "b": "MİMAR SİNAN KOLEJİ SPOR KULÜBÜ", "kat": "U12EC", "grup": "AVRUPA D GR."}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "20:00", "salon": "KÜÇÜKÇEKMECE HALKALI S.S", "a": "BAKIRKÖY S.K.", "b": "OLİMPİK YILDIZLAR", "kat": "U12EC", "grup": "AVRUPA D GR."}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "18:30", "salon": "BEYLİKDÜZÜ S.S", "a": "MOMENTUM AKADEMİ", "b": "SİLİVRİ AKADEMİ SK", "kat": "U12EC", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "20:00", "salon": "BEYLİKDÜZÜ S.S", "a": "AVCILAR TANYILDIZI SK", "b": "İSTANBUL GELİŞİM ÜNİVERSİTESİ SK", "kat": "U12EC", "grup": "AVRUPA G GR."}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "17:30", "salon": "CAFERAĞA S.S", "a": "FENERBAHÇE", "b": "EMLAK KONUT", "kat": "U12KA", "grup": "A GRUBU"}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "19:00", "salon": "CAFERAĞA S.S", "a": "MVP (A)", "b": "ATAKENT ATLETİK", "kat": "U14EB", "grup": "YARI FİNAL"}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "18:30", "salon": "KURTKÖY S.S", "a": "TURUNCU SPOR KULÜBÜ", "b": "ANADOLU MARMARA SPOR KULÜBÜ", "kat": "U12EC", "grup": "ASYA B GR."}, {"tarih": "2026-05-13", "td": "13 Mayıs 2026", "gun": "Çarşamba", "saat": "20:00", "salon": "KURTKÖY S.S", "a": "METROPOL BASKET S.K.", "b": "BEYKOZ BG S.K", "kat": "U12EC", "grup": "ASYA B GR."}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "18:30", "salon": "BGM SALON C2", "a": "MİMAR SİNAN KOLEJİ (B)", "b": "DİNAMO S.K", "kat": "U16EC", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "20:00", "salon": "BGM SALON C2", "a": "FESA (B)", "b": "ATLETİK SPORTİF", "kat": "U16EC", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "18:30", "salon": "BGM SALON C3", "a": "ANADOLU MARMARA", "b": "CİHANGİR OKULLARI", "kat": "U16EC", "grup": "PLAYOFF 1.TUR"}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "20:00", "salon": "BGM SALON C3", "a": "FAST AKADEMİ SPOR KULÜBÜ", "b": "AVCILAR TANYILDIZI", "kat": "U16EC", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "17:00", "salon": "AHMET CÖMERT S.S", "a": "NOVA BASKET", "b": "ASYA KARTALLARI (B)", "kat": "U18EB", "grup": "YARI FİNAL"}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "18:30", "salon": "AHMET CÖMERT S.S", "a": "ŞİŞLİ", "b": "ESENLER YAVUZ SELİM", "kat": "U16EC", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "20:00", "salon": "AHMET CÖMERT S.S", "a": "EMLAK KONUT", "b": "ÜMRANİYE BLD. S.K", "kat": "U11KA", "grup": "A GRUBU"}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "18:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "BEST BASKETBOL (B)", "b": "UFUKCAN AYDIN (B)", "kat": "U16EC", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "20:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "SİLİVRİ BASKET", "b": "AÇI GENÇLİK", "kat": "U16EC", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "18:30", "salon": "BEYLİKDÜZÜ S.S", "a": "BEŞYILDIZ S.K", "b": "DEV ADAMLAR", "kat": "U12EC", "grup": "AVRUPA H GR."}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "20:00", "salon": "BEYLİKDÜZÜ S.S", "a": "BEYLİKDÜZÜ BASKETBOL AKADEMİ", "b": "BAHÇEŞEHİR SİSTEM SK", "kat": "U12EC", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "17:30", "salon": "CAFERAĞA S.S", "a": "İSTANBUL ÇEKMEKÖY SPORTİF", "b": "POTANIN KARTALLARI", "kat": "U16EC", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "19:00", "salon": "CAFERAĞA S.S", "a": "İTO EĞİTİM VE SOSYAL HİZ. (B)", "b": "BÜYÜKÇEKMECE BASKETBOL", "kat": "U18EB", "grup": "YARI FİNAL"}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "18:30", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "AKADEMİ MARMARA S.K", "b": "BEYLERBEYİ SK", "kat": "U12EB", "grup": "ASYA B GR."}, {"tarih": "2026-05-14", "td": "14 Mayıs 2026", "gun": "Perşembe", "saat": "20:00", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "İSTANBUL ÇEVRE SK", "b": "KARTAL YILDIZLARI", "kat": "U12EC", "grup": "ASYA H GR."}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "17:00", "salon": "BGM SALON C2", "a": "ANADOLU EFES (A)", "b": "İBB SPOR KULÜBÜ (A)", "kat": "U12EA", "grup": "A GRUBU"}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "BGM SALON C2", "a": "ENERJİ MOTİVASYON ADRENALİN (A)", "b": "ATLETİK SPORTİF", "kat": "U14EC", "grup": "FİNAL 5"}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "BGM SALON C2", "a": "İSTBOL", "b": "BİZİMKENT", "kat": "U14EC", "grup": "FİNAL 5"}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "BGM SALON C3", "a": "DARÜŞŞAFAKA (B)", "b": "İ.T.Ü (A)", "kat": "U16EB", "grup": "PLAYOFF 3.TUR"}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "BGM SALON C3", "a": "MİMAR SİNAN KOLEJİ S.K (A)", "b": "SUADİYE BASKETBOL (A)", "kat": "U16EB", "grup": "PLAYOFF 3.TUR"}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "AHMET CÖMERT S.S", "a": "AÇI OKULLARI S.K.", "b": "ÜMRANİYE BLD. S.K", "kat": "U12KA", "grup": "A GRUBU"}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "AHMET CÖMERT S.S", "a": "MVP ETİLER S.K.", "b": "ATAKENT 34 SK", "kat": "U12EC", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "PİZZABULLS CEDİ OSMAN BASKETBOL", "b": "ALTINELLER SK", "kat": "U12EC", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "FLORYA ELİT(B)", "b": "GÜNGÖREN BLD.", "kat": "U12EC", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "BEYLİKDÜZÜ S.S", "a": "PEGA ATLETİK S.K.", "b": "FMV ISPARTAKULE IŞIK OKULLARI", "kat": "U12EC", "grup": "AVRUPA E GR."}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "BEYLİKDÜZÜ S.S", "a": "BAĞCILAR GÖZTEPE SK", "b": "BEYLİKDÜZÜ BASKET S.K", "kat": "U12EC", "grup": "AVRUPA H GR."}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "17:00", "salon": "CAFERAĞA S.S", "a": "ATAŞEHİR YILDIZLARI (A)", "b": "DUDULLU OSB (A)", "kat": "U16EB", "grup": "PLAYOFF 3.TUR"}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "CAFERAĞA S.S", "a": "AKADEMİ İSTANBUL (B)", "b": "BEŞİKTAŞ (B)", "kat": "U16EB", "grup": "PLAYOFF 3.TUR"}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "CAFERAĞA S.S", "a": "CAAN S.K (A)", "b": "MAVİLER S.K (A)", "kat": "U16EB", "grup": "PLAYOFF 3.TUR"}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "İSTANBUL TÜRK TELEKOM", "b": "HIGH TOUCH", "kat": "U16EB", "grup": "PLAYOFF 3.TUR"}, {"tarih": "2026-05-15", "td": "15 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "EVOLOG DAÇKA ŞERİFALİ (A)", "b": "BAKIRKÖY KARTALTEPE", "kat": "U16EB", "grup": "PLAYOFF 3.TUR"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "13:30", "salon": "BGM SALON C2", "a": "ANADOLU MARMARA", "b": "DEĞİŞİM SPOR", "kat": "U16EC", "grup": "PLAYOFF 2.TUR"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "15:00", "salon": "BGM SALON C2", "a": "ATLETİK SPORTİF", "b": "ATAKENT ATLETİK S.K", "kat": "U12KA", "grup": "A GRUBU"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "16:30", "salon": "BGM SALON C2", "a": "CİHANGİR OKULLARI S.K", "b": "MVP (A)", "kat": "U14EB", "grup": "3-4 MAÇI"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "18:00", "salon": "BGM SALON C2", "a": "FLORYA ELİT", "b": "ATAKENT ATLETİK", "kat": "U14EB", "grup": "FİNAL"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "20:00", "salon": "BGM SALON C2", "a": "FENERBAHÇE", "b": "TENİS ESKRİM DAĞCILIK (A)", "kat": "U11EA", "grup": "A GRUBU"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "15:30", "salon": "BGM SALON C3", "a": "DEV ATAŞEHİR S.K", "b": "TENİS ESKRİM DAĞCILIK (A)", "kat": "U10EA", "grup": "A GRUBU"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "17:00", "salon": "BGM SALON C3", "a": "DİNAMO S.K", "b": "FESA", "kat": "U16EC", "grup": "PLAYOFF 3.TUR"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "18:30", "salon": "BGM SALON C3", "a": "AÇI GENÇLİK", "b": "ESENLER YAVUZ SELİM", "kat": "U16EC", "grup": "PLAYOFF 3.TUR"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "20:00", "salon": "BGM SALON C3", "a": "BEST BASKETBOL (B)", "b": "POTANIN KARTALLARI", "kat": "U16EC", "grup": "PLAYOFF 3.TUR"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "10:00", "salon": "AHMET CÖMERT S.S", "a": "ANKA AVRUPA (A)", "b": "BAHÇEŞEHİR AKADEMİK S.K.", "kat": "U10EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "11:30", "salon": "AHMET CÖMERT S.S", "a": "EMLAK KONUT", "b": "AÇI OKULLARI", "kat": "U10KA", "grup": "A GRUBU"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "13:00", "salon": "AHMET CÖMERT S.S", "a": "EYÜPSULTAN BLD. S.K", "b": "BEŞİKTAŞ", "kat": "U11KA", "grup": "A GRUBU"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "14:30", "salon": "AHMET CÖMERT S.S", "a": "YSK YILDIRIM SPOR KULÜBÜ", "b": "ALLSTARS İSTANBUL", "kat": "U11KA", "grup": "A GRUBU"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "16:00", "salon": "AHMET CÖMERT S.S", "a": "ATAKENT YILDIZLARI", "b": "FLY İSTANBUL SK", "kat": "U10EC", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "17:30", "salon": "AHMET CÖMERT S.S", "a": "YENİ LEVENT SK", "b": "ALTINYILDIZ İSTANBUL S.K.", "kat": "U10EC", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "10:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "PETNA S.K (B)", "b": "PİZZABULLS CEDİ OSMAN BASKETBOL", "kat": "U10EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "11:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "İSTANBUL GELİŞİM ÜNİVERSİTESİ SK (A)", "b": "BAHÇELİEVLER BLD. S.K.", "kat": "U10EC", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "13:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "MİMAR SİNAN KOLEJİ SPOR KULÜBÜ", "b": "FLORYA ELİT(B)", "kat": "U10EC", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "14:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "ANKA AKADEMİ BİLİM S.K (B)", "b": "ÜNSPED", "kat": "U10EC", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "16:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "BEYLİKDÜZÜ BASKETBOL AKADEMİ (B)", "b": "GÖKTÜRK ATLETİK", "kat": "U10EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "10:00", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "GENÇ PAŞABAHÇE S.K", "b": "USA BASKETBOL", "kat": "U11KA", "grup": "A GRUBU"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "11:30", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "ARENA ANKA (B)", "b": "İSTANBUL ATA S.K.", "kat": "U10EC", "grup": "ASYA B GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "13:00", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "ANKA ANADOLU (B)", "b": "KARŞIYAKA DOĞAN", "kat": "U10EC", "grup": "ASYA A GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "14:30", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "ÜSKÜDAR BASKETBOL", "b": "ATAŞEHİR KARTALLARI SK (B)", "kat": "U10EC", "grup": "ASYA A GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "16:00", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "İSTANBUL MARMARA S.K (B)", "b": "DEĞİŞİM SPOR KULÜBÜ (B)", "kat": "U10EC", "grup": "ASYA A GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "17:30", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "İSTANBUL HEAT", "b": "ASYA KARTALLARI", "kat": "U10EC", "grup": "ASYA B GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "19:00", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "DEĞİŞİM S.K (A)", "b": "İSTANBUL BŞB.", "kat": "U10EA", "grup": "A GRUBU"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "17:30", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "2014 MALTEPE S.K", "b": "İSTANBULL'S (B)", "kat": "U10EC", "grup": "ASYA C GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "19:00", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "PARLAYAN YILDIZLAR SK", "b": "ARENA ANKA (A)", "kat": "U10EC", "grup": "ASYA C GR."}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "18:30", "salon": "ÇEKMEKÖY SPOR KOMPLEKSİ", "a": "ORTAÇEŞME S.K", "b": "ALLSTARS İSTANBUL", "kat": "U10KA", "grup": "A GRUBU"}, {"tarih": "2026-05-16", "td": "16 Mayıs 2026", "gun": "Cumartesi", "saat": "20:00", "salon": "ÇEKMEKÖY SPOR KOMPLEKSİ", "a": "PENDİK BLD. S.K.", "b": "TAKIM YILDIZLARI", "kat": "U10EC", "grup": "ASYA C GR."}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "10:00", "salon": "BGM SALON C2", "a": "BAHÇEŞEHİR OKULLARI (A)", "b": "DARÜŞŞAFAKA", "kat": "U12EA", "grup": "A GRUBU"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "11:30", "salon": "BGM SALON C2", "a": "BAŞAKŞEHİR BLD. S.K", "b": "BEŞİKTAŞ", "kat": "U12KA", "grup": "A GRUBU"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "13:00", "salon": "BGM SALON C2", "a": "BEYLİKDÜZÜ BASKET S.K", "b": "EYÜPSULTAN BLD. S.K", "kat": "U12KA", "grup": "A GRUBU"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "14:30", "salon": "BGM SALON C2", "a": "GENÇ ATAKENT (A)", "b": "IRMAK OKULLARI S.K", "kat": "U11EA", "grup": "A GRUBU"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "16:00", "salon": "BGM SALON C2", "a": "GALATASARAY (B)", "b": "BAHÇELİEVLER BLD. (A)", "kat": "U16EB", "grup": "PLAYOFF 3.TUR"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "17:30", "salon": "BGM SALON C2", "a": "DOSTLUK SPOR", "b": "YEŞİL SİYAH 1914 (A)", "kat": "U10EC", "grup": "AVRUPA D GR."}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "17:30", "salon": "BGM SALON C3", "a": "İSTANBUL BASKET", "b": "AYKA YETENEK S.K.", "kat": "U10EC", "grup": "AVRUPA D GR."}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "19:00", "salon": "BGM SALON C3", "a": "ASYA KARTALLARI (B)", "b": "İTO EĞİTİM VE SOSYAL HİZ. (B)", "kat": "U18EB", "grup": "3-4 MAÇI"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "20:30", "salon": "BGM SALON C3", "a": "NOVA BASKET", "b": "BÜYÜKÇEKMECE BASKETBOL", "kat": "U18EB", "grup": "FİNAL"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "10:00", "salon": "AHMET CÖMERT S.S", "a": "YEŞİL SİYAH 1914 (B)", "b": "NOVA BASKET SPOR KULÜBÜ", "kat": "U10EC", "grup": "AVRUPA E GR."}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "11:30", "salon": "AHMET CÖMERT S.S", "a": "TENİS ESKRİM DAĞCILIK (B)", "b": "AKADEMİ İSTANBUL", "kat": "U10EB", "grup": "A GRUBU"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "13:00", "salon": "AHMET CÖMERT S.S", "a": "FMV NİŞANTAŞI", "b": "TİTAN AKADEMİ", "kat": "U10EB", "grup": "A GRUBU"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "14:30", "salon": "AHMET CÖMERT S.S", "a": "OLİMPİK YILDIZLAR", "b": "BAHÇELİEVLER OPTİMUM S.K.", "kat": "U10EC", "grup": "AVRUPA E GR."}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "16:00", "salon": "AHMET CÖMERT S.S", "a": "İSTANBUL BŞB.", "b": "DEV ATAŞEHİR S.K", "kat": "U11EA", "grup": "A GRUBU"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "17:30", "salon": "AHMET CÖMERT S.S", "a": "EYÜP BASKET", "b": "ŞİŞLİ S.K", "kat": "U12EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "19:00", "salon": "AHMET CÖMERT S.S", "a": "İSTANBULLS (A)", "b": "PETNA S.K (A)", "kat": "U10EA", "grup": "A GRUBU"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "16:00", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "KADIKÖY İSTANBUL SK", "b": "ÇENGEL AKADEMİ SPOR KULÜBÜ", "kat": "U12KB", "grup": "ASYA GRUBU"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "17:30", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "EVOLOG DAÇKA ŞERİFALİ", "b": "ALLSTARS İSTANBUL", "kat": "U12KB", "grup": "ASYA GRUBU"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "19:00", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "PARLAYAN YILDIZLAR SK", "b": "BESRA İSTANBUL", "kat": "U12KB", "grup": "ASYA GRUBU"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "18:30", "salon": "ÇEKMEKÖY SPOR KOMPLEKSİ", "a": "USA BASKETBOL", "b": "FEN SPOR KULÜBÜ", "kat": "U12KB", "grup": "ASYA GRUBU"}, {"tarih": "2026-05-17", "td": "17 Mayıs 2026", "gun": "Pazar", "saat": "20:00", "salon": "ÇEKMEKÖY SPOR KOMPLEKSİ", "a": "ORTAÇEŞME S.K.", "b": "ASYA KARTALLARI", "kat": "U12KB", "grup": "ASYA GRUBU"}, {"tarih": "2026-05-18", "td": "18 Mayıs 2026", "gun": "Pazartesi", "saat": "17:00", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "DEĞİŞİM SPOR", "b": "AVCILAR TANYILDIZI", "kat": "U16EC", "grup": "PLAYOFF 3.TUR"}, {"tarih": "2026-05-18", "td": "18 Mayıs 2026", "gun": "Pazartesi", "saat": "18:30", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "BEYKENT BASKETBOL", "b": "AÇI OKULLARI S.K.", "kat": "U12EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-18", "td": "18 Mayıs 2026", "gun": "Pazartesi", "saat": "20:00", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "IRMAK OKULLARI S.K.", "b": "FENERBAHÇE", "kat": "U12EA", "grup": "B GRUBU"}, {"tarih": "2026-05-18", "td": "18 Mayıs 2026", "gun": "Pazartesi", "saat": "18:30", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "PAMUKSPOR GELİŞİM S.K", "b": "BEŞİKTAŞ", "kat": "U12EA", "grup": "A GRUBU"}, {"tarih": "2026-05-18", "td": "18 Mayıs 2026", "gun": "Pazartesi", "saat": "20:00", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "DEPAR İSTANBUL", "b": "AKADEMİ İSTANBUL (A)", "kat": "U12EA", "grup": "A GRUBU"}, {"tarih": "2026-05-18", "td": "18 Mayıs 2026", "gun": "Pazartesi", "saat": "18:30", "salon": "AHMET CÖMERT S.S", "a": "AVCILAR DEMİRORDU SPOR (A)", "b": "İSTANBUL ANKA", "kat": "U12EB", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-18", "td": "18 Mayıs 2026", "gun": "Pazartesi", "saat": "20:00", "salon": "AHMET CÖMERT S.S", "a": "İSTANBUL KEMER BASKETBOL SK", "b": "BAHÇEŞEHİR BASKET ve İHT. S.K", "kat": "U12EB", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-18", "td": "18 Mayıs 2026", "gun": "Pazartesi", "saat": "18:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "YEŞİLYURT SK", "b": "BAYRAMPAŞA BLD. S.K", "kat": "U12EB", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-18", "td": "18 Mayıs 2026", "gun": "Pazartesi", "saat": "20:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "ÜNSPED", "b": "AVRUPA KARŞIYAKA (A)", "kat": "U12EB", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-18", "td": "18 Mayıs 2026", "gun": "Pazartesi", "saat": "18:30", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "ADA YILDIZLARI", "b": "PARLAYAN YILDIZLAR SK", "kat": "U12EC", "grup": "ASYA D GR."}, {"tarih": "2026-05-18", "td": "18 Mayıs 2026", "gun": "Pazartesi", "saat": "20:00", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "CAAN S.K (B)", "b": "ARENA ANKA (A)", "kat": "U12EC", "grup": "ASYA A GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "15:00", "salon": "BGM ÜLKER HALLEY SALONU (C1)", "a": "HİGH TOUCH", "b": "ÇENGELKÖY ANKA", "kat": "U10EC", "grup": "ASYA G GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "16:30", "salon": "BGM ÜLKER HALLEY SALONU (C1)", "a": "BOĞAZİÇİ AKADEMİ S.K.", "b": "KARTAL YILDIZLARI", "kat": "U10EC", "grup": "ASYA B GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "18:00", "salon": "BGM ÜLKER HALLEY SALONU (C1)", "a": "IRMAK OKULLARI", "b": "KIZILTOPRAK 2004", "kat": "U10EC", "grup": "ASYA G GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "19:30", "salon": "BGM ÜLKER HALLEY SALONU (C1)", "a": "YEŞİLKÖY YILDIZLARI SK (B)", "b": "İSTANBUL GELİŞİM ÜNİVERSİTESİ SK", "kat": "U12EC", "grup": "AVRUPA G GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "15:00", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "HİSAR OKULLARI SK", "b": "BASKETS", "kat": "U11EC", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "16:30", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "DEV ATAŞEHİR S.K (A)", "b": "GALATASARAY (A)", "kat": "U12EA", "grup": "B GRUBU"}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "18:00", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "BAHÇEŞEHİR AKADEMİK S.K.", "b": "EYÜP BASKET SK", "kat": "U11EC", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "12:00", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "BAKIRKÖY KARTALTEPE", "b": "DARÜŞŞAFAKA (B)", "kat": "U16EB", "grup": "ÇEYREK FİNAL"}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "13:30", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "SUADİYE BASKETBOL (A)", "b": "BAHÇELİEVLER BLD. (A)", "kat": "U16EB", "grup": "ÇEYREK FİNAL"}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "15:00", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "CAAN S.K (A)", "b": "ATAŞEHİR YILDIZLARI (A)", "kat": "U16EB", "grup": "ÇEYREK FİNAL"}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "16:30", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "BEŞİKTAŞ (B)", "b": "HIGH TOUCH", "kat": "U16EB", "grup": "ÇEYREK FİNAL"}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "18:00", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "KUTUP YILDIZI S.K.", "b": "AVCILAR ATAK", "kat": "U12EC", "grup": "AVRUPA D GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "12:00", "salon": "AHMET CÖMERT S.S", "a": "İTÜ (A)", "b": "MİMAR SİNAN KOLEJİ SPOR KULÜBÜ", "kat": "U11EC", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "13:30", "salon": "AHMET CÖMERT S.S", "a": "ALTINYILDIZ İSTANBUL S.K.", "b": "BAYRAMPAŞA BLD. S.K", "kat": "U11EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "15:00", "salon": "AHMET CÖMERT S.S", "a": "MVP ETİLER S.K. (B)", "b": "BEŞ YILDIZ SPOR KULÜBÜ (A)", "kat": "U11EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "16:30", "salon": "AHMET CÖMERT S.S", "a": "AVRUPA KARŞIYAKA (A)", "b": "AVCILAR DEMİRORDU SPOR", "kat": "U11EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "18:00", "salon": "AHMET CÖMERT S.S", "a": "BAKIRKÖY ASLAN SK", "b": "YENİ LEVENT SK", "kat": "U11EC", "grup": "AVRUPA D GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "12:30", "salon": "BEYLİKDÜZÜ S.S.", "a": "BÜYÜKÇEKMECE BASKETBOL", "b": "AVRUPA KARŞIYAKA (B)", "kat": "U12EC", "grup": "AVRUPA E GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "14:00", "salon": "BEYLİKDÜZÜ S.S.", "a": "ATAKENT ELİT SK", "b": "İSTANBUL BASKET (B)", "kat": "U12EB", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "15:30", "salon": "BEYLİKDÜZÜ S.S.", "a": "FLORYA ELİT(A)", "b": "YALÇIN BASKETBOL AKADEMİ SK", "kat": "U12EB", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-19", "td": "19 Mayıs 2026", "gun": "Salı", "saat": "17:00", "salon": "BEYLİKDÜZÜ S.S.", "a": "AVCILAR YANKI", "b": "FMV ISPARTAKULE IŞIK OKULLARI (A)", "kat": "U11EC", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-20", "td": "20 Mayıs 2026", "gun": "Çarşamba", "saat": "17:00", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "ESENLER YAVUZSELİM", "b": "AVCILAR TANYILDIZI", "kat": "U16EC", "grup": "FİNAL 4 GR."}, {"tarih": "2026-05-20", "td": "20 Mayıs 2026", "gun": "Çarşamba", "saat": "18:30", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "FESA (B)", "b": "BEST BASKETBOL (B)", "kat": "U16EC", "grup": "FİNAL 4 GR."}, {"tarih": "2026-05-20", "td": "20 Mayıs 2026", "gun": "Çarşamba", "saat": "18:30", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "DARÜŞŞAFAKA (A)", "b": "FORM AKADEMİ SK (A)", "kat": "U12EA", "grup": "A GRUBU"}, {"tarih": "2026-05-20", "td": "20 Mayıs 2026", "gun": "Çarşamba", "saat": "20:00", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "BEŞİKTAŞ", "b": "AVCILAR ATAK", "kat": "U11KA", "grup": "A GRUBU"}, {"tarih": "2026-05-20", "td": "20 Mayıs 2026", "gun": "Çarşamba", "saat": "18:30", "salon": "AHMET CÖMERT S.S", "a": "İSTANBUL BASKET (A)", "b": "YEŞİL SİYAH 1914 (A)", "kat": "U12EB", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-20", "td": "20 Mayıs 2026", "gun": "Çarşamba", "saat": "20:00", "salon": "AHMET CÖMERT S.S", "a": "FMV IŞIK S.K.", "b": "AVCILAR YANKI", "kat": "U12EB", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-20", "td": "20 Mayıs 2026", "gun": "Çarşamba", "saat": "18:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "AYKA YETENEK S.K.", "b": "EYÜP BASKET SK", "kat": "U12EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-20", "td": "20 Mayıs 2026", "gun": "Çarşamba", "saat": "20:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "ANKA AVRUPA (B)", "b": "NOVA BASKET SPOR KULÜBÜ", "kat": "U12EC", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-20", "td": "20 Mayıs 2026", "gun": "Çarşamba", "saat": "18:30", "salon": "KÜÇÜKÇEKMECE HALKALI S.S", "a": "GELECEK NESİL SK", "b": "YEŞİLKÖY YILDIZLARI SK (A)", "kat": "U12EC", "grup": "AVRUPA G GR."}, {"tarih": "2026-05-20", "td": "20 Mayıs 2026", "gun": "Çarşamba", "saat": "20:00", "salon": "KÜÇÜKÇEKMECE HALKALI S.S", "a": "AVCILAR DEMİRORDU SPOR (B)", "b": "ŞİŞLİ S.K (A)", "kat": "U12EC", "grup": "AVRUPA H GR."}, {"tarih": "2026-05-20", "td": "20 Mayıs 2026", "gun": "Çarşamba", "saat": "17:30", "salon": "CAFERAĞA S.S", "a": "ÇENGELKÖY BASKETBOL SK", "b": "DUDULLU OSB (B)", "kat": "U12EC", "grup": "ASYA B GR."}, {"tarih": "2026-05-20", "td": "20 Mayıs 2026", "gun": "Çarşamba", "saat": "19:00", "salon": "CAFERAĞA S.S", "a": "BATI SPOR KULÜBÜ", "b": "GENÇ PAŞABAHÇE S.K", "kat": "U12EC", "grup": "ASYA D GR."}, {"tarih": "2026-05-20", "td": "20 Mayıs 2026", "gun": "Çarşamba", "saat": "18:30", "salon": "YAKACIK İTO S.S", "a": "MVP SPOR KULÜBÜ", "b": "DAÇKA MALTEPE S.K (B)", "kat": "U12EC", "grup": "ASYA D GR."}, {"tarih": "2026-05-20", "td": "20 Mayıs 2026", "gun": "Çarşamba", "saat": "20:00", "salon": "YAKACIK İTO S.S", "a": "KARŞIYAKA DOĞAN", "b": "LİMA SPOR", "kat": "U12EC", "grup": "ASYA A GR."}, {"tarih": "2026-05-21", "td": "21 Mayıs 2026", "gun": "Perşembe", "saat": "17:00", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "BEST BASKETBOL (B)", "b": "ESENLER YAVUZSELİM", "kat": "U16EC", "grup": "FİNAL 4 GR."}, {"tarih": "2026-05-21", "td": "21 Mayıs 2026", "gun": "Perşembe", "saat": "18:30", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "AVCILAR TANYILDIZI", "b": "FESA (B)", "kat": "U16EC", "grup": "FİNAL 4 GR."}, {"tarih": "2026-05-21", "td": "21 Mayıs 2026", "gun": "Perşembe", "saat": "20:00", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "PETNA S.K (B)", "b": "FLY İSTANBUL SK", "kat": "U12EC", "grup": "AVRUPA H GR."}, {"tarih": "2026-05-21", "td": "21 Mayıs 2026", "gun": "Perşembe", "saat": "17:00", "salon": "BGM ÜLKER ÇİZİSALONU (C3)", "a": "BAKIRKÖY KARTALTEPE", "b": "SUADİYE BASKETBOL (A)", "kat": "U16EB", "grup": "YARI FİNAL"}, {"tarih": "2026-05-21", "td": "21 Mayıs 2026", "gun": "Perşembe", "saat": "18:30", "salon": "BGM ÜLKER ÇİZİSALONU (C3)", "a": "ATAŞEHİR YILDIZLARI (A)", "b": "BEŞİKTAŞ (B)", "kat": "U16EB", "grup": "YARI FİNAL"}, {"tarih": "2026-05-21", "td": "21 Mayıs 2026", "gun": "Perşembe", "saat": "18:30", "salon": "AHMET CÖMERT S.S", "a": "BAKIRKÖY ASLAN SK", "b": "PERTEVNİYAL", "kat": "U12EC", "grup": "AVRUPA F GR."}, {"tarih": "2026-05-21", "td": "21 Mayıs 2026", "gun": "Perşembe", "saat": "20:00", "salon": "AHMET CÖMERT S.S", "a": "SMAÇ AKADEMİ SK", "b": "SARIYER ANAFARTALAR SK", "kat": "U11EC", "grup": "AVRUPA D GR."}, {"tarih": "2026-05-21", "td": "21 Mayıs 2026", "gun": "Perşembe", "saat": "18:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "ANKA AVRUPA (A)", "b": "TEŞVİKİYE AKADEMİ", "kat": "U12EC", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-21", "td": "21 Mayıs 2026", "gun": "Perşembe", "saat": "20:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "OLİMPİK YILDIZLAR", "b": "YEŞİL SİYAH 1914 (B)", "kat": "U12EC", "grup": "AVRUPA D GR."}, {"tarih": "2026-05-21", "td": "21 Mayıs 2026", "gun": "Perşembe", "saat": "18:30", "salon": "KÜÇÜKÇEKMECE HALKALI S.S", "a": "SİLİVRİ BASKET SK", "b": "DOSTLUK SPOR", "kat": "U12EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-21", "td": "21 Mayıs 2026", "gun": "Perşembe", "saat": "20:00", "salon": "KÜÇÜKÇEKMECE HALKALI S.S", "a": "CİHANGİR OKULLARI S.K (A)", "b": "BAĞCILAR GÖZTEPE SK", "kat": "U12EC", "grup": "AVRUPA G GR."}, {"tarih": "2026-05-21", "td": "21 Mayıs 2026", "gun": "Perşembe", "saat": "17:30", "salon": "CAFERAĞA S.S", "a": "KIZILTOPRAK 2004", "b": "AKADEMİ MARMARA S.K", "kat": "U12EB", "grup": "ASYA B GR."}, {"tarih": "2026-05-21", "td": "21 Mayıs 2026", "gun": "Perşembe", "saat": "19:00", "salon": "CAFERAĞA S.S", "a": "DEV ATAŞEHİR S.K (B)", "b": "POTANIN KARTALLARI SK", "kat": "U12EC", "grup": "ASYA B GR."}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "BGM ÜLKER HALLEY SALONU (C1)", "a": "GENÇ ATAKENT SK (A)", "b": "BAHÇEŞEHİR OKULLARI S.K (A)", "kat": "U12EA", "grup": "A GRUBU"}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "BGM ÜLKER HALLEY SALONU (C1)", "a": "BAHÇEŞEHİR BASK. VE İHT.", "b": "TENİS ESKRİM DAĞCILIK (B)", "kat": "U11EB", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "ATAKENT 34 SK", "b": "MOMENTUM AKADEMİ", "kat": "U12EC", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "BAHÇEŞEHİR SİSTEM SK", "b": "PİZZABULLS CEDİ OSMAN BASKETBOL", "kat": "U12EC", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "AÇI OKULLARI S.K.", "b": "İSTANBUL ANKA (B)", "kat": "U11EC", "grup": "AVRUPA F GR."}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "BEŞİKTAŞ", "b": "AÇI OKULLARI S.K.", "kat": "U12KA", "grup": "A GRUBU"}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "AHMET CÖMERT S.S", "a": "FATİH BELEDİYESİ SK", "b": "BAHÇELİEVLER BLD. S.K. (B)", "kat": "U11EC", "grup": "AVRUPA F GR."}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "AHMET CÖMERT S.S", "a": "ŞİŞLİ S.K (B)", "b": "1958 ÖNCÜ SK", "kat": "U12EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "BEŞ YILDIZ SPOR KULÜBÜ (B)", "b": "YENİ LEVENT SK", "kat": "U12EC", "grup": "AVRUPA D GR."}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "KUTUP YILDIZI S.K.", "b": "ANKA AKADEMİ BİLİM S.K (B)", "kat": "U11EC", "grup": "AVRUPA H GR."}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "BEYLİKDÜZÜ S.S.", "a": "BAŞAKŞEHİR BLD. S.K", "b": "CİHANGİR OKULLARI S.K (B)", "kat": "U12EC", "grup": "AVRUPA E GR."}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "BEYLİKDÜZÜ S.S.", "a": "BAHÇEŞEHİR AKADEMİK S.K.", "b": "İTÜ (A)", "kat": "U12EC", "grup": "AVRUPA F GR."}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "CAFERAĞA S.S", "a": "İSTANBUL ATA S.K. (B)", "b": "2014 MALTEPE SK", "kat": "U12EC", "grup": "ASYA F GR."}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "CAFERAĞA S.S", "a": "FAST AKADEMİ SK", "b": "TİTAN AKADEMİ (A)", "kat": "U12EC", "grup": "ASYA F GR."}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "18:30", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "TAKIM YILDIZLARI S.K.", "b": "İSTANBULL'S", "kat": "U12EC", "grup": "ASYA H GR."}, {"tarih": "2026-05-22", "td": "22 Mayıs 2026", "gun": "Cuma", "saat": "20:00", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "İSTANBUL KARŞIYAKA SK", "b": "ANKA ANADOLU (A)", "kat": "U12EC", "grup": "ASYA H GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "10:00", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "ÇENGEL AKADEMİ SPOR KULÜBÜ (A)", "b": "FENERBAHÇE", "kat": "U11EA", "grup": "A GRUBU"}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "11:30", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "DEV ATAŞEHİR S.K", "b": "BAHÇEŞEHİR OKULLARI S.K", "kat": "U11EA", "grup": "A GRUBU"}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "16:00", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "GÖKTÜRK ATLETİK", "b": "ANKA AVRUPA (A)", "kat": "U10EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "10:00", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "EMLAK KONUT", "b": "ALLSTARS İSTANBUL", "kat": "U10KA", "grup": "A GRUBU"}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "11:30", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "EMLAK KONUT", "b": "ATLETİK SPORTİF", "kat": "U12KA", "grup": "A GRUBU"}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "13:00", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "GÜNGÖREN BLD.", "b": "PETNA S.K (A)", "kat": "U12EC", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "14:30", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "ATAKENT ATLETİK S.K", "b": "BAŞAKŞEHİR BLD. S.K", "kat": "U12KA", "grup": "A GRUBU"}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "16:00", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "BAHÇEŞEHİR SİSTEM SK", "b": "SİLİVRİ AKADEMİ SK (A)", "kat": "U11EC", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "10:00", "salon": "AHMET CÖMERT S.S", "a": "ANKA AKADEMİ BİLİM S.K (A)", "b": "YEŞİL SİYAH 1914", "kat": "U11EC", "grup": "AVRUPA E GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "11:30", "salon": "AHMET CÖMERT S.S", "a": "İSTANBUL ANKA", "b": "ATAKENT YILDIZLARI", "kat": "U10EC", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "13:00", "salon": "AHMET CÖMERT S.S", "a": "FLORYA ELİT(B)", "b": "ANKA AKADEMİ BİLİM S.K (B)", "kat": "U10EC", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "14:30", "salon": "AHMET CÖMERT S.S", "a": "İSTANBUL UTKU SK", "b": "BAHÇELİEVLER OPTİMUM S.K.", "kat": "U12KB", "grup": "AVRUPA GRUBU"}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "16:00", "salon": "AHMET CÖMERT S.S", "a": "ŞİŞLİ S.K", "b": "AVCILAR ATAK", "kat": "U11EC", "grup": "AVRUPA G GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "17:30", "salon": "AHMET CÖMERT S.S", "a": "NOVA BASKET SPOR KULÜBÜ", "b": "AVCILAR TANYILDIZI SK", "kat": "U11EC", "grup": "AVRUPA G GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "10:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "ULU SPOR AKADEMİ", "b": "GENÇ ATAKENT SK (B)", "kat": "U11EC", "grup": "AVRUPA F GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "11:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "TENİS ESKRİM DAĞCILIK (A)", "b": "GENÇ ATAKENT SK (A)", "kat": "U11EA", "grup": "A GRUBU"}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "13:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "İTÜ", "b": "BAHÇEŞEHİR BASKET ve İHT. S.K", "kat": "U12KB", "grup": "AVRUPA GRUBU"}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "14:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "İLAB BASKETBOL", "b": "İSTANBUL ANKA (A)", "kat": "U11EC", "grup": "AVRUPA G GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "14:00", "salon": "CAFERAĞA S.S", "a": "ORTAÇEŞME S.K", "b": "EYÜPSULTAN BLD. S.K", "kat": "U10KA", "grup": "A GRUBU"}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "15:30", "salon": "CAFERAĞA S.S", "a": "ÇENGEL AKADEMİ SPOR KULÜBÜ", "b": "ORTAÇEŞME S.K.", "kat": "U12KB", "grup": "ASYA GRUBU"}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "17:00", "salon": "CAFERAĞA S.S", "a": "BEYLERBEYİ SK", "b": "DİNAMO SK", "kat": "U12EB", "grup": "ASYA B GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "18:30", "salon": "CAFERAĞA S.S", "a": "ÜMRANİYE BLD. S.K", "b": "BEYLİKDÜZÜ BASKET S.K", "kat": "U12KA", "grup": "A GRUBU"}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "10:00", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "İSTANBUL MARMARA S.K (B)", "b": "SUADİYE BASKETBOL S.K", "kat": "U12EC", "grup": "ASYA E GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "11:30", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "EVOLOG DAÇKA ŞERİFALİ", "b": "FESA S.K.", "kat": "U12EB", "grup": "ASYA A GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "13:00", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "ÜMRANİYE BLD. S.K", "b": "EVOLOG DAÇKA ŞERİFALİ (B)", "kat": "U11EC", "grup": "ASYA A GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "14:30", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "ATAŞEHİR KARTALLARI SK", "b": "ÇENGELKÖY ANKA", "kat": "U11EC", "grup": "ASYA A GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "16:00", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "GENÇ PAŞABAHÇE S.K", "b": "DAÇKA MALTEPE S.K", "kat": "U11EC", "grup": "ASYA A GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "17:30", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "FMV ERENKÖY IŞIK S.K.", "b": "AKADEMİ İSTANBUL (B)", "kat": "U12EB", "grup": "ASYA A GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "19:00", "salon": "MALTEPE MÜZAHİR SİLLE S.S", "a": "BESRA İSTANBUL", "b": "SPOR VİZYON SK", "kat": "U11EC", "grup": "ASYA B GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "16:00", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "TAN SPOR KULÜBÜ", "b": "KADIKÖY İSTANBUL SK", "kat": "U11EC", "grup": "ASYA B GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "17:30", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "MODA SPOR KULÜBÜ DERNEĞİ", "b": "BEYKOZ BG S.K", "kat": "U11EC", "grup": "ASYA B GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "19:00", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "ANKA BASKETBOL AKADEMİ", "b": "ANADOLU MARMARA SPOR KULÜBÜ (B)", "kat": "U11EC", "grup": "ASYA D GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "18:30", "salon": "ÇEKMEKÖY SPOR KOMPLEKSİ", "a": "11 ARTHLETİC SK", "b": "ATAŞEHİR KARTALLARI SK", "kat": "U12EC", "grup": "ASYA F GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "20:00", "salon": "ÇEKMEKÖY SPOR KOMPLEKSİ", "a": "İSTANBUL HEAT", "b": "DAÇKA ÜSKÜDAR S.K.", "kat": "U12EC", "grup": "ASYA G GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "10:00", "salon": "KURTKÖY S.S", "a": "BESRA İSTANBUL", "b": "GENÇ PAŞABAHÇE", "kat": "U10KA", "grup": "A GRUBU"}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "11:30", "salon": "KURTKÖY S.S", "a": "BESRA İSTANBUL", "b": "GENÇ PAŞABAHÇE", "kat": "U12KB", "grup": "ASYA GRUBU"}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "13:00", "salon": "KURTKÖY S.S", "a": "ANKA ANADOLU (B)", "b": "İSTANBUL MARMARA S.K (A)", "kat": "U12EB", "grup": "ASYA A GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "14:30", "salon": "KURTKÖY S.S", "a": "ANKA ANADOLU (B)", "b": "LİMA SPOR", "kat": "U11EC", "grup": "ASYA D GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "16:00", "salon": "KURTKÖY S.S", "a": "ASYA KARTALLARI (B)", "b": "KADIKÖY İSTANBUL SK", "kat": "U12EB", "grup": "ASYA B GR."}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "17:30", "salon": "KURTKÖY S.S", "a": "FEN SPOR KULÜBÜ", "b": "KADIKÖY İSTANBUL SK", "kat": "U12KB", "grup": "ASYA GRUBU"}, {"tarih": "2026-05-23", "td": "23 Mayıs 2026", "gun": "Cumartesi", "saat": "19:00", "salon": "KURTKÖY S.S", "a": "ANKA BASKETBOL AKADEMİ (B)", "b": "ÇENGELKÖY BASKETBOL SK", "kat": "U10EC", "grup": "ASYA E GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "10:00", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "FLORYA ELİT(A)", "b": "ÇENGEL AKADEMİ SPOR KULÜBÜ", "kat": "U10EB", "grup": "A GRUBU"}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "11:30", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "FMV IŞIK S.K.", "b": "FESA S.K.", "kat": "U10EB", "grup": "A GRUBU"}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "13:00", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "BAKIRKÖY S.K.", "b": "BEYLİKDÜZÜ BASKETBOL AKADEMİ (B)", "kat": "U10EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "14:30", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "BAHÇEŞEHİR AKADEMİK S.K.", "b": "PETNA S.K (B)", "kat": "U10EC", "grup": "AVRUPA C GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "16:00", "salon": "BGM ÜLKER GO AHEAD SALONU (C2)", "a": "AYKA YETENEK S.K.", "b": "DOSTLUK SPOR", "kat": "U10EC", "grup": "AVRUPA D GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "10:00", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "SPOR FABRİKASI", "b": "İSTANBUL BASKET", "kat": "U10EC", "grup": "AVRUPA D GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "11:30", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "YEŞİLYURT SK", "b": "OLİMPİK YILDIZLAR", "kat": "U10EC", "grup": "AVRUPA E GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "13:00", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "NOVA BASKET SPOR KULÜBÜ", "b": "FAVORİ SK", "kat": "U10EC", "grup": "AVRUPA E GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "14:30", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "BAHÇELİEVLER OPTİMUM S.K.", "b": "YEŞİL SİYAH 1914 (B)", "kat": "U10EC", "grup": "AVRUPA E GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "16:00", "salon": "BGM ÜLKER ÇİZİ SALONU (C3)", "a": "SİLİVRİ AKADEMİ SK (B)", "b": "ATAKENT YILDIZLARI", "kat": "U11EC", "grup": "AVRUPA D GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "10:00", "salon": "AHMET CÖMERT S.S", "a": "BİZİMKENT SK", "b": "YEŞİLYURT SK", "kat": "U11EC", "grup": "AVRUPA E GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "11:30", "salon": "AHMET CÖMERT S.S", "a": "ALTINYILDIZ İSTANBUL S.K.", "b": "AVRUPA ELİT", "kat": "U10EC", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "13:00", "salon": "AHMET CÖMERT S.S", "a": "FLY İSTANBUL SK", "b": "YENİ LEVENT SK", "kat": "U10EC", "grup": "AVRUPA A GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "14:30", "salon": "AHMET CÖMERT S.S", "a": "ATAKENT ATLETİK S.K", "b": "İSTANBUL GELİŞİM ÜNİVERSİTESİ SK (A)", "kat": "U10EC", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "16:00", "salon": "AHMET CÖMERT S.S", "a": "BEŞ YILDIZ SPOR KULÜBÜ (B)", "b": "AVRASYA AKADEMİ SK", "kat": "U11EC", "grup": "AVRUPA E GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "17:30", "salon": "AHMET CÖMERT S.S", "a": "BAHÇELİEVLER BLD. S.K.", "b": "MİMAR SİNAN KOLEJİ SPOR KULÜBÜ", "kat": "U10EC", "grup": "AVRUPA B GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "10:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "1958 ÖNCÜ SK", "b": "YEŞİLKÖY YILDIZLARI SK", "kat": "U11EC", "grup": "AVRUPA H GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "11:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "İSTANBUL ÜNİVERSİTESİ S.B.K.", "b": "AVCILAR ATAK", "kat": "U12KB", "grup": "AVRUPA GRUBU"}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "13:00", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "BEYLİKDÜZÜ BASKETBOL AKADEMİ", "b": "İSTANBUL GELİŞİM ÜNİVERSİTESİ SK (A)", "kat": "U11EC", "grup": "AVRUPA H GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "14:30", "salon": "BAHÇELİEVLER ENGELLİLER S.S.", "a": "SARIYER BLD. S.K", "b": "MOMENTUM AKADEMİ", "kat": "U12KB", "grup": "AVRUPA GRUBU"}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "15:00", "salon": "CAFERAĞA S.S", "a": "ORTAÇEŞME S.K.", "b": "EYÜPSULTAN BLD. S.K", "kat": "U11KA", "grup": "A GRUBU"}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "16:30", "salon": "CAFERAĞA S.S", "a": "ÜMRANİYE BLD. S.K", "b": "YSK YILDIRIM SPOR KULÜBÜ", "kat": "U11KA", "grup": "A GRUBU"}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "18:00", "salon": "CAFERAĞA S.S", "a": "ADA YILDIZLARI", "b": "İSTANBUL HEAT", "kat": "U11EC", "grup": "ASYA C GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "19:30", "salon": "CAFERAĞA S.S", "a": "İSTANBUL DEV SK", "b": "ALLSTARS İSTANBUL", "kat": "U11EC", "grup": "ASYA C GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "16:00", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "AKADEMİ MARMARA S.K", "b": "TİTAN AKADEMİ (B)", "kat": "U11EC", "grup": "ASYA E GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "17:30", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "ELİT AKADEMİ SPORTİF SK", "b": "FENERBAHÇE KOLEJİ S.K.", "kat": "U11EC", "grup": "ASYA E GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "19:00", "salon": "ÜNALAN MUHSİN YAZICIOĞLU S.S", "a": "PARLAYAN YILDIZLAR SK", "b": "ÇENGEL AKADEMİ SPOR KULÜBÜ (B)", "kat": "U11EC", "grup": "ASYA E GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "10:00", "salon": "YAKACIK İTO S.S", "a": "FESA S.K.", "b": "TAKIM YILDIZLARI S.K.", "kat": "U11EC", "grup": "ASYA D GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "11:30", "salon": "YAKACIK İTO S.S", "a": "ATLETİK SPORTİF", "b": "SPOR VİZYON SK", "kat": "U12EC", "grup": "ASYA G GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "13:00", "salon": "YAKACIK İTO S.S", "a": "ALLSTARS İSTANBUL", "b": "GENÇ PAŞABAHÇE S.K", "kat": "U11KA", "grup": "A GRUBU"}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "14:30", "salon": "YAKACIK İTO S.S", "a": "ASYA KARTALLARI", "b": "EVOLOG DAÇKA ŞERİFALİ", "kat": "U12KB", "grup": "ASYA GRUBU"}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "16:00", "salon": "YAKACIK İTO S.S", "a": "DEV ADIM İSTANBUL SK", "b": "DIAMOND&ONE BASKETBOL AKD.", "kat": "U11EC", "grup": "ASYA F GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "17:30", "salon": "YAKACIK İTO S.S", "a": "MVP SPOR KULÜBÜ", "b": "FORM AKADEMİ SK", "kat": "U11EC", "grup": "ASYA F GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "19:00", "salon": "YAKACIK İTO S.S", "a": "DEV ADIM SK", "b": "ÜSKÜDAR BASKETBOL", "kat": "U11EC", "grup": "ASYA F GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "18:30", "salon": "ÇEKMEKÖY SPOR KOMPLEKSİ", "a": "DEV SPOR", "b": "İSTANBUL ATA S.K. (A)", "kat": "U12EB", "grup": "ASYA B GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "20:00", "salon": "ÇEKMEKÖY SPOR KOMPLEKSİ", "a": "UFUKCAN AYDIN GELİŞİM S.K", "b": "CAAN S.K (A)", "kat": "U12EB", "grup": "ASYA B GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "10:00", "salon": "KURTKÖY S.S", "a": "DAÇKA MALTEPE S.K (A)", "b": "KOŞUYOLU BASKETBOL SK", "kat": "U12EB", "grup": "ASYA A GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "11:30", "salon": "KURTKÖY S.S", "a": "İSTANBUL ONUR SK", "b": "FENERBAHÇE KOLEJİ S.K. (A)", "kat": "U12EC", "grup": "ASYA G GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "13:00", "salon": "KURTKÖY S.S", "a": "TİTAN ATLETİK SK", "b": "FENERBAHÇE KOLEJİ S.K.", "kat": "U10EC", "grup": "ASYA D GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "14:30", "salon": "KURTKÖY S.S", "a": "İSTANBUL MARMARA S.K (A)", "b": "BEYLERBEYİ SK", "kat": "U10EC", "grup": "ASYA D GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "16:00", "salon": "KURTKÖY S.S", "a": "ATAŞEHİR KARTALLARI SK (A)", "b": "İSTANBUL ÇEVRE SK", "kat": "U10EC", "grup": "ASYA E GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "17:30", "salon": "KURTKÖY S.S", "a": "FEN SPOR KULÜBÜ", "b": "FAST AKADEMİ SK", "kat": "U10EC", "grup": "ASYA E GR."}, {"tarih": "2026-05-24", "td": "24 Mayıs 2026", "gun": "Pazar", "saat": "19:00", "salon": "KURTKÖY S.S", "a": "ALLSTARS İSTANBUL", "b": "PARLAYAN YILDIZLAR SK", "kat": "U12KB", "grup": "ASYA GRUBU"}];
@@ -1636,76 +2131,13 @@
 
         <!-- DİYET SEKMELER -->
         <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:36px;">
-            <button class="diet-tab active" onclick="showDietTab('hesapla')">🧮 Kalori Hesapla</button>
-            <button class="diet-tab" onclick="showDietTab('ogunler')">🍽️ Hazır Öğün Planları</button>
+            <button class="diet-tab active" onclick="showDietTab('ogunler')">🍽️ Hazır Öğün Planları</button>
             <button class="diet-tab" onclick="showDietTab('takviye')">💊 Takviye Rehberi</button>
-        </div>
-
-        <!-- SEKME: KALORİ HESAPLA -->
-        <div id="diet-tab-hesapla">
-            <div id="dietForm" style="max-width:680px;margin:0 auto 50px;">
-                <div style="background:#1e293b;border-radius:20px;padding:36px;border:1px solid #334155;">
-                    <p style="color:#94a3b8;margin-bottom:24px;text-align:center;">Bilgilerini gir, sana özel günlük beslenme planını hesaplayalım.</p>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-                        <div>
-                            <label style="display:block;font-size:0.85rem;color:#94a3b8;margin-bottom:6px;">Yaş</label>
-                            <input type="number" id="dAge" placeholder="ör. 16" min="10" max="60" style="width:100%;padding:11px 14px;background:#0f172a;border:1px solid #334155;border-radius:10px;color:#f8fafc;font-size:0.95rem;outline:none;">
-                        </div>
-                        <div>
-                            <label style="display:block;font-size:0.85rem;color:#94a3b8;margin-bottom:6px;">Kilo (kg)</label>
-                            <input type="number" id="dWeight" placeholder="ör. 65" min="30" max="150" style="width:100%;padding:11px 14px;background:#0f172a;border:1px solid #334155;border-radius:10px;color:#f8fafc;font-size:0.95rem;outline:none;">
-                        </div>
-                        <div>
-                            <label style="display:block;font-size:0.85rem;color:#94a3b8;margin-bottom:6px;">Boy (cm)</label>
-                            <input type="number" id="dHeight" placeholder="ör. 175" min="100" max="230" style="width:100%;padding:11px 14px;background:#0f172a;border:1px solid #334155;border-radius:10px;color:#f8fafc;font-size:0.95rem;outline:none;">
-                        </div>
-                        <div>
-                            <label style="display:block;font-size:0.85rem;color:#94a3b8;margin-bottom:6px;">Cinsiyet</label>
-                            <select id="dGender" style="width:100%;padding:11px 14px;background:#0f172a;border:1px solid #334155;border-radius:10px;color:#f8fafc;font-size:0.95rem;outline:none;">
-                                <option value="">Seç...</option>
-                                <option value="male">Erkek</option>
-                                <option value="female">Kadın</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div style="margin-bottom:16px;">
-                        <label style="display:block;font-size:0.85rem;color:#94a3b8;margin-bottom:8px;">Hedef</label>
-                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                            <button class="dpill" onclick="dSelect(this,'goal','kilo-ver')">Kilo Ver</button>
-                            <button class="dpill" onclick="dSelect(this,'goal','koru')">Kilonu Koru</button>
-                            <button class="dpill" onclick="dSelect(this,'goal','kas-yap')">Kas Yap</button>
-                            <button class="dpill" onclick="dSelect(this,'goal','performans')">Performans</button>
-                        </div>
-                    </div>
-                    <div style="margin-bottom:24px;">
-                        <label style="display:block;font-size:0.85rem;color:#94a3b8;margin-bottom:8px;">Aktivite Seviyesi</label>
-                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                            <button class="dpill" onclick="dSelect(this,'act','1.375')">Az Aktif</button>
-                            <button class="dpill" onclick="dSelect(this,'act','1.55')">Orta Aktif</button>
-                            <button class="dpill" onclick="dSelect(this,'act','1.725')">Çok Aktif</button>
-                            <button class="dpill" onclick="dSelect(this,'act','1.9')">Elit Sporcu</button>
-                        </div>
-                    </div>
-                    <button onclick="calcDiet()" style="width:100%;padding:14px;background:linear-gradient(135deg,#ff4d05,#ff7738);border:none;border-radius:12px;color:white;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">
-                        Beslenme Programımı Oluştur
-                    </button>
-                    <p id="dietErr" style="color:#f87171;text-align:center;margin-top:12px;font-size:0.85rem;display:none;">Lütfen tüm alanları doldurun.</p>
-                </div>
-            </div>
-            <div id="dietResult" style="display:none;max-width:900px;margin:0 auto;">
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:36px;" id="dietStats"></div>
-                <div class="grid-container" id="dietMeals"></div>
-                <div style="margin-top:20px;background:#1e293b;border-radius:16px;padding:24px;border:1px solid #334155;" id="dietNotes"></div>
-                <div style="text-align:center;margin-top:30px;">
-                    <button onclick="resetDiet()" style="padding:12px 30px;background:transparent;border:1.5px solid #334155;border-radius:10px;color:#94a3b8;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.95rem;">
-                        Yeniden Hesapla
-                    </button>
-                </div>
-            </div>
+            <button class="diet-tab" onclick="showDietTab('tarifler')">⚡ Pratik Tarifler</button>
         </div>
 
         <!-- SEKME: HAZIR ÖĞÜN PLANLARI -->
-        <div id="diet-tab-ogunler" style="display:none;max-width:980px;margin:0 auto;">
+        <div id="diet-tab-ogunler" style="display:block;max-width:980px;margin:0 auto;">
             <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:28px;">
                 <button class="meal-tab active" onclick="showMealPlan('ml-kilo')">⚖️ Kilo Ver</button>
                 <button class="meal-tab" onclick="showMealPlan('ml-koru')">🔄 Kilo Koru</button>
@@ -1828,6 +2260,291 @@
             </div>
         </div>
 
+        <!-- SEKME: PRATİK TARİFLER -->
+        <div id="diet-tab-tarifler" style="display:none;max-width:1040px;margin:0 auto;">
+            <p style="color:#94a3b8;text-align:center;margin-bottom:22px;">10 dakikada hazırlayabileceğin, sporcuya uygun pratik öğünler — süre ve makro bilgileriyle.</p>
+            <div class="recipe-filter">
+                <button class="rfilter active" onclick="filterRecipes('hepsi')">Hepsi</button>
+                <button class="rfilter" onclick="filterRecipes('kahvalti')">🍳 Kahvaltı</button>
+                <button class="rfilter" onclick="filterRecipes('ara')">🥪 Ara Öğün</button>
+                <button class="rfilter" onclick="filterRecipes('ana')">🍽️ Ana Öğün</button>
+                <button class="rfilter" onclick="filterRecipes('shake')">🥤 Shake</button>
+            </div>
+            <div class="recipe-grid" id="recipeGrid">
+
+                <div class="recipe-card" data-cat="kahvalti">
+                    <div class="recipe-head"><div class="recipe-emoji">🍳</div><div><div class="recipe-title">Peynirli Sebzeli Omlet</div><div class="recipe-time">⏱️ 7 dk · çok kolay</div></div></div>
+                    <div class="recipe-body">
+                        <div class="recipe-macros"><span class="rmacro kcal">~320 kcal</span><span class="rmacro prot">24g protein</span><span class="rmacro carb">6g karb</span></div>
+                        <div><div class="recipe-sec-label">Malzemeler</div><ul class="recipe-ing"><li>3 yumurta</li><li>30g beyaz peynir</li><li>1 avuç ıspanak/domates</li><li>1 ts zeytinyağı</li><li>karabiber</li></ul></div>
+                        <div><div class="recipe-sec-label">Hazırlanış</div><ol class="recipe-steps"><li>Yumurtaları çırp, sebzeleri doğra.</li><li>Zeytinyağında sebzeleri 1 dk sotele.</li><li>Yumurtayı dök, peyniri serp; katlayıp 2-3 dk pişir.</li></ol></div>
+                    </div>
+                </div>
+
+                <div class="recipe-card" data-cat="kahvalti">
+                    <div class="recipe-head"><div class="recipe-emoji">🍅</div><div><div class="recipe-title">Menemen</div><div class="recipe-time">⏱️ 10 dk · kolay</div></div></div>
+                    <div class="recipe-body">
+                        <div class="recipe-macros"><span class="rmacro kcal">~300 kcal</span><span class="rmacro prot">18g protein</span><span class="rmacro carb">12g karb</span></div>
+                        <div><div class="recipe-sec-label">Malzemeler</div><ul class="recipe-ing"><li>3 yumurta</li><li>2 domates</li><li>1 sivri biber</li><li>1 ts zeytinyağı</li><li>tuz</li></ul></div>
+                        <div><div class="recipe-sec-label">Hazırlanış</div><ol class="recipe-steps"><li>Biberi zeytinyağında 2 dk kavur.</li><li>Rendelenmiş domatesi ekle, suyunu çek.</li><li>Yumurtaları kırıp karıştırarak pişir.</li></ol></div>
+                    </div>
+                </div>
+
+                <div class="recipe-card" data-cat="kahvalti">
+                    <div class="recipe-head"><div class="recipe-emoji">🥣</div><div><div class="recipe-title">Muzlu Yulaf Lapası</div><div class="recipe-time">⏱️ 6 dk · çok kolay</div></div></div>
+                    <div class="recipe-body">
+                        <div class="recipe-macros"><span class="rmacro kcal">~350 kcal</span><span class="rmacro prot">14g protein</span><span class="rmacro carb">55g karb</span></div>
+                        <div><div class="recipe-sec-label">Malzemeler</div><ul class="recipe-ing"><li>50g yulaf</li><li>250ml süt</li><li>1 muz</li><li>1 yk fıstık ezmesi</li><li>tarçın</li></ul></div>
+                        <div><div class="recipe-sec-label">Hazırlanış</div><ol class="recipe-steps"><li>Yulaf ve sütü mikrodalga/tencerede 3-4 dk pişir.</li><li>Ezilmiş muzu karıştır.</li><li>Fıstık ezmesi ve tarçınla servis et.</li></ol></div>
+                    </div>
+                </div>
+
+                <div class="recipe-card green" data-cat="ara">
+                    <div class="recipe-head"><div class="recipe-emoji">🥪</div><div><div class="recipe-title">Ton Balıklı Sandviç</div><div class="recipe-time">⏱️ 5 dk · çok kolay</div></div></div>
+                    <div class="recipe-body">
+                        <div class="recipe-macros"><span class="rmacro kcal">~360 kcal</span><span class="rmacro prot">28g protein</span><span class="rmacro carb">30g karb</span></div>
+                        <div><div class="recipe-sec-label">Malzemeler</div><ul class="recipe-ing"><li>2 dilim tam buğday ekmek</li><li>1 kutu ton (suyu süzülmüş)</li><li>marul</li><li>mısır</li><li>1 ts yoğurt</li></ul></div>
+                        <div><div class="recipe-sec-label">Hazırlanış</div><ol class="recipe-steps"><li>Tonu yoğurt ve mısırla karıştır.</li><li>Ekmeğe marul ve karışımı koy.</li><li>Kapatıp ikiye böl, servis et.</li></ol></div>
+                    </div>
+                </div>
+
+                <div class="recipe-card green" data-cat="ara">
+                    <div class="recipe-head"><div class="recipe-emoji">🥗</div><div><div class="recipe-title">Yoğurtlu Meyve & Granola Kase</div><div class="recipe-time">⏱️ 3 dk · çok kolay</div></div></div>
+                    <div class="recipe-body">
+                        <div class="recipe-macros"><span class="rmacro kcal">~330 kcal</span><span class="rmacro prot">20g protein</span><span class="rmacro carb">40g karb</span></div>
+                        <div><div class="recipe-sec-label">Malzemeler</div><ul class="recipe-ing"><li>200g yoğurt</li><li>1 muz</li><li>1 avuç granola</li><li>1 ts bal</li><li>tarçın</li></ul></div>
+                        <div><div class="recipe-sec-label">Hazırlanış</div><ol class="recipe-steps"><li>Yoğurdu kaseye al.</li><li>Dilimlenmiş muz ve granolayı ekle.</li><li>Bal ve tarçınla tatlandır.</li></ol></div>
+                    </div>
+                </div>
+
+                <div class="recipe-card green" data-cat="ara">
+                    <div class="recipe-head"><div class="recipe-emoji">🥑</div><div><div class="recipe-title">Avokadolu Yumurta Tost</div><div class="recipe-time">⏱️ 6 dk · kolay</div></div></div>
+                    <div class="recipe-body">
+                        <div class="recipe-macros"><span class="rmacro kcal">~340 kcal</span><span class="rmacro prot">16g protein</span><span class="rmacro carb">28g karb</span></div>
+                        <div><div class="recipe-sec-label">Malzemeler</div><ul class="recipe-ing"><li>2 dilim tam buğday tost</li><li>½ avokado</li><li>2 yumurta</li><li>pul biber</li><li>tuz</li></ul></div>
+                        <div><div class="recipe-sec-label">Hazırlanış</div><ol class="recipe-steps"><li>Ekmekleri kızart.</li><li>Avokadoyu ezip ekmeğe sür.</li><li>Sahanda/haşlanmış yumurtayı üstüne koy, pul biber serp.</li></ol></div>
+                    </div>
+                </div>
+
+                <div class="recipe-card" data-cat="ana">
+                    <div class="recipe-head"><div class="recipe-emoji">🌯</div><div><div class="recipe-title">Tavuklu Tam Buğday Wrap</div><div class="recipe-time">⏱️ 6 dk · kolay</div></div></div>
+                    <div class="recipe-body">
+                        <div class="recipe-macros"><span class="rmacro kcal">~420 kcal</span><span class="rmacro prot">35g protein</span><span class="rmacro carb">38g karb</span></div>
+                        <div><div class="recipe-sec-label">Malzemeler</div><ul class="recipe-ing"><li>1 tam buğday lavaş</li><li>100g pişmiş tavuk</li><li>marul, domates</li><li>1 yk yoğurt sos</li></ul></div>
+                        <div><div class="recipe-sec-label">Hazırlanış</div><ol class="recipe-steps"><li>Lavaşa yoğurt sosu sür.</li><li>Tavuk ve sebzeleri yerleştir.</li><li>Sıkıca sarıp ikiye böl.</li></ol></div>
+                    </div>
+                </div>
+
+                <div class="recipe-card" data-cat="ana">
+                    <div class="recipe-head"><div class="recipe-emoji">🍚</div><div><div class="recipe-title">Hızlı Tavuk & Sebze Bowl</div><div class="recipe-time">⏱️ 12 dk · kolay</div></div></div>
+                    <div class="recipe-body">
+                        <div class="recipe-macros"><span class="rmacro kcal">~480 kcal</span><span class="rmacro prot">40g protein</span><span class="rmacro carb">35g karb</span></div>
+                        <div><div class="recipe-sec-label">Malzemeler</div><ul class="recipe-ing"><li>120g tavuk göğsü (kuşbaşı)</li><li>1 kase karışık sebze</li><li>1 yk zeytinyağı</li><li>1 kase pişmiş pirinç/bulgur</li><li>baharat</li></ul></div>
+                        <div><div class="recipe-sec-label">Hazırlanış</div><ol class="recipe-steps"><li>Tavuğu zeytinyağında 6-7 dk soteleyip baharatla.</li><li>Sebzeleri ekleyip 3 dk çevir.</li><li>Pişmiş tahıl üzerine servis et.</li></ol></div>
+                    </div>
+                </div>
+
+                <div class="recipe-card blue" data-cat="shake">
+                    <div class="recipe-head"><div class="recipe-emoji">🥤</div><div><div class="recipe-title">Muz-Fıstık Ezmeli Shake</div><div class="recipe-time">⏱️ 4 dk · çok kolay</div></div></div>
+                    <div class="recipe-body">
+                        <div class="recipe-macros"><span class="rmacro kcal">~380 kcal</span><span class="rmacro prot">30g protein</span><span class="rmacro carb">45g karb</span></div>
+                        <div><div class="recipe-sec-label">Malzemeler</div><ul class="recipe-ing"><li>300ml süt</li><li>1 muz</li><li>1 yk fıstık ezmesi</li><li>1 ölçek whey (ops.)</li><li>buz</li></ul></div>
+                        <div><div class="recipe-sec-label">Hazırlanış</div><ol class="recipe-steps"><li>Tüm malzemeleri blendera koy.</li><li>30-40 sn pürüzsüz olana dek karıştır.</li><li>Bardağa al, hemen iç.</li></ol></div>
+                    </div>
+                </div>
+
+                <div class="recipe-card blue" data-cat="shake ana">
+                    <div class="recipe-head"><div class="recipe-emoji">💪</div><div><div class="recipe-title">Antrenman Sonrası Yulaf Shake</div><div class="recipe-time">⏱️ 4 dk · çok kolay</div></div></div>
+                    <div class="recipe-body">
+                        <div class="recipe-macros"><span class="rmacro kcal">~420 kcal</span><span class="rmacro prot">28g protein</span><span class="rmacro carb">55g karb</span></div>
+                        <div><div class="recipe-sec-label">Malzemeler</div><ul class="recipe-ing"><li>300ml süt</li><li>40g yulaf</li><li>1 muz</li><li>1 ölçek whey</li><li>1 ts bal</li></ul></div>
+                        <div><div class="recipe-sec-label">Hazırlanış</div><ol class="recipe-steps"><li>Yulaf ve sütü blendera koy.</li><li>Muz, whey ve balı ekle.</li><li>Pürüzsüz olana dek karıştır, antrenmandan sonra iç.</li></ol></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- HESAPLAYICILAR -->
+    <section id="calc">
+        <h2>🧮 Hesaplayıcılar</h2>
+        <p style="text-align:center;color:#94a3b8;max-width:640px;margin:-26px auto 36px;">Sporcu gelişimin için ihtiyacın olan tüm hesaplama araçları tek bir yerde.</p>
+
+        <div class="calc-picker">
+            <button class="calc-pick active" data-calc="kalori" onclick="showCalc('kalori',this)"><span class="cp-ic">🔥</span><span class="cp-tx"><b>Kalori &amp; Makro</b><small>Günlük ihtiyaç</small></span></button>
+            <button class="calc-pick" data-calc="bmi" onclick="showCalc('bmi',this)"><span class="cp-ic">📊</span><span class="cp-tx"><b>BMI &amp; Yağ Oranı</b><small>Vücut kompozisyonu</small></span></button>
+            <button class="calc-pick" data-calc="su" onclick="showCalc('su',this)"><span class="cp-ic">💧</span><span class="cp-tx"><b>Su İhtiyacı</b><small>Günlük hidrasyon</small></span></button>
+            <button class="calc-pick" data-calc="hr" onclick="showCalc('hr',this)"><span class="cp-ic">❤️</span><span class="cp-tx"><b>Kalp Atışı</b><small>Antrenman bölgeleri</small></span></button>
+            <button class="calc-pick" data-calc="onerm" onclick="showCalc('onerm',this)"><span class="cp-ic">🏋️</span><span class="cp-tx"><b>1RM Kuvvet</b><small>Maks. tek tekrar</small></span></button>
+        </div>
+
+        <div id="calcPanels">
+        <!-- HESAP: KALORİ & MAKRO -->
+        <div id="diet-tab-hesapla" class="calc-panel active" data-calc="kalori" style="max-width:680px;margin:0 auto;">
+            <div id="dietForm" style="max-width:680px;margin:0 auto 50px;">
+                <div style="background:#1e293b;border-radius:20px;padding:36px;border:1px solid #334155;">
+                    <p style="color:#94a3b8;margin-bottom:24px;text-align:center;">Bilgilerini gir, sana özel günlük beslenme planını hesaplayalım.</p>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                        <div>
+                            <label style="display:block;font-size:0.85rem;color:#94a3b8;margin-bottom:6px;">Yaş</label>
+                            <input type="number" id="dAge" placeholder="ör. 16" min="10" max="60" style="width:100%;padding:11px 14px;background:#0f172a;border:1px solid #334155;border-radius:10px;color:#f8fafc;font-size:0.95rem;outline:none;">
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:0.85rem;color:#94a3b8;margin-bottom:6px;">Kilo (kg)</label>
+                            <input type="number" id="dWeight" placeholder="ör. 65" min="30" max="150" style="width:100%;padding:11px 14px;background:#0f172a;border:1px solid #334155;border-radius:10px;color:#f8fafc;font-size:0.95rem;outline:none;">
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:0.85rem;color:#94a3b8;margin-bottom:6px;">Boy (cm)</label>
+                            <input type="number" id="dHeight" placeholder="ör. 175" min="100" max="230" style="width:100%;padding:11px 14px;background:#0f172a;border:1px solid #334155;border-radius:10px;color:#f8fafc;font-size:0.95rem;outline:none;">
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:0.85rem;color:#94a3b8;margin-bottom:6px;">Cinsiyet</label>
+                            <select id="dGender" style="width:100%;padding:11px 14px;background:#0f172a;border:1px solid #334155;border-radius:10px;color:#f8fafc;font-size:0.95rem;outline:none;">
+                                <option value="">Seç...</option>
+                                <option value="male">Erkek</option>
+                                <option value="female">Kadın</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <label style="display:block;font-size:0.85rem;color:#94a3b8;margin-bottom:8px;">Hedef</label>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                            <button class="dpill" onclick="dSelect(this,'goal','kilo-ver')">Kilo Ver</button>
+                            <button class="dpill" onclick="dSelect(this,'goal','koru')">Kilonu Koru</button>
+                            <button class="dpill" onclick="dSelect(this,'goal','kas-yap')">Kas Yap</button>
+                            <button class="dpill" onclick="dSelect(this,'goal','performans')">Performans</button>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:24px;">
+                        <label style="display:block;font-size:0.85rem;color:#94a3b8;margin-bottom:8px;">Aktivite Seviyesi</label>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                            <button class="dpill" onclick="dSelect(this,'act','1.375')">Az Aktif</button>
+                            <button class="dpill" onclick="dSelect(this,'act','1.55')">Orta Aktif</button>
+                            <button class="dpill" onclick="dSelect(this,'act','1.725')">Çok Aktif</button>
+                            <button class="dpill" onclick="dSelect(this,'act','1.9')">Elit Sporcu</button>
+                        </div>
+                    </div>
+                    <button onclick="calcDiet()" style="width:100%;padding:14px;background:linear-gradient(135deg,#ff4d05,#ff7738);border:none;border-radius:12px;color:white;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">
+                        Beslenme Programımı Oluştur
+                    </button>
+                    <p id="dietErr" style="color:#f87171;text-align:center;margin-top:12px;font-size:0.85rem;display:none;">Lütfen tüm alanları doldurun.</p>
+                </div>
+            </div>
+            <div id="dietResult" style="display:none;max-width:900px;margin:0 auto;">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:36px;" id="dietStats"></div>
+                <div class="grid-container" id="dietMeals"></div>
+                <div style="margin-top:20px;background:#1e293b;border-radius:16px;padding:24px;border:1px solid #334155;" id="dietNotes"></div>
+                <div style="text-align:center;margin-top:30px;">
+                    <button onclick="resetDiet()" style="padding:12px 30px;background:transparent;border:1.5px solid #334155;border-radius:10px;color:#94a3b8;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.95rem;">
+                        Yeniden Hesapla
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- HESAP: BMI & YAĞ ORANI -->
+        <div id="diet-tab-bmi" class="calc-panel" data-calc="bmi" style="max-width:720px;margin:0 auto;">
+            <div style="background:#1e293b;border-radius:20px;padding:32px;border:1px solid #334155;">
+                <p style="color:#94a3b8;text-align:center;margin-bottom:24px;">Vücut Kitle İndeksi ve <strong style="color:#f8fafc;">US Navy çevre ölçümü</strong> yöntemiyle yüksek doğrulukta vücut yağ oranı.</p>
+                <div class="calc-grid" style="margin-bottom:16px;">
+                    <div class="calc-field">
+                        <label>Cinsiyet</label>
+                        <select id="bfGender" class="calc-select" onchange="toggleHipField()">
+                            <option value="">Seç...</option>
+                            <option value="male">Erkek</option>
+                            <option value="female">Kadın</option>
+                        </select>
+                    </div>
+                    <div class="calc-field">
+                        <label>Yaş</label>
+                        <input id="bfAge" type="number" class="calc-input" placeholder="ör. 16" min="10" max="80">
+                    </div>
+                    <div class="calc-field">
+                        <label>Boy (cm)</label>
+                        <input id="bfHeight" type="number" class="calc-input" placeholder="ör. 175" min="100" max="230">
+                    </div>
+                    <div class="calc-field">
+                        <label>Kilo (kg)</label>
+                        <input id="bfWeight" type="number" class="calc-input" placeholder="ör. 65" min="25" max="200">
+                    </div>
+                </div>
+                <div style="border-top:1px dashed #334155;margin:8px 0 18px;padding-top:18px;">
+                    <p style="font-size:0.82rem;color:#e2e8f0;margin-bottom:14px;font-weight:600;">📏 Mezura ile çevre ölçümleri <span style="color:#5d6b82;font-weight:500;">— yağ oranı için</span></p>
+                    <div class="calc-grid">
+                        <div class="calc-field">
+                            <label>Boyun çevresi (cm)</label>
+                            <input id="bfNeck" type="number" class="calc-input" placeholder="ör. 38" min="20" max="70">
+                            <div class="calc-hint">Gırtlağın hemen altından, baş hafif öne eğik.</div>
+                        </div>
+                        <div class="calc-field">
+                            <label>Bel çevresi (cm)</label>
+                            <input id="bfWaist" type="number" class="calc-input" placeholder="ör. 80" min="40" max="200">
+                            <div class="calc-hint" id="waistHint">Erkek: göbek deliği hizasından.</div>
+                        </div>
+                        <div class="calc-field" id="hipFieldWrap" style="display:none;">
+                            <label>Kalça çevresi (cm)</label>
+                            <input id="bfHip" type="number" class="calc-input" placeholder="ör. 95" min="50" max="200">
+                            <div class="calc-hint">En geniş yerden ölç (yalnızca kadınlar için).</div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="calcBMIBF()" style="width:100%;padding:14px;background:linear-gradient(135deg,#ff6322,#ff9248);border:none;border-radius:12px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;box-shadow:0 8px 22px -8px rgba(255,90,24,0.45);">Hesapla</button>
+                <p id="bfErr" style="color:#f87171;text-align:center;margin-top:12px;font-size:0.85rem;display:none;"></p>
+            </div>
+            <div id="bfResult" style="display:none;margin-top:24px;"></div>
+            <p style="font-size:0.74rem;color:#5d6b82;text-align:center;margin-top:18px;line-height:1.55;">⚕️ Bilgilendirme amaçlıdır. En yüksek doğruluk için DEXA, hidrostatik tartım veya BIA cihazları kullanılır. Kas kütlesi yüksek sporcularda BMI yanıltıcı olabilir; yağ oranını dikkate al.</p>
+        </div>
+
+
+                <!-- HESAP: SU İHTİYACI -->
+                <div id="calc-su" class="calc-panel" data-calc="su" style="max-width:680px;margin:0 auto;">
+                    <div class="calc-card">
+                        <p class="calc-lead">Vücut ağırlığın ve günlük antrenman süresine göre ihtiyacın olan su miktarı.</p>
+                        <div class="calc-grid">
+                            <div class="calc-field"><label>Kilo (kg)</label><input id="wWeight" type="number" class="calc-input" placeholder="ör. 65" min="25" max="200"></div>
+                            <div class="calc-field"><label>Günlük antrenman (dk)</label><input id="wEx" type="number" class="calc-input" placeholder="ör. 60" min="0" max="400"></div>
+                        </div>
+                        <button class="calc-btn" onclick="calcWater()">Hesapla</button>
+                        <p id="wErr" class="calc-err"></p>
+                    </div>
+                    <div id="wResult" class="calc-result" style="display:none;"></div>
+                    <p class="calc-note">Sıcak havada veya yoğun terlemede ihtiyaç artar. İdrar rengi açık sarı olacak şekilde gün boyu dengeli iç.</p>
+                </div>
+
+                <!-- HESAP: KALP ATIŞI BÖLGELERİ -->
+                <div id="calc-hr" class="calc-panel" data-calc="hr" style="max-width:680px;margin:0 auto;">
+                    <div class="calc-card">
+                        <p class="calc-lead">Maksimum kalp atışına göre antrenman nabız bölgelerin. Dinlenme nabzını girersen Karvonen yöntemiyle daha kişisel olur.</p>
+                        <div class="calc-grid">
+                            <div class="calc-field"><label>Yaş</label><input id="hrAge" type="number" class="calc-input" placeholder="ör. 16" min="10" max="90"></div>
+                            <div class="calc-field"><label>Dinlenme nabzı <span style="color:#5d6b82;">(ops.)</span></label><input id="hrRest" type="number" class="calc-input" placeholder="ör. 60" min="30" max="120"></div>
+                        </div>
+                        <button class="calc-btn" onclick="calcHR()">Hesapla</button>
+                        <p id="hrErr" class="calc-err"></p>
+                    </div>
+                    <div id="hrResult" class="calc-result" style="display:none;"></div>
+                    <p class="calc-note">Maks. nabız: 211 − 0.64 × yaş (Nes ve ark.). Bölgeler bireysel olarak değişebilir.</p>
+                </div>
+
+                <!-- HESAP: 1RM (MAKS. KUVVET) -->
+                <div id="calc-1rm" class="calc-panel" data-calc="onerm" style="max-width:680px;margin:0 auto;">
+                    <div class="calc-card">
+                        <p class="calc-lead">Bir harekette belirli tekrarla kaldırdığın ağırlıktan tek tekrar maksimum (1RM) tahmini ve antrenman yükleri.</p>
+                        <div class="calc-grid">
+                            <div class="calc-field"><label>Ağırlık (kg)</label><input id="rmW" type="number" class="calc-input" placeholder="ör. 60" min="1" max="500"></div>
+                            <div class="calc-field"><label>Tekrar sayısı</label><input id="rmR" type="number" class="calc-input" placeholder="ör. 5" min="1" max="12"></div>
+                        </div>
+                        <button class="calc-btn" onclick="calc1RM()">Hesapla</button>
+                        <p id="rmErr" class="calc-err"></p>
+                    </div>
+                    <div id="rmResult" class="calc-result" style="display:none;"></div>
+                    <p class="calc-note">En doğru sonuç 1–6 tekrarda alınır. 8+ tekrarda tahmin sapabilir. Isınmadan ağır kaldırma.</p>
+                </div>
+
+        </div>
     </section>
 
     <footer>
@@ -2398,7 +3115,7 @@
         document.querySelectorAll('.diet-tab').forEach(function(b) { b.classList.remove('active'); });
         event.target.classList.add('active');
 
-        var tabs = ['hesapla', 'ogunler', 'takviye'];
+        var tabs = ['ogunler', 'takviye', 'tarifler'];
         tabs.forEach(function(t) {
             var el = document.getElementById('diet-tab-' + t);
             if (el) el.style.display = (t === tab) ? 'block' : 'none';
@@ -2416,6 +3133,211 @@
         var target = document.getElementById(planId);
         if (target) target.style.display = 'block';
     }
+    // ===== BMI & VÜCUT YAĞ ORANI =====
+    function toggleHipField() {
+        var g = document.getElementById('bfGender').value;
+        var wrap = document.getElementById('hipFieldWrap');
+        var wh = document.getElementById('waistHint');
+        if (g === 'female') { wrap.style.display = 'block'; wh.textContent = 'Kadın: belin en ince yerinden.'; }
+        else { wrap.style.display = 'none'; wh.textContent = 'Erkek: göbek deliği hizasından.'; }
+    }
+
+    function bmiCat(b) {
+        if (b < 18.5) return { l: 'Zayıf', c: '#60a5fa' };
+        if (b < 25)   return { l: 'Normal', c: '#2ecc71' };
+        if (b < 30)   return { l: 'Fazla Kilolu', c: '#facc15' };
+        if (b < 35)   return { l: 'Obez (Sınıf 1)', c: '#f97316' };
+        return { l: 'Obez (Sınıf 2+)', c: '#ef4444' };
+    }
+    function bfCat(bf, gender) {
+        var t = (gender === 'female')
+            ? [{ m: 13, l: 'Esansiyel', c: '#60a5fa' }, { m: 20, l: 'Atletik', c: '#2ecc71' }, { m: 24, l: 'Fit', c: '#22c55e' }, { m: 31, l: 'Ortalama', c: '#facc15' }, { m: 999, l: 'Yüksek', c: '#ef4444' }]
+            : [{ m: 5,  l: 'Esansiyel', c: '#60a5fa' }, { m: 13, l: 'Atletik', c: '#2ecc71' }, { m: 17, l: 'Fit', c: '#22c55e' }, { m: 24, l: 'Ortalama', c: '#facc15' }, { m: 999, l: 'Yüksek', c: '#ef4444' }];
+        for (var i = 0; i < t.length; i++) { if (bf <= t[i].m) return t[i]; }
+        return t[t.length - 1];
+    }
+
+    function calcBMIBF() {
+        var g = document.getElementById('bfGender').value;
+        var h = parseFloat(document.getElementById('bfHeight').value);
+        var w = parseFloat(document.getElementById('bfWeight').value);
+        var neck = parseFloat(document.getElementById('bfNeck').value);
+        var waist = parseFloat(document.getElementById('bfWaist').value);
+        var hip = parseFloat(document.getElementById('bfHip').value);
+        var err = document.getElementById('bfErr');
+        err.style.display = 'none';
+
+        if (!h || !w || h < 100 || w < 25) {
+            err.textContent = 'Lütfen geçerli boy ve kilo gir.';
+            err.style.display = 'block';
+            return;
+        }
+
+        var hm = h / 100;
+        var bmi = w / (hm * hm);
+        var bc = bmiCat(bmi);
+        var hwMin = 18.5 * hm * hm, hwMax = 24.9 * hm * hm;
+        var bmiPos = Math.max(2, Math.min(98, (bmi - 15) / (35 - 15) * 100));
+
+        var html = '';
+        html += '<div style="background:#1e293b;border:1px solid #334155;border-radius:18px;padding:24px;margin-bottom:18px;">';
+        html += '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px;"><h3 style="font-family:\'Space Grotesk\',Inter,sans-serif;color:#fff;font-size:1.1rem;">Vücut Kitle İndeksi (BMI)</h3><span class="result-cat" style="background:' + bc.c + '22;color:' + bc.c + ';border:1px solid ' + bc.c + '55;">' + bmi.toFixed(1) + ' · ' + bc.l + '</span></div>';
+        html += '<div class="meter"><div class="meter-marker" style="left:' + bmiPos + '%;"></div></div>';
+        html += '<div class="meter-scale"><span>15</span><span>18.5</span><span>25</span><span>30</span><span>35+</span></div>';
+        html += '<p style="font-size:0.83rem;color:#94a3b8;margin-top:13px;">Boyuna göre sağlıklı kilo aralığı: <strong style="color:#2ecc71;">' + hwMin.toFixed(1) + '–' + hwMax.toFixed(1) + ' kg</strong></p>';
+        html += '</div>';
+
+        // US Navy vücut yağ oranı
+        var bf = null;
+        if (g && neck && waist) {
+            var val = null;
+            if (g === 'male') {
+                if (waist - neck > 0) val = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(h)) - 450;
+            } else if (hip) {
+                if (waist + hip - neck > 0) val = 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.22100 * Math.log10(h)) - 450;
+            }
+            if (val !== null && val > 2 && val < 70) bf = Math.round(val * 10) / 10;
+        }
+
+        if (bf !== null) {
+            var fc = bfCat(bf, g);
+            var lo = (g === 'female') ? 10 : 4, hi = (g === 'female') ? 45 : 40;
+            var bfPos = Math.max(2, Math.min(98, (bf - lo) / (hi - lo) * 100));
+            var fatMass = Math.round(w * bf / 100 * 10) / 10;
+            var leanMass = Math.round((w - fatMass) * 10) / 10;
+            html += '<div style="background:#1e293b;border:1px solid #334155;border-radius:18px;padding:24px;">';
+            html += '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px;"><h3 style="font-family:\'Space Grotesk\',Inter,sans-serif;color:#fff;font-size:1.1rem;">Vücut Yağ Oranı</h3><span class="result-cat" style="background:' + fc.c + '22;color:' + fc.c + ';border:1px solid ' + fc.c + '55;">%' + bf.toFixed(1) + ' · ' + fc.l + '</span></div>';
+            html += '<div class="meter" style="background:linear-gradient(90deg,#60a5fa,#2ecc71 30%,#facc15 65%,#ef4444);"><div class="meter-marker" style="left:' + bfPos + '%;"></div></div>';
+            html += '<div class="meter-scale"><span>%' + lo + '</span><span>Atletik</span><span>Fit</span><span>Ortalama</span><span>%' + hi + '+</span></div>';
+            html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;"><div class="stat-card"><div class="stat-val" style="color:#f97316;">' + fatMass + ' kg</div><div class="stat-lbl">Yağ Kütlesi</div></div><div class="stat-card"><div class="stat-val" style="color:#2ecc71;">' + leanMass + ' kg</div><div class="stat-lbl">Yağsız Kütle</div></div></div>';
+            html += '<p style="font-size:0.74rem;color:#5d6b82;margin-top:12px;">US Navy çevre ölçümü yöntemi · yaklaşık ±%3–4 doğruluk.</p>';
+            html += '</div>';
+        } else {
+            var msg = (!g) ? 'Yağ oranı için cinsiyet seç ve mezura ölçümlerini gir.'
+                : (g === 'female' && !hip ? 'Kadınlar için kalça çevresi ölçümü de gerekli.'
+                : 'Yağ oranı için boyun ve bel çevresi ölçümlerini gir.');
+            html += '<div style="background:rgba(15,23,42,0.6);border:1px dashed #475569;border-radius:18px;padding:20px;text-align:center;color:#94a3b8;font-size:0.88rem;">📏 ' + msg + '</div>';
+        }
+
+        var box = document.getElementById('bfResult');
+        box.innerHTML = html;
+        box.style.display = 'block';
+        box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // ===== PRATİK TARİF FİLTRESİ =====
+    function filterRecipes(cat) {
+        document.querySelectorAll('.rfilter').forEach(function (b) { b.classList.remove('active'); });
+        if (window.event && window.event.target) window.event.target.classList.add('active');
+        document.querySelectorAll('#recipeGrid .recipe-card').forEach(function (c) {
+            var cats = c.getAttribute('data-cat') || '';
+            var show = (cat === 'hepsi') || (cats.indexOf(cat) > -1);
+            c.style.display = show ? 'flex' : 'none';
+        });
+    }
+
+    // ===== HESAPLAYICI HUB: alt sekme geçişi =====
+    function showCalc(name, btn) {
+        document.querySelectorAll('.calc-pick').forEach(function (b) { b.classList.remove('active'); });
+        if (btn) btn.classList.add('active');
+        document.querySelectorAll('#calcPanels .calc-panel').forEach(function (p) {
+            p.classList.toggle('active', p.getAttribute('data-calc') === name);
+        });
+    }
+
+    // ===== SU İHTİYACI =====
+    function calcWater() {
+        var w = parseFloat(document.getElementById('wWeight').value);
+        var ex = parseFloat(document.getElementById('wEx').value) || 0;
+        var err = document.getElementById('wErr');
+        err.style.display = 'none';
+        if (!w || w < 25) { err.textContent = 'Lütfen geçerli kilo gir.'; err.style.display = 'block'; return; }
+        var baseMl = w * 35;                 // 35 ml / kg
+        var exMl = ex * 12;                  // ~360 ml / 30 dk
+        var total = Math.round(baseMl + exMl);
+        var liters = (total / 1000).toFixed(1);
+        var glasses = Math.round(total / 250);
+        var html = '<div class="calc-result-card">' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
+            '<div class="stat-card"><div class="stat-val" style="color:#38bdf8;">' + liters + ' L</div><div class="stat-lbl">Günlük Su</div></div>' +
+            '<div class="stat-card"><div class="stat-val" style="color:#38bdf8;">' + glasses + '</div><div class="stat-lbl">Bardak (~250ml)</div></div>' +
+            '</div>' +
+            '<p style="font-size:0.84rem;color:#94a3b8;margin-top:16px;text-align:center;">Temel: <strong style="color:#cbd5e1;">' + Math.round(baseMl) + ' ml</strong>' +
+            (ex > 0 ? ' &nbsp;+&nbsp; Antrenman: <strong style="color:#cbd5e1;">' + Math.round(exMl) + ' ml</strong>' : '') + '</p>' +
+            '</div>';
+        var box = document.getElementById('wResult');
+        box.innerHTML = html; box.style.display = 'block';
+        box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // ===== KALP ATIŞI BÖLGELERİ =====
+    function calcHR() {
+        var age = parseFloat(document.getElementById('hrAge').value);
+        var rest = parseFloat(document.getElementById('hrRest').value);
+        var err = document.getElementById('hrErr');
+        err.style.display = 'none';
+        if (!age || age < 10 || age > 90) { err.textContent = 'Lütfen geçerli yaş gir.'; err.style.display = 'block'; return; }
+        var maxHR = Math.round(211 - 0.64 * age);
+        var useKarvonen = rest && rest >= 30 && rest <= 120;
+        var zones = [
+            { n: 'Bölge 1 · Isınma',     s: 'Çok hafif · toparlanma',   lo: 0.50, hi: 0.60, c: '#60a5fa' },
+            { n: 'Bölge 2 · Yağ Yakım',  s: 'Hafif · dayanıklılık',     lo: 0.60, hi: 0.70, c: '#22c55e' },
+            { n: 'Bölge 3 · Aerobik',    s: 'Orta · kardiyo gelişimi',  lo: 0.70, hi: 0.80, c: '#facc15' },
+            { n: 'Bölge 4 · Anaerobik',  s: 'Zor · performans',         lo: 0.80, hi: 0.90, c: '#f97316' },
+            { n: 'Bölge 5 · Maksimum',   s: 'Çok zor · sprint',         lo: 0.90, hi: 1.00, c: '#ef4444' }
+        ];
+        function bpm(p) {
+            return useKarvonen ? Math.round((maxHR - rest) * p + rest) : Math.round(maxHR * p);
+        }
+        var rows = zones.map(function (z) {
+            return '<div class="zrow"><span class="zdot" style="background:' + z.c + ';"></span>' +
+                '<span><span class="zname">' + z.n + '</span><br><span class="zsub">' + z.s + '</span></span>' +
+                '<span class="zbpm">' + bpm(z.lo) + '–' + bpm(z.hi) + ' bpm</span></div>';
+        }).join('');
+        var html = '<div class="calc-result-card">' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">' +
+            '<h3 style="font-family:\'Space Grotesk\',Inter,sans-serif;color:#fff;font-size:1.1rem;">Maks. Kalp Atışı</h3>' +
+            '<span class="result-cat" style="background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.35);">' + maxHR + ' bpm</span></div>' +
+            rows +
+            '<p style="font-size:0.74rem;color:#5d6b82;margin-top:12px;">' + (useKarvonen ? 'Karvonen yöntemi (dinlenme nabzı dahil) — daha kişisel.' : 'Dinlenme nabzı girersen Karvonen yöntemiyle daha kişisel sonuç alırsın.') + '</p>' +
+            '</div>';
+        var box = document.getElementById('hrResult');
+        box.innerHTML = html; box.style.display = 'block';
+        box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // ===== 1RM (MAKS. KUVVET) =====
+    function calc1RM() {
+        var w = parseFloat(document.getElementById('rmW').value);
+        var r = parseFloat(document.getElementById('rmR').value);
+        var err = document.getElementById('rmErr');
+        err.style.display = 'none';
+        if (!w || w < 1 || !r || r < 1) { err.textContent = 'Lütfen geçerli ağırlık ve tekrar gir.'; err.style.display = 'block'; return; }
+        if (r > 12) { err.textContent = 'Daha doğru sonuç için 12 veya daha az tekrar gir.'; err.style.display = 'block'; return; }
+        var epley = w * (1 + r / 30);
+        var brzycki = r < 37 ? w * 36 / (37 - r) : epley;
+        var oneRM = Math.round((epley + brzycki) / 2 * 10) / 10;
+        var pcts = [
+            { p: 100, reps: '1 tekrar' }, { p: 95, reps: '2 tekrar' }, { p: 90, reps: '4 tekrar' },
+            { p: 85, reps: '6 tekrar' }, { p: 80, reps: '8 tekrar' }, { p: 75, reps: '10 tekrar' },
+            { p: 70, reps: '12 tekrar' }, { p: 65, reps: '15 tekrar' }
+        ];
+        var rows = pcts.map(function (x) {
+            return '<div class="rmrow"><span class="rm-pct">%' + x.p + '</span><span class="rm-kg">' + (Math.round(oneRM * x.p / 100 * 10) / 10) + ' kg</span><span class="rm-rep">' + x.reps + '</span></div>';
+        }).join('');
+        var html = '<div class="calc-result-card">' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:8px;">' +
+            '<h3 style="font-family:\'Space Grotesk\',Inter,sans-serif;color:#fff;font-size:1.1rem;">Tahmini 1RM</h3>' +
+            '<span class="result-cat" style="background:rgba(255,90,24,0.15);color:#ff8a45;border:1px solid rgba(255,90,24,0.35);">' + oneRM + ' kg</span></div>' +
+            '<p style="font-size:0.8rem;color:#94a3b8;margin-bottom:14px;">Antrenman yüzdesine göre kaldırman gereken ağırlıklar:</p>' +
+            rows +
+            '<p style="font-size:0.74rem;color:#5d6b82;margin-top:12px;">Epley &amp; Brzycki formüllerinin ortalaması.</p>' +
+            '</div>';
+        var box = document.getElementById('rmResult');
+        box.innerHTML = html; box.style.display = 'block';
+        box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
     function resetDiet() {
         dState = { goal: null, act: null };
         document.querySelectorAll('.dpill').forEach(function(b) { b.classList.remove('dsel'); });
