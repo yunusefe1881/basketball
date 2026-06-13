@@ -1040,6 +1040,7 @@
 
     <!-- ANA SAYFA HUB -->
     <section id="homeHub">
+        <div id="bugunBanner" class="bugun-banner" style="display:none;"></div>
         <h2>Ne yapmak istersin?</h2>
         <div class="hub-grid">
             <button class="hub-card" onclick="showView('matches')">
@@ -1524,12 +1525,99 @@
         }, 80);
     }
 
-    function renderMaclar(kat) {
+    function bugunISO(){
+        var d = new Date();
+        return d.getFullYear() + '-' +
+               String(d.getMonth() + 1).padStart(2, '0') + '-' +
+               String(d.getDate()).padStart(2, '0');
+    }
+
+    function salonMapsURL(salon){
+        var q = String(salon || '').replace(/\s*\([^)]*\)\s*$/, '').trim();
+        return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q + ' İstanbul');
+    }
+
+    function gotoBugun(){
+        showView('matches');
+        var b = bugunISO();
+        var hedef = MACLAR.some(function(m){ return m.tarih === b; }) ? b : null;
+        if (!hedef) {
+            var ileri = MACLAR.filter(function(m){ return m.tarih > b; }).map(function(m){ return m.tarih; }).sort();
+            hedef = ileri.length ? ileri[0] : null;
+        }
+        renderMaclar(null, hedef);
+        setTimeout(function(){
+            var el = document.querySelector('.mg-bugun') || document.querySelector('.mg-blok') || document.getElementById('macListesi');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 60);
+    }
+
+    function renderBugunBanner(){
+        var box = document.getElementById('bugunBanner');
+        if (!box) return;
+
+        if (!document.getElementById('bugunStyle')) {
+            var bs = document.createElement('style');
+            bs.id = 'bugunStyle';
+            bs.textContent =
+                '.bugun-banner{max-width:900px;margin:0 auto 30px;background:linear-gradient(135deg,#1b1205,#1e293b);border:1px solid #ff5a1855;border-radius:18px;padding:18px 22px;box-shadow:0 12px 40px -14px #ff5a1840;}' +
+                '.bb-head{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1rem;color:#ffb98a;letter-spacing:0.3px;}' +
+                '.bb-dot{width:9px;height:9px;border-radius:50%;background:#ff3b30;box-shadow:0 0 0 4px #ff3b3033;animation:bbpulse 1.6s infinite;flex-shrink:0;}' +
+                '@keyframes bbpulse{0%,100%{opacity:1;}50%{opacity:0.35;}}' +
+                '.bb-count{margin-left:auto;font-size:0.75rem;font-weight:800;color:#fff;background:#ff5a18;padding:3px 11px;border-radius:20px;white-space:nowrap;}' +
+                '.bb-list{margin:14px 0 4px;display:flex;flex-direction:column;gap:9px;}' +
+                '.bb-mac{display:flex;align-items:center;gap:12px;font-size:0.86rem;color:#cbd5e1;min-width:0;}' +
+                '.bb-saat{font-weight:900;color:#ff7849;min-width:46px;flex-shrink:0;}' +
+                '.bb-vs{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+                '.bb-vs i{color:#64748b;font-style:normal;font-size:0.78rem;padding:0 5px;}' +
+                '.bb-kalan{font-size:0.78rem;color:#64748b;padding-left:58px;}' +
+                '.bb-btn{margin-top:14px;background:linear-gradient(135deg,#ff6322,#ff9248);color:#fff;border:none;border-radius:10px;padding:11px 20px;font-weight:800;font-size:0.9rem;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;}' +
+                '.bb-btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px -8px #ff5a1899;}' +
+                '.bb-bos-alt{margin:10px 0 2px;font-size:0.88rem;color:#94a3b8;}' +
+                '.bb-bos-alt b{color:#e2e8f0;}' +
+                '.bb-dot.bos{background:#475569;box-shadow:none;animation:none;}' +
+                '.bb-head.bos{color:#94a3b8;}';
+            document.head.appendChild(bs);
+        }
+
+        var bugun = bugunISO();
+        var bugunMac = MACLAR.filter(function(m){ return m.tarih === bugun; });
+
+        if (bugunMac.length) {
+            bugunMac.sort(function(a,b){ return a.saat.localeCompare(b.saat); });
+            var satirlar = bugunMac.slice(0, 4).map(function(m){
+                return '<div class="bb-mac"><span class="bb-saat">' + m.saat + '</span>' +
+                       '<span class="bb-vs">' + m.a + ' <i>vs</i> ' + m.b + '</span></div>';
+            }).join('');
+            var kalan = bugunMac.length > 4 ? '<div class="bb-kalan">+' + (bugunMac.length - 4) + ' maç daha</div>' : '';
+            box.innerHTML =
+                '<div class="bb-head"><span class="bb-dot"></span>BUGÜN · ' + bugunMac[0].gun + ', ' + bugunMac[0].td +
+                    '<span class="bb-count">' + bugunMac.length + ' maç</span></div>' +
+                '<div class="bb-list">' + satirlar + kalan + '</div>' +
+                '<button class="bb-btn" onclick="gotoBugun()">Bugünün maçlarını gör →</button>';
+            box.style.display = '';
+        } else {
+            var ileri = MACLAR.filter(function(m){ return m.tarih > bugun; }).map(function(m){ return m.tarih; }).sort();
+            if (ileri.length) {
+                var sm = MACLAR.filter(function(m){ return m.tarih === ileri[0]; })[0];
+                box.innerHTML =
+                    '<div class="bb-head bos"><span class="bb-dot bos"></span>Bugün planlanmış maç yok</div>' +
+                    '<div class="bb-bos-alt">Sıradaki maç günü: <b>' + sm.gun + ', ' + sm.td + '</b></div>' +
+                    '<button class="bb-btn" onclick="gotoBugun()">Takvime git →</button>';
+                box.style.display = '';
+            } else {
+                box.style.display = 'none';
+            }
+        }
+    }
+
+    function renderMaclar(kat, sadeceTarih) {
         var liste = document.getElementById('macListesi');
         var yok   = document.getElementById('macYok');
         var placeholder = document.getElementById('macSecilmedi');
         if (placeholder) placeholder.style.display = 'none';
         var filtered = kat ? MACLAR.filter(function(m){ return m.kat === kat; }) : MACLAR;
+        if (sadeceTarih) filtered = filtered.filter(function(m){ return m.tarih === sadeceTarih; });
 
         liste.innerHTML = '';
 
@@ -1570,10 +1658,14 @@
                 '.ms-vs-ic{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#0a1628;border:1.5px solid #1e3050;font-size:0.65rem;font-weight:900;color:#2d4060;letter-spacing:1px;}' +
                 '.ms-meta{flex:0 0 230px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:7px;padding:14px 24px 14px 14px;border-left:1px solid #0d1826;}' +
                 '.ms-rozet{font-size:0.74rem;font-weight:800;padding:4px 14px;border-radius:20px;white-space:nowrap;}' +
-                '.ms-salon{font-size:0.72rem;color:#3d5068;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:210px;}' +
+                '.ms-salon{display:block;font-size:0.72rem;color:#5b738f;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:210px;cursor:pointer;text-decoration:none;transition:color 0.15s;}' +
+                '.ms-salon:hover{color:#ff7849;text-decoration:underline;}' +
                 '.ms-salon::before{content:"📍 ";font-size:0.65rem;}' +
                 '.ms-grup{font-size:0.68rem;font-weight:700;padding:2px 10px;border-radius:8px;background:#0f1929;color:#475569;border:1px solid #1e293b;}' +
-                '@media(max-width:680px){.ms-meta{display:none;}.ms-saat{flex:0 0 80px;}.ms-takim-isim{font-size:0.88rem;}.ms-vs-ic{width:30px;height:30px;font-size:0.58rem;}}';
+                '.mg-bugun{border-color:#ff5a18;box-shadow:0 0 0 1px #ff5a1855,0 6px 24px -8px #ff5a1855;}' +
+                '.mg-bugun .mg-hdr{background:linear-gradient(90deg,#2a1810,#1e293b);}' +
+                '.mg-bugun-rozet{display:inline-block;margin-left:8px;font-size:0.62rem;font-weight:900;letter-spacing:0.5px;color:#fff;background:#ff5a18;padding:2px 8px;border-radius:6px;vertical-align:middle;}' +
+                '@media(max-width:680px){.ms{flex-wrap:wrap;}.ms-meta{flex:1 0 100%;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;border-left:none;border-top:1px solid #0d1826;padding:8px 14px;}.ms-rozet,.ms-grup{display:none;}.ms-salon{max-width:none;font-size:0.78rem;}.ms-saat{flex:0 0 80px;}.ms-takim-isim{font-size:0.88rem;}.ms-vs-ic{width:30px;height:30px;font-size:0.58rem;}}';
             document.head.appendChild(st);
         }
 
@@ -1584,16 +1676,18 @@
         });
 
         var tarihler = Object.keys(gruplar).sort();
+        var bugun = bugunISO();
 
         tarihler.forEach(function(t, idx){
             var maclar = gruplar[t].sort(function(a,b){ return a.saat.localeCompare(b.saat); });
             var ilk  = maclar[0];
             var renk = kat ? getKatRenk(kat) : '#ff4d05';
+            var isBugun = (t === bugun);
             var bid  = 'mg_' + t.replace(/-/g,'');
             var cid  = bid + '_c';
 
             var blok = document.createElement('div');
-            blok.className = 'mg-blok';
+            blok.className = 'mg-blok' + (isBugun ? ' mg-bugun' : '');
 
             var hdr = document.createElement('div');
             hdr.className = 'mg-hdr';
@@ -1601,7 +1695,7 @@
                 '<div class="mg-sol">' +
                     '<div class="mg-bar" style="background:' + renk + '"></div>' +
                     '<div>' +
-                        '<div class="mg-tarih">' + ilk.gun + ', ' + ilk.td + '</div>' +
+                        '<div class="mg-tarih">' + ilk.gun + ', ' + ilk.td + (isBugun ? ' <span class="mg-bugun-rozet">BUGÜN</span>' : '') + '</div>' +
                         '<div class="mg-sayi">' + maclar.length + ' mac</div>' +
                     '</div>' +
                 '</div>' +
@@ -1627,7 +1721,7 @@
                     '</div>' +
                     '<div class="ms-meta">' +
                         '<span class="ms-rozet" style="color:' + kr + ';border:1px solid ' + kr + '44;background:' + kr + '18;">' + m.kat + '</span>' +
-                        '<div class="ms-salon">' + m.salon + '</div>' +
+                        '<a class="ms-salon" href="' + salonMapsURL(m.salon) + '" target="_blank" rel="noopener" title="Google Maps\'te göster">' + m.salon + '</a>' +
                         (m.grup ? '<span class="ms-grup">' + m.grup + '</span>' : '') +
                     '</div>';
                 body.appendChild(satir);
@@ -1646,7 +1740,7 @@
             blok.appendChild(body);
             liste.appendChild(blok);
 
-            if (idx === 0) {
+            if (idx === 0 || isBugun) {
                 body.classList.add('ac');
                 var ch = document.getElementById(cid);
                 if (ch) ch.classList.add('ac');
@@ -1658,7 +1752,7 @@
     // Mac verileri TBF Istanbul programindan uretilen data/matches.json'dan yuklenir
     fetch('data/matches.json', { cache: 'no-store' })
         .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-        .then(function (data) { MACLAR = Array.isArray(data) ? data : []; initKatFiltre(); })
+        .then(function (data) { MACLAR = Array.isArray(data) ? data : []; initKatFiltre(); renderBugunBanner(); })
         .catch(function (e) {
             console.error('matches.json yuklenemedi:', e);
             var ml = document.getElementById('macListesi');
