@@ -996,6 +996,11 @@
             <span class="di-txt"><span class="di-title">Maç Takvimi</span><span class="di-desc">Lig programı ve takım araması</span></span>
             <span class="di-chev">›</span>
         </a>
+        <a class="drawer-item" data-view="standings" onclick="showView('standings',event)">
+            <span class="di-ico">📊</span>
+            <span class="di-txt"><span class="di-title">Puan Durumu</span><span class="di-desc">Lig tabloları ve sıralamalar</span></span>
+            <span class="di-chev">›</span>
+        </a>
         <a class="drawer-item" data-view="training" onclick="showView('training',event)">
             <span class="di-ico">💪</span>
             <span class="di-txt"><span class="di-title">Antrenman</span><span class="di-desc">Spora özel haftalık programlar</span></span>
@@ -1043,6 +1048,13 @@
                 <h3>Maç Takvimi</h3>
                 <p>U10–U18 altyapı liglerinin tüm haftalık programı. Yaş ve lige göre filtrele, takım adıyla ara.</p>
                 <span class="hub-go">Takvimi aç <span>→</span></span>
+            </button>
+            <button class="hub-card" onclick="showView('standings')">
+                <span class="hub-tag">Lig</span>
+                <span class="hub-ico">📊</span>
+                <h3>Puan Durumu</h3>
+                <p>Lig tabloları: oynanan, galibiyet, mağlubiyet, averaj ve puan. Lige ve gruba göre sıralamalar.</p>
+                <span class="hub-go">Tabloları gör <span>→</span></span>
             </button>
             <button class="hub-card blue" onclick="showView('training')">
                 <span class="hub-tag">Program</span>
@@ -1147,6 +1159,25 @@
         </div>
     </section>
 
+    <!-- PUAN DURUMU -->
+    <section id="standings">
+        <h2>📊 Puan Durumu</h2>
+        <p id="puanGuncelleme" style="text-align:center;color:#64748b;font-size:0.85rem;margin:-10px auto 28px;"></p>
+
+        <!-- LİG SEÇİCİ -->
+        <div id="puanLigSecici" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:980px;margin:0 auto 28px;"></div>
+
+        <!-- TABLO ALANI -->
+        <div id="puanTablolar" style="max-width:980px;margin:0 auto;"></div>
+
+        <p id="puanYok" style="text-align:center;color:#64748b;display:none;padding:40px;">Puan durumu şu an yüklenemedi. Lütfen daha sonra tekrar deneyin.</p>
+        <div id="puanSecilmedi" style="text-align:center;color:#64748b;padding:60px 20px;">
+            <div style="font-size:2.5rem;margin-bottom:16px;">📊</div>
+            <div style="font-size:1.05rem;font-weight:700;color:#94a3b8;margin-bottom:8px;">Puan durumunu görmek için bir lig seçin</div>
+            <div style="font-size:0.85rem;">Yukarıdaki lig düğmelerinden birini seçin</div>
+        </div>
+    </section>
+
     <script>
     // ===== DRAWER NAV =====
     function openMenu() {
@@ -1170,11 +1201,12 @@
     var VIEW_MAP = {
         home:     { els: ['heroSection', 'homeHub'], label: 'Ana Sayfa',   icon: '🏠' },
         matches:  { els: ['matches'],                label: 'Maç Takvimi', icon: '🏀' },
+        standings:{ els: ['standings'],              label: 'Puan Durumu', icon: '📊' },
         training: { els: ['training'],               label: 'Antrenman',   icon: '💪' },
         diet:     { els: ['diet'],                   label: 'Beslenme',    icon: '🥗' },
         calc:     { els: ['calc'],                   label: 'Hesaplayıcılar', icon: '🧮' }
     };
-    var ALL_VIEW_ELS = ['heroSection', 'homeHub', 'matches', 'training', 'diet', 'calc'];
+    var ALL_VIEW_ELS = ['heroSection', 'homeHub', 'matches', 'standings', 'training', 'diet', 'calc'];
 
     function showView(name, ev) {
         if (ev && ev.preventDefault) ev.preventDefault();
@@ -1636,6 +1668,123 @@
             }
         });
     // Sayfa açıldığında maç listesi gizli — kategori seçilince gösterilir
+
+    // ===== PUAN DURUMU =====
+    var STANDINGS = null;
+    var secilenLigId = null;
+
+    function puanEsc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+    }
+
+    function buildPuanStil() {
+        if (document.getElementById('puanSt')) return;
+        var s = document.createElement('style');
+        s.id = 'puanSt';
+        s.textContent =
+            '.puan-lig-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:50px;border:1.5px solid #334155;background:transparent;color:#94a3b8;font-family:Inter,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.18s;}' +
+            '.puan-lig-btn:hover{border-color:#ff4d05;color:#f1f5f9;transform:translateY(-2px);}' +
+            '.puan-lig-btn.aktif{background:#ff4d05;border-color:#ff4d05;color:#fff;box-shadow:0 6px 18px -6px rgba(255,77,5,0.6);}' +
+            '.puan-grup-kart{background:#111827;border:1px solid #1e293b;border-radius:16px;padding:18px 18px 10px;margin-bottom:22px;overflow-x:auto;}' +
+            '.puan-grup-baslik{font-size:0.95rem;font-weight:800;color:#f1f5f9;margin-bottom:14px;display:flex;align-items:center;gap:8px;}' +
+            '.puan-grup-baslik .pg-hafta{font-size:0.7rem;font-weight:600;color:#64748b;margin-left:auto;}' +
+            '.puan-tablo{width:100%;border-collapse:collapse;font-family:Inter,sans-serif;min-width:420px;}' +
+            '.puan-tablo th{font-size:0.66rem;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:#64748b;text-align:center;padding:8px 6px;border-bottom:1px solid #1e293b;}' +
+            '.puan-tablo th.takim,.puan-tablo td.takim{text-align:left;}' +
+            '.puan-tablo td{font-size:0.86rem;color:#cbd5e1;text-align:center;padding:10px 6px;border-bottom:1px solid #1e293b;}' +
+            '.puan-tablo td.puan{font-weight:800;color:#f1f5f9;}' +
+            '.puan-tablo td.sira{font-weight:800;color:#64748b;width:34px;}' +
+            '.puan-takim{display:flex;align-items:center;gap:10px;font-weight:600;color:#f1f5f9;}' +
+            '.puan-takim img{width:24px;height:24px;object-fit:contain;border-radius:5px;flex-shrink:0;background:#1e293b;}' +
+            '.puan-tablo tbody tr:hover td{background:rgba(255,77,5,0.05);}' +
+            '@media(max-width:560px){.puan-tablo .hide-sm{display:none;}.puan-tablo td,.puan-tablo th{padding:8px 4px;}.puan-takim img{width:20px;height:20px;}}';
+        document.head.appendChild(s);
+    }
+
+    function initPuanDurumu() {
+        buildPuanStil();
+        var sec = document.getElementById('puanLigSecici');
+        var ligler = (STANDINGS && STANDINGS.ligler) || [];
+        var gun = document.getElementById('puanGuncelleme');
+        if (gun) gun.textContent = (STANDINGS && STANDINGS.guncelleme) ? ('Son güncelleme: ' + STANDINGS.guncelleme) : '';
+        sec.innerHTML = '';
+        if (!ligler.length) {
+            document.getElementById('puanSecilmedi').style.display = 'none';
+            var py = document.getElementById('puanYok');
+            py.style.display = 'block';
+            py.textContent = 'Şu an gösterilecek puan durumu yok.';
+            return;
+        }
+        ligler.forEach(function (lig) {
+            var b = document.createElement('button');
+            b.className = 'puan-lig-btn';
+            b.id = 'puanLig_' + lig.leagueId;
+            b.innerHTML = '📊 ' + puanEsc(lig.etiket);
+            b.onclick = (function (id) { return function () { selectLig(id); }; })(lig.leagueId);
+            sec.appendChild(b);
+        });
+        selectLig(ligler[0].leagueId);
+    }
+
+    function selectLig(leagueId) {
+        secilenLigId = leagueId;
+        document.querySelectorAll('.puan-lig-btn').forEach(function (b) {
+            b.classList.toggle('aktif', b.id === 'puanLig_' + leagueId);
+        });
+        var lig = ((STANDINGS && STANDINGS.ligler) || []).filter(function (l) { return l.leagueId === leagueId; })[0];
+        renderPuanTablolar(lig);
+    }
+
+    function renderPuanTablolar(lig) {
+        var wrap = document.getElementById('puanTablolar');
+        document.getElementById('puanSecilmedi').style.display = 'none';
+        var py = document.getElementById('puanYok');
+        py.style.display = 'none';
+        if (!lig || !lig.gruplar || !lig.gruplar.length) {
+            wrap.innerHTML = '';
+            py.style.display = 'block';
+            py.textContent = 'Bu lig için henüz puan durumu yok.';
+            return;
+        }
+        var html = '';
+        lig.gruplar.forEach(function (g) {
+            var baslik = g.grup ? (g.grup.length <= 3 ? g.grup + ' Grubu' : g.grup) : lig.etiket;
+            html += '<div class="puan-grup-kart">';
+            html += '<div class="puan-grup-baslik">🏆 ' + puanEsc(baslik) +
+                    (g.hafta ? '<span class="pg-hafta">' + g.hafta + '. hafta</span>' : '') + '</div>';
+            html += '<table class="puan-tablo"><thead><tr>' +
+                    '<th class="sira">#</th><th class="takim">Takım</th>' +
+                    '<th>O</th><th>G</th><th>M</th>' +
+                    '<th class="hide-sm">A</th><th class="hide-sm">Y</th>' +
+                    '<th>Av</th><th>P</th></tr></thead><tbody>';
+            g.takimlar.forEach(function (t) {
+                var logo = t.logo ? '<img src="' + puanEsc(t.logo) + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' : '';
+                var av = (t.av > 0 ? '+' : '') + t.av;
+                html += '<tr>' +
+                    '<td class="sira">' + (t.sira || '') + '</td>' +
+                    '<td class="takim"><span class="puan-takim">' + logo + '<span>' + puanEsc(t.takim) + '</span></span></td>' +
+                    '<td>' + t.o + '</td><td>' + t.g + '</td><td>' + t.m + '</td>' +
+                    '<td class="hide-sm">' + t.a + '</td><td class="hide-sm">' + t.y + '</td>' +
+                    '<td>' + av + '</td>' +
+                    '<td class="puan">' + t.puan + '</td>' +
+                    '</tr>';
+            });
+            html += '</tbody></table></div>';
+        });
+        wrap.innerHTML = html;
+    }
+
+    // Puan durumu verisi data/standings.json'dan yuklenir (update_standings.py uretir)
+    fetch('data/standings.json', { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function (data) { STANDINGS = data || { ligler: [] }; initPuanDurumu(); })
+        .catch(function (e) {
+            console.error('standings.json yuklenemedi:', e);
+            var ps = document.getElementById('puanSecilmedi'); if (ps) ps.style.display = 'none';
+            var py = document.getElementById('puanYok'); if (py) py.style.display = 'block';
+        });
 
     // ===== TAKIM ARAMA =====
     function normalizeText(str) {
