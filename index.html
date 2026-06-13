@@ -952,6 +952,33 @@
         .zname { font-weight: 700; color: #e2e8f0; font-size: 0.9rem; }
         .zsub { font-size: 0.74rem; color: var(--muted); }
         .zbpm { margin-left: auto; font-family: var(--font-display); font-weight: 700; color: #fff; font-size: 0.95rem; white-space: nowrap; }
+
+        /* ===================== MAÇ PERFORMANSI ===================== */
+        .perf-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        @media (max-width: 560px){ .perf-meta-grid { grid-template-columns: 1fr; } }
+        .perf-grade-wrap { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; justify-content: center; margin-bottom: 18px; }
+        .perf-ver { font-family: var(--font-display); font-size: 2.6rem; font-weight: 800; line-height: 1; }
+        .perf-grade-num { font-family: var(--font-display); font-size: 3rem; font-weight: 800; line-height: 1; }
+        .perf-grade-lbl { font-size: 1rem; font-weight: 800; }
+        .perf-badge { display: inline-flex; align-items: center; gap: 7px; padding: 7px 15px; border-radius: 50px; font-weight: 800; font-size: 0.85rem;
+            background: linear-gradient(135deg,#f59e0b,#ef4444); color: #fff; box-shadow: 0 8px 20px -8px rgba(239,68,68,0.6); }
+        .perf-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+        .perf-btn2 { padding: 10px 18px; border-radius: 10px; border: 1.5px solid var(--line-strong); background: rgba(15,23,42,0.5);
+            color: #cbd5e1; cursor: pointer; font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; transition: all .2s; }
+        .perf-btn2:hover { border-color: var(--accent); color: var(--accent-soft); }
+        .perf-avg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)); gap: 12px; }
+        .perf-bars { display: flex; align-items: flex-end; gap: 6px; height: 120px; padding: 22px 0 0; }
+        .perf-bar { flex: 1; min-width: 8px; background: var(--accent-grad); border-radius: 6px 6px 0 0; position: relative; transition: height .4s; }
+        .perf-bar.neg { background: linear-gradient(180deg,#64748b,#475569); }
+        .perf-bar-val { position: absolute; top: -17px; left: 0; right: 0; text-align: center; font-size: 0.68rem; color: #94a3b8; font-weight: 700; }
+        .perf-hist-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; background: rgba(15,23,42,0.4); }
+        .perf-hist-item.best { border-color: rgba(245,158,11,0.5); box-shadow: inset 0 0 0 1px rgba(245,158,11,0.2); }
+        .perf-hist-main { flex: 1; min-width: 0; }
+        .perf-hist-top { font-weight: 700; color: #e2e8f0; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .perf-hist-sub { font-size: 0.76rem; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+        .perf-hist-ver { font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; color: #fff; white-space: nowrap; }
+        .perf-del { background: none; border: none; color: #64748b; cursor: pointer; font-size: 1.05rem; padding: 4px 8px; border-radius: 8px; transition: all .2s; flex-shrink: 0; }
+        .perf-del:hover { color: #f87171; background: rgba(239,68,68,0.1); }
         .rmrow { display: flex; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
         .rmrow:last-child { border-bottom: none; }
         .rmrow .rm-pct { width: 64px; color: var(--accent-soft); font-weight: 700; }
@@ -1016,6 +1043,11 @@
             <span class="di-txt"><span class="di-title">Hesaplayıcılar</span><span class="di-desc">Kalori, BMI, su, nabız, 1RM</span></span>
             <span class="di-chev">›</span>
         </a>
+        <a class="drawer-item" data-view="performans" onclick="showView('performans',event)">
+            <span class="di-ico">📈</span>
+            <span class="di-txt"><span class="di-title">Performans</span><span class="di-desc">Maç verimliliği & gelişim takibi</span></span>
+            <span class="di-chev">›</span>
+        </a>
         <div class="drawer-section-label">Araçlar</div>
         <a class="drawer-item" onclick="closeMenu();openModal();">
             <span class="di-ico">🚀</span>
@@ -1076,6 +1108,13 @@
                 <span class="hub-ico">🧮</span>
                 <h3>Hesaplayıcılar</h3>
                 <p>Kalori &amp; makro, BMI &amp; yağ oranı, su ihtiyacı, kalp atışı bölgeleri ve 1RM kuvvet hesabı.</p>
+                <span class="hub-go">Hesapla <span>→</span></span>
+            </button>
+            <button class="hub-card" onclick="showView('performans')">
+                <span class="hub-tag">Yeni</span>
+                <span class="hub-ico">📈</span>
+                <h3>Maç Performansı</h3>
+                <p>Maçtaki sayı, ribaund, asist, top çalma/kaybı, blok ve faulü gir; verimliliğini hesapla, dereceni gör ve gelişimini takip et.</p>
                 <span class="hub-go">Hesapla <span>→</span></span>
             </button>
             <button class="hub-card" onclick="openModal()">
@@ -1205,9 +1244,10 @@
         standings:{ els: ['standings'],              label: 'Puan Durumu', icon: '📊' },
         training: { els: ['training'],               label: 'Antrenman',   icon: '💪' },
         diet:     { els: ['diet'],                   label: 'Beslenme',    icon: '🥗' },
-        calc:     { els: ['calc'],                   label: 'Hesaplayıcılar', icon: '🧮' }
+        calc:     { els: ['calc'],                   label: 'Hesaplayıcılar', icon: '🧮' },
+        performans:{ els: ['performans'],            label: 'Performans',  icon: '📈' }
     };
-    var ALL_VIEW_ELS = ['heroSection', 'homeHub', 'matches', 'standings', 'training', 'diet', 'calc'];
+    var ALL_VIEW_ELS = ['heroSection', 'homeHub', 'matches', 'standings', 'training', 'diet', 'calc', 'performans'];
 
     function showView(name, ev) {
         if (ev && ev.preventDefault) ev.preventDefault();
@@ -1219,6 +1259,8 @@
         VIEW_MAP[name].els.forEach(function (id) {
             var el = document.getElementById(id); if (el) el.style.display = '';
         });
+
+        if (name === 'performans' && typeof perfInit === 'function') { perfInit(); }
 
         document.querySelectorAll('.drawer-item').forEach(function (d) {
             d.classList.toggle('active', d.getAttribute('data-view') === name);
@@ -2815,6 +2857,44 @@
         </div>
     </section>
 
+    <!-- MAÇ PERFORMANSI -->
+    <section id="performans">
+        <h2>📈 Maç Performansı</h2>
+        <p style="text-align:center;color:#94a3b8;max-width:660px;margin:-26px auto 36px;">Lig maçındaki istatistiklerini gir; verimliliğini ve performans dereceni anında gör, maçlarını kaydederek gelişimini takip et.</p>
+
+        <div class="calc-card" style="max-width:760px;margin:0 auto;">
+            <p class="calc-lead">Maç sonrası istatistik çizgini gir.<br><strong style="color:#cbd5e1;">Verimlilik = (Sayı + Ribaund + Asist + Top Çalma + Blok) − (Top Kaybı + Faul)</strong></p>
+
+            <div class="perf-meta-grid">
+                <div class="calc-field"><label>Rakip (opsiyonel)</label><input id="pfRakip" type="text" class="calc-input" placeholder="ör. Fenerbahçe"></div>
+                <div class="calc-field"><label>Tarih</label><input id="pfTarih" type="date" class="calc-input"></div>
+            </div>
+            <div class="calc-field" style="margin-bottom:16px;"><label>Lig / Kategori (opsiyonel)</label><input id="pfLig" type="text" class="calc-input" placeholder="ör. U14 Erkek Bölgesel"></div>
+
+            <div class="calc-grid">
+                <div class="calc-field"><label>🏀 Sayı</label><input id="pfSayi" type="number" class="calc-input" min="0" inputmode="numeric" placeholder="0"></div>
+                <div class="calc-field"><label>↩️ Ribaund</label><input id="pfRibaund" type="number" class="calc-input" min="0" inputmode="numeric" placeholder="0"></div>
+                <div class="calc-field"><label>🎯 Asist</label><input id="pfAsist" type="number" class="calc-input" min="0" inputmode="numeric" placeholder="0"></div>
+                <div class="calc-field"><label>🖐️ Top Çalma</label><input id="pfCalma" type="number" class="calc-input" min="0" inputmode="numeric" placeholder="0"></div>
+                <div class="calc-field"><label>🚫 Blok</label><input id="pfBlok" type="number" class="calc-input" min="0" inputmode="numeric" placeholder="0"></div>
+                <div class="calc-field"><label>❌ Top Kaybı</label><input id="pfKayip" type="number" class="calc-input" min="0" inputmode="numeric" placeholder="0"></div>
+                <div class="calc-field"><label>⚠️ Faul</label><input id="pfFaul" type="number" class="calc-input" min="0" inputmode="numeric" placeholder="0"></div>
+            </div>
+
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
+                <button class="calc-btn" style="flex:2;min-width:160px;margin-top:0;" onclick="perfHesapla()">Hesapla</button>
+                <button class="calc-btn" style="flex:1;min-width:150px;margin-top:0;background:rgba(15,23,42,0.6);border:1.5px solid var(--line-strong);color:#cbd5e1;box-shadow:none;" onclick="perfKaydet()">💾 Maçı Kaydet</button>
+            </div>
+            <p id="pfErr" class="calc-err"></p>
+        </div>
+
+        <div id="perfResult" class="calc-result" style="display:none;max-width:760px;margin-left:auto;margin-right:auto;"></div>
+
+        <div id="perfGecmis" style="max-width:760px;margin:36px auto 0;"></div>
+
+        <p class="calc-note">Veriler yalnızca bu tarayıcıda saklanır (localStorage); sunucuya gönderilmez. Tarayıcı verisini temizlersen kayıtlar da silinir.</p>
+    </section>
+
     <footer>
         <p>&copy; 2024 IST-BASKEPORTAL | İstanbul Basketbol Altyapı Takip Sistemi</p>
         <p style="font-size: 0.8rem; color: #64748b; margin-top: 10px;">Veriler TBF İstanbul İl Temsilciliği kaynak alınarak hazırlanmıştır.</p>
@@ -3511,6 +3591,230 @@
         document.querySelectorAll('#calcPanels .calc-panel').forEach(function (p) {
             p.classList.toggle('active', p.getAttribute('data-calc') === name);
         });
+    }
+
+    // ===================== MAÇ PERFORMANSI =====================
+    var PERF_KEY = 'baskeportal_performans_v1';
+
+    function perfYukle() {
+        try {
+            var arr = JSON.parse(localStorage.getItem(PERF_KEY) || '[]');
+            return Array.isArray(arr) ? arr : [];
+        } catch (e) { return []; }
+    }
+    function perfKaydetStore(arr) {
+        try { localStorage.setItem(PERF_KEY, JSON.stringify(arr)); } catch (e) {}
+    }
+
+    function perfNum(id) {
+        var v = parseInt(document.getElementById(id).value, 10);
+        return (isNaN(v) || v < 0) ? 0 : v;
+    }
+    function perfEsc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+    }
+
+    function perfVer(s) {
+        return (s.sayi + s.ribaund + s.asist + s.calma + s.blok) - (s.kayip + s.faul);
+    }
+    function perfDerece(ver) {
+        return Math.max(0, Math.min(100, Math.round(50 + ver * 1.8)));
+    }
+    function perfEtiket(d) {
+        if (d >= 80) return { t: 'Mükemmel · MVP', c: '#f59e0b' };
+        if (d >= 60) return { t: 'Çok İyi',        c: '#22c55e' };
+        if (d >= 40) return { t: 'İyi',            c: '#38bdf8' };
+        if (d >= 20) return { t: 'Orta',           c: '#a78bfa' };
+        return { t: 'Gelişime Açık', c: '#94a3b8' };
+    }
+    function perfRozet(s) {
+        // 10+ olan kategori sayısı: Sayı, Ribaund, Asist, Top Çalma, Blok
+        var n = [s.sayi, s.ribaund, s.asist, s.calma, s.blok].filter(function (x) { return x >= 10; }).length;
+        if (n >= 3) return 'Triple-Double';
+        if (n === 2) return 'Double-Double';
+        return '';
+    }
+
+    function perfOku() {
+        return {
+            sayi: perfNum('pfSayi'), ribaund: perfNum('pfRibaund'), asist: perfNum('pfAsist'),
+            calma: perfNum('pfCalma'), blok: perfNum('pfBlok'), kayip: perfNum('pfKayip'), faul: perfNum('pfFaul'),
+            rakip: (document.getElementById('pfRakip').value || '').trim(),
+            lig: (document.getElementById('pfLig').value || '').trim(),
+            tarih: document.getElementById('pfTarih').value || ''
+        };
+    }
+
+    function perfMini(label, val) {
+        return '<div class="stat-card"><div class="stat-val" style="font-size:1.35rem;">' + val + '</div><div class="stat-lbl">' + label + '</div></div>';
+    }
+
+    function perfOzetMetin(s, ver, d) {
+        var line = '🏀 Maç Performansım: ' + s.sayi + ' sayı · ' + s.ribaund + ' rib · ' + s.asist + ' ast · ' +
+            s.calma + ' çalma · ' + s.blok + ' blok · ' + s.kayip + ' kayıp · ' + s.faul + ' faul';
+        line += '\n📊 Verimlilik: ' + ver + ' · Derece: ' + d + '/100';
+        if (s.rakip) line += '\n🆚 ' + s.rakip;
+        line += '\n— IST-BASKEPORTAL';
+        return line;
+    }
+
+    function perfHesapla() {
+        var err = document.getElementById('pfErr');
+        err.style.display = 'none';
+        var s = perfOku();
+        var toplam = s.sayi + s.ribaund + s.asist + s.calma + s.blok + s.kayip + s.faul;
+        if (toplam === 0) {
+            err.textContent = 'Lütfen en az bir istatistik gir.';
+            err.style.display = 'block';
+            return null;
+        }
+        var ver = perfVer(s);
+        var d = perfDerece(ver);
+        var et = perfEtiket(d);
+        var rozet = perfRozet(s);
+        window._perfSonOzet = perfOzetMetin(s, ver, d);
+
+        var html = '<div class="calc-result-card">' +
+            '<div class="perf-grade-wrap">' +
+                '<div style="text-align:center;"><div class="perf-ver" style="color:' + (ver >= 0 ? '#ff7849' : '#94a3b8') + ';">' + ver + '</div><div class="stat-lbl">Verimlilik</div></div>' +
+                '<div style="text-align:center;"><div class="perf-grade-num" style="color:' + et.c + ';">' + d + '</div><div class="stat-lbl">Derece / 100</div></div>' +
+                '<div style="text-align:center;min-width:120px;"><div class="perf-grade-lbl" style="color:' + et.c + ';">' + et.t + '</div>' +
+                    (rozet ? '<div style="margin-top:10px;"><span class="perf-badge">⭐ ' + rozet + '</span></div>' : '') + '</div>' +
+            '</div>' +
+            '<div class="perf-avg-grid">' +
+                perfMini('Sayı', s.sayi) + perfMini('Ribaund', s.ribaund) + perfMini('Asist', s.asist) +
+                perfMini('Çalma', s.calma) + perfMini('Blok', s.blok) + perfMini('Kayıp', s.kayip) + perfMini('Faul', s.faul) +
+            '</div>' +
+            '<div class="perf-actions">' +
+                '<button class="perf-btn2" onclick="perfKopyala()">📋 Özeti Kopyala</button>' +
+                '<button class="perf-btn2" onclick="perfKaydet()">💾 Bu Maçı Kaydet</button>' +
+            '</div>' +
+            '</div>';
+        var box = document.getElementById('perfResult');
+        box.innerHTML = html; box.style.display = 'block';
+        box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return s;
+    }
+
+    function perfKopyala() {
+        var txt = window._perfSonOzet || '';
+        if (!txt) return;
+        function ok() {
+            var b = document.querySelector('#perfResult .perf-btn2');
+            if (b) { var o = b.textContent; b.textContent = '✓ Kopyalandı'; setTimeout(function () { b.textContent = o; }, 1600); }
+        }
+        function fallback() {
+            try {
+                var ta = document.createElement('textarea');
+                ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta); ta.focus(); ta.select();
+                document.execCommand('copy'); document.body.removeChild(ta);
+            } catch (e) {}
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(txt).then(ok, function () { fallback(); ok(); });
+        } else { fallback(); ok(); }
+    }
+
+    function perfKaydet() {
+        var s = perfHesapla();
+        if (!s) return;
+        var ver = perfVer(s);
+        var rec = {
+            id: Date.now(),
+            tarih: s.tarih || new Date().toISOString().slice(0, 10),
+            rakip: s.rakip, lig: s.lig,
+            sayi: s.sayi, ribaund: s.ribaund, asist: s.asist, calma: s.calma,
+            kayip: s.kayip, blok: s.blok, faul: s.faul,
+            ver: ver, derece: perfDerece(ver)
+        };
+        var arr = perfYukle();
+        arr.push(rec);
+        perfKaydetStore(arr);
+        perfRenderGecmis();
+        ['pfSayi', 'pfRibaund', 'pfAsist', 'pfCalma', 'pfBlok', 'pfKayip', 'pfFaul'].forEach(function (id) {
+            document.getElementById(id).value = '';
+        });
+        var g = document.getElementById('perfGecmis');
+        if (g) g.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function perfSil(id) {
+        perfKaydetStore(perfYukle().filter(function (r) { return r.id !== id; }));
+        perfRenderGecmis();
+    }
+    function perfTemizle() {
+        if (!confirm('Tüm kayıtlı maçlar silinsin mi? Bu işlem geri alınamaz.')) return;
+        perfKaydetStore([]);
+        perfRenderGecmis();
+    }
+
+    function perfRenderGecmis() {
+        var box = document.getElementById('perfGecmis');
+        if (!box) return;
+        var arr = perfYukle();
+        if (!arr.length) {
+            box.innerHTML = '<div class="calc-result-card" style="text-align:center;color:#94a3b8;">' +
+                '<p style="margin:0;font-size:0.9rem;">Henüz kayıtlı maç yok. Yukarıdan istatistik girip <strong style="color:#cbd5e1;">“Maçı Kaydet”</strong> ile gelişimini takip etmeye başla.</p></div>';
+            return;
+        }
+        var n = arr.length;
+        function avg(k) { return arr.reduce(function (t, r) { return t + (r[k] || 0); }, 0) / n; }
+        var bestVer = Math.max.apply(null, arr.map(function (r) { return r.ver; }));
+
+        // Grafik: tarihe göre eskiden yeniye, son 12 maç
+        var byDate = arr.slice().sort(function (a, b) {
+            return a.tarih < b.tarih ? -1 : a.tarih > b.tarih ? 1 : a.id - b.id;
+        });
+        var sonlar = byDate.slice(-12);
+        var maxAbs = Math.max.apply(null, sonlar.map(function (r) { return Math.abs(r.ver); }));
+        if (!maxAbs) maxAbs = 1;
+        var bars = sonlar.map(function (r) {
+            var h = Math.max(6, Math.round(Math.abs(r.ver) / maxAbs * 100));
+            return '<div class="perf-bar' + (r.ver < 0 ? ' neg' : '') + '" style="height:' + h + '%;" title="' +
+                perfEsc(r.rakip || r.tarih) + ': ' + r.ver + '"><span class="perf-bar-val">' + r.ver + '</span></div>';
+        }).join('');
+
+        // Liste: yeniden eskiye
+        var rows = arr.slice().sort(function (a, b) { return b.id - a.id; }).map(function (r) {
+            var rozet = perfRozet(r);
+            var best = (r.ver === bestVer);
+            return '<div class="perf-hist-item' + (best ? ' best' : '') + '">' +
+                '<div class="perf-hist-main">' +
+                    '<div class="perf-hist-top">' + (r.rakip ? perfEsc(r.rakip) : 'Maç') +
+                        (best ? ' <span class="perf-badge" style="padding:3px 9px;font-size:0.68rem;">🔥 En İyi</span>' : '') +
+                        (rozet ? ' <span style="color:#f59e0b;font-size:0.7rem;font-weight:800;">' + rozet + '</span>' : '') + '</div>' +
+                    '<div class="perf-hist-sub">' + perfEsc(r.tarih) + (r.lig ? ' · ' + perfEsc(r.lig) : '') +
+                        ' · ' + r.sayi + ' sayı · ' + r.ribaund + ' rib · ' + r.asist + ' ast · ' + r.calma + ' çal · ' + r.blok + ' blok</div>' +
+                '</div>' +
+                '<div class="perf-hist-ver" style="color:' + (r.ver >= 0 ? '#ff7849' : '#94a3b8') + ';">' + r.ver + '</div>' +
+                '<button class="perf-del" onclick="perfSil(' + r.id + ')" title="Sil" aria-label="Sil">🗑</button>' +
+            '</div>';
+        }).join('');
+
+        box.innerHTML =
+            '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">' +
+                '<h3 style="font-family:var(--font-display);color:#fff;font-size:1.15rem;margin:0;">📅 Kayıtlı Maçlar (' + n + ')</h3>' +
+                '<button class="perf-btn2" onclick="perfTemizle()">Tümünü Temizle</button>' +
+            '</div>' +
+            '<div class="calc-result-card" style="margin-bottom:16px;">' +
+                '<div class="stat-lbl" style="margin-bottom:10px;">SEZON ORTALAMASI · ' + n + ' maç</div>' +
+                '<div class="perf-avg-grid">' +
+                    perfMini('Sayı', avg('sayi').toFixed(1)) + perfMini('Ribaund', avg('ribaund').toFixed(1)) +
+                    perfMini('Asist', avg('asist').toFixed(1)) + perfMini('Çalma', avg('calma').toFixed(1)) +
+                    perfMini('Blok', avg('blok').toFixed(1)) + perfMini('Verim', avg('ver').toFixed(1)) +
+                '</div>' +
+                (sonlar.length > 1 ? '<div class="stat-lbl" style="margin:18px 0 0;">SON ' + sonlar.length + ' MAÇ · VERİMLİLİK</div><div class="perf-bars">' + bars + '</div>' : '') +
+            '</div>' +
+            rows;
+    }
+
+    function perfInit() {
+        var d = document.getElementById('pfTarih');
+        if (d && !d.value) { d.value = new Date().toISOString().slice(0, 10); }
+        perfRenderGecmis();
     }
 
     // ===== SU İHTİYACI =====
