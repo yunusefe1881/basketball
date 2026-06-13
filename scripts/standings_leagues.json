@@ -1,0 +1,17 @@
+{
+  "_aciklama": [
+    "Puan durumu cekilecek TBF ligleri. Her giris bir TBF 'leagueId' (lig sayfasi URL'sindeki numara:",
+    "tbf.org.tr/ligler/{leagueId}/puan-durumu). Tek leagueId, o ligin TUM gruplarini (A/B/C ligleri,",
+    "ASYA/AVRUPA gruplari dahil) dondurur. update_standings.py bu listeyi okuyup data/standings.json uretir.",
+    "Asagidakiler 2025-2026 Istanbul kucukler ligleridir; ID'ler tbf.org.tr/istanbul mac akisindan alindi.",
+    "Yeni sezonda ID'ler degisirse tbf.org.tr/istanbul sayfasindan guncel /ligler/{ID} numaralarini al."
+  ],
+  "ligler": [
+    { "leagueId": 21409, "etiket": "U10 Erkekler", "sira": 1 },
+    { "leagueId": 21410, "etiket": "U10 Kızlar",   "sira": 2 },
+    { "leagueId": 21411, "etiket": "U11 Erkekler", "sira": 3 },
+    { "leagueId": 21412, "etiket": "U11 Kızlar",   "sira": 4 },
+    { "leagueId": 21413, "etiket": "U12 Erkekler", "sira": 5 },
+    { "leagueId": 21414, "etiket": "U12 Kızlar",   "sira": 6 }
+  ]
+}
