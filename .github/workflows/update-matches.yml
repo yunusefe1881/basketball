@@ -1,0 +1,35 @@
+name: Maç Verilerini Güncelle
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Depoyu çek
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Maç verilerini çek (TBF İstanbul)
+        run: python scripts/update_matches.py
+
+      - name: Değişiklikleri commit et
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git status --porcelain data/matches.json | grep -q .; then
+            git add data/matches.json
+            git commit -m "chore: maç verilerini güncelle"
+            git push
+            echo "matches.json güncellendi ve push edildi."
+          else
+            echo "Değişiklik yok — commit atlanıyor."
+          fi
