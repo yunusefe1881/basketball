@@ -17,7 +17,7 @@ import json
 import re
 import sys
 import urllib.request
-from datetime import date
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 # --- Sabitler (TBF Istanbul resmi Drive klasoru) ---
@@ -168,7 +168,10 @@ def main():
         print(f"  - {title}: {len(matches)} mac")
         all_matches.extend(matches)
 
-    today = date.today().isoformat()
+    # "Bugun" daima Turkiye saatine (UTC+3, sabit) gore hesaplanir.
+    # GitHub Actions calisanlari UTC'dir; 00:01 TR'de tetiklendiginde UTC hala
+    # bir onceki gun olur, bu yuzden TR tarihini acikca kullaniyoruz.
+    today = datetime.now(timezone(timedelta(hours=3))).date().isoformat()
     if DROP_PAST:
         all_matches = [m for m in all_matches if m["tarih"] >= today]
 

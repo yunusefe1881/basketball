@@ -1750,17 +1750,31 @@
 
 
     // Mac verileri TBF Istanbul programindan uretilen data/matches.json'dan yuklenir
-    fetch('data/matches.json', { cache: 'no-store' })
-        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-        .then(function (data) { MACLAR = Array.isArray(data) ? data : []; initKatFiltre(); renderBugunBanner(); })
-        .catch(function (e) {
-            console.error('matches.json yuklenemedi:', e);
-            var ml = document.getElementById('macListesi');
-            if (ml) {
-                ml.style.display = 'block';
-                ml.innerHTML = '<p style="text-align:center;color:#f87171;padding:40px;">Maclar su an yuklenemedi. Lutfen daha sonra tekrar deneyin.</p>';
-            }
-        });
+    function yukleMaclar() {
+        return fetch('data/matches.json', { cache: 'no-store' })
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function (data) { MACLAR = Array.isArray(data) ? data : []; initKatFiltre(); renderBugunBanner(); })
+            .catch(function (e) {
+                console.error('matches.json yuklenemedi:', e);
+                var ml = document.getElementById('macListesi');
+                if (ml) {
+                    ml.style.display = 'block';
+                    ml.innerHTML = '<p style="text-align:center;color:#f87171;padding:40px;">Maclar su an yuklenemedi. Lutfen daha sonra tekrar deneyin.</p>';
+                }
+            });
+    }
+    yukleMaclar();
+
+    // Acik kalan sekme gece yarisini gecerse: gun degisince verileri yeniden cek
+    // ve "bugun" vurgusunu yeni gune tasi (her dakika kontrol).
+    var _sonGun = bugunISO();
+    setInterval(function () {
+        var simdi = bugunISO();
+        if (simdi !== _sonGun) {
+            _sonGun = simdi;
+            yukleMaclar();
+        }
+    }, 60000);
     // Sayfa açıldığında maç listesi gizli — kategori seçilince gösterilir
 
     // ===== PUAN DURUMU =====
