@@ -1315,6 +1315,7 @@
     <section id="takim" style="display:none;">
         <button class="tp-geri" onclick="takimGeri()">← Geri</button>
         <div id="takimBaslik"></div>
+        <div id="takimSonuc"></div>
         <div id="takimPuan"></div>
         <div id="takimMaclar"></div>
     </section>
@@ -2302,7 +2303,18 @@
             '.tp-mac-rakip b{color:#94a3b8;font-weight:600;font-size:0.8rem;}' +
             '.tp-mac-alt{font-size:0.72rem;color:#5b738f;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
             '.tp-mac-kat{flex-shrink:0;font-size:0.66rem;font-weight:700;color:#94a3b8;background:#1e293b;border:1px solid #334155;padding:3px 9px;border-radius:8px;}' +
-            '@media(max-width:560px){.tp-head{padding:16px;gap:12px;}.tp-logo,.tp-logo-fb{width:50px;height:50px;font-size:1.3rem;}.tp-ad{font-size:1.2rem;}.tp-mac-kat{display:none;}}';
+            // son sonuclar
+            '.tp-son{display:flex;align-items:center;gap:14px;background:#0f172a;border:1px solid #1e293b;border-radius:13px;padding:10px 14px;margin-bottom:8px;}' +
+            '.tp-son-skor{flex:0 0 auto;min-width:66px;font-family:"Space Grotesk",Inter,sans-serif;font-size:1.1rem;font-weight:800;border-radius:10px;padding:6px 8px;display:flex;align-items:center;justify-content:center;}' +
+            '.tp-son-skor i{font-style:normal;opacity:0.5;margin:0 2px;}' +
+            '.tp-son-skor.win{color:#34d399;background:rgba(52,211,153,0.12);}' +
+            '.tp-son-skor.loss{color:#f87171;background:rgba(248,113,113,0.12);}' +
+            '.tp-son-gm{font-size:0.64rem;font-weight:900;margin-right:5px;opacity:0.85;}' +
+            '.tp-son-orta{flex:1;min-width:0;}' +
+            '.tp-son-rakip{font-size:0.9rem;font-weight:700;color:#e2e8f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+            '.tp-son-rakip b{color:#94a3b8;font-weight:600;font-size:0.78rem;}' +
+            '.tp-son-alt{font-size:0.72rem;color:#5b738f;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+            '@media(max-width:560px){.tp-head{padding:16px;gap:12px;}.tp-logo,.tp-logo-fb{width:50px;height:50px;font-size:1.3rem;}.tp-ad{font-size:1.2rem;}.tp-mac-kat{display:none;}.tp-son-skor{font-size:1rem;min-width:58px;}}';
         document.head.appendChild(s);
     }
 
@@ -2328,6 +2340,35 @@
         var favBtn = '<button id="tpFavBtn" class="tp-fav' + (favAktif ? ' ac' : '') + '" data-ad="' + puanEsc(takimAdi) + '" onclick="favoriToggle(\'' + takimAttr(takimAdi) + '\')">' + (favAktif ? '★ Favorilerde' : '☆ Favorile') + '</button>';
         bas.innerHTML = logoHtml + '<div style="min-width:0;flex:1;"><div class="tp-ad">' + puanEsc(takimAdi) + '</div>' +
             '<div class="tp-alt">İstanbul Altyapı Basketbol</div></div>' + favBtn;
+
+        // --- son sonuclari (oynanmis, skorlu) ---
+        var sonucEl = document.getElementById('takimSonuc');
+        var sonuclar = (RESULTS || []).filter(function (r) {
+            return normalizeText(r.a) === q || normalizeText(r.b) === q;
+        });
+        sonuclar.sort(function (a, b) { return (b.tarih + b.saat).localeCompare(a.tarih + a.saat); });
+        if (sonuclar.length) {
+            var sh = '<div class="tp-sec-lbl">📋 Son Sonuçları <span style="color:#64748b;font-weight:600;text-transform:none;letter-spacing:0;">(' + sonuclar.length + ')</span></div><div class="tp-sec">';
+            sonuclar.slice(0, 12).forEach(function (r) {
+                var benEv = normalizeText(r.a) === q;
+                var rakip = benEv ? r.b : r.a;
+                var benS = benEv ? r.as : r.bs;
+                var rakS = benEv ? r.bs : r.as;
+                var gal = benS > rakS;
+                var etk = lidEtiket(r.lid);
+                sh += '<div class="tp-son">' +
+                    '<div class="tp-son-skor ' + (gal ? 'win' : 'loss') + '"><span class="tp-son-gm">' + (gal ? 'G' : 'M') + '</span>' + benS + '<i>-</i>' + rakS + '</div>' +
+                    '<div class="tp-son-orta">' +
+                        '<div class="tp-son-rakip"><b>vs</b> <span class="puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(rakip) + '\')">' + puanEsc(rakip) + '</span></div>' +
+                        '<div class="tp-son-alt">' + puanEsc(r.tarih) + (etk ? ' · ' + puanEsc(etk) : '') + '</div>' +
+                    '</div>' +
+                    '</div>';
+            });
+            sh += '</div>';
+            sonucEl.innerHTML = sh;
+        } else {
+            sonucEl.innerHTML = '';
+        }
 
         // --- puan durumundaki yeri ---
         var puanEl = document.getElementById('takimPuan');
@@ -2472,6 +2513,20 @@
             var ps = document.getElementById('puanSecilmedi'); if (ps) ps.style.display = 'none';
             var py = document.getElementById('puanYok'); if (py) py.style.display = 'block';
         });
+
+    // Mac sonuclari (oynanmis, skorlu) data/results.json'dan yuklenir (update_results.py uretir)
+    var RESULTS = [];
+    fetch('data/results.json', { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .then(function (d) { RESULTS = Array.isArray(d) ? d : []; })
+        .catch(function () { RESULTS = []; });
+
+    // leagueId -> etiket (STANDINGS'ten)
+    function lidEtiket(lid) {
+        var ligler = (STANDINGS && STANDINGS.ligler) || [];
+        for (var i = 0; i < ligler.length; i++) { if (ligler[i].leagueId === lid) return ligler[i].etiket; }
+        return '';
+    }
 
     // ===== TAKIM ARAMA =====
     function normalizeText(str) {

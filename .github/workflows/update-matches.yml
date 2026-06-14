@@ -30,11 +30,14 @@ jobs:
       - name: Puan durumunu çek (TBF)
         run: python scripts/update_standings.py
 
+      - name: Maç sonuçlarını çek (TBF, U10-U12)
+        run: python scripts/update_results.py
+
       - name: Değişiklikleri commit et
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/matches.json data/standings.json
+          git add data/matches.json data/standings.json data/results.json
           if git diff --cached --quiet; then
             echo "Değişiklik yok — commit atlanıyor."
           else
