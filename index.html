@@ -1152,6 +1152,7 @@
     <!-- ANA SAYFA HUB -->
     <section id="homeHub">
         <div id="bugunBanner" class="bugun-banner" style="display:none;"></div>
+        <div id="favoriBanner" style="display:none;"></div>
         <h2>Ne yapmak istersin?</h2>
         <div class="hub-grid">
             <button class="hub-card" onclick="showView('matches')">
@@ -1902,7 +1903,7 @@
     function yukleMaclar() {
         return fetch('data/matches.json', { cache: 'no-store' })
             .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-            .then(function (data) { MACLAR = Array.isArray(data) ? data : []; initKatFiltre(); renderBugunBanner(); })
+            .then(function (data) { MACLAR = Array.isArray(data) ? data : []; initKatFiltre(); renderBugunBanner(); renderFavoriBanner(); })
             .catch(function (e) {
                 console.error('matches.json yuklenemedi:', e);
                 var ml = document.getElementById('macListesi');
@@ -2321,9 +2322,12 @@
         var logoHtml = logo
             ? '<img class="tp-logo" src="' + puanEsc(logo) + '" alt="" onerror="this.style.display=\'none\'">'
             : '<span class="tp-logo-fb">' + puanEsc((takimAdi.trim().charAt(0) || '?').toUpperCase()) + '</span>';
+        buildFavStil();
         bas.className = 'tp-head';
-        bas.innerHTML = logoHtml + '<div style="min-width:0;"><div class="tp-ad">' + puanEsc(takimAdi) + '</div>' +
-            '<div class="tp-alt">İstanbul Altyapı Basketbol</div></div>';
+        var favAktif = favoriVar(takimAdi);
+        var favBtn = '<button id="tpFavBtn" class="tp-fav' + (favAktif ? ' ac' : '') + '" data-ad="' + puanEsc(takimAdi) + '" onclick="favoriToggle(\'' + takimAttr(takimAdi) + '\')">' + (favAktif ? '★ Favorilerde' : '☆ Favorile') + '</button>';
+        bas.innerHTML = logoHtml + '<div style="min-width:0;flex:1;"><div class="tp-ad">' + puanEsc(takimAdi) + '</div>' +
+            '<div class="tp-alt">İstanbul Altyapı Basketbol</div></div>' + favBtn;
 
         // --- puan durumundaki yeri ---
         var puanEl = document.getElementById('takimPuan');
@@ -2382,6 +2386,82 @@
     }
 
     function takimGeri() { showView(_takimGeri || 'standings'); }
+
+    // ===== FAVORI TAKIMLAR =====
+    var FAV_KEY = 'baskeportal_favoriler_v1';
+    function favoriList() {
+        try { var a = JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); return Array.isArray(a) ? a : []; }
+        catch (e) { return []; }
+    }
+    function favoriKaydet(list) { try { localStorage.setItem(FAV_KEY, JSON.stringify(list)); } catch (e) {} }
+    function favoriVar(ad) {
+        var q = normalizeText(ad);
+        return favoriList().some(function (x) { return normalizeText(x) === q; });
+    }
+    function favoriToggle(ad) {
+        if (!ad) return;
+        var q = normalizeText(ad), list = favoriList(), i = -1;
+        for (var k = 0; k < list.length; k++) { if (normalizeText(list[k]) === q) { i = k; break; } }
+        if (i >= 0) list.splice(i, 1); else list.push(ad);
+        favoriKaydet(list);
+        var btn = document.getElementById('tpFavBtn');
+        if (btn && normalizeText(btn.getAttribute('data-ad') || '') === q) {
+            var aktif = favoriVar(ad);
+            btn.classList.toggle('ac', aktif);
+            btn.innerHTML = aktif ? '★ Favorilerde' : '☆ Favorile';
+        }
+        renderFavoriBanner();
+    }
+
+    function buildFavStil() {
+        if (document.getElementById('favSt')) return;
+        var s = document.createElement('style');
+        s.id = 'favSt';
+        s.textContent =
+            '.tp-fav{flex-shrink:0;margin-left:auto;align-self:flex-start;background:rgba(255,77,5,0.1);border:1.5px solid rgba(255,77,5,0.4);color:#ffb98f;font-family:Inter,sans-serif;font-size:0.82rem;font-weight:700;padding:8px 14px;border-radius:50px;cursor:pointer;white-space:nowrap;transition:all 0.18s;-webkit-tap-highlight-color:transparent;}' +
+            '.tp-fav:hover{border-color:#ff4d05;color:#fff;}' +
+            '.tp-fav.ac{background:#ff4d05;border-color:#ff4d05;color:#fff;box-shadow:0 6px 18px -6px rgba(255,77,5,0.6);}' +
+            '.fav-banner{max-width:900px;margin:0 auto 30px;background:linear-gradient(135deg,#101a2e,#1e293b);border:1px solid #334155;border-radius:18px;padding:16px 18px;}' +
+            '.fv-head{font-weight:900;font-size:0.95rem;color:#ffd9a3;margin-bottom:12px;letter-spacing:0.3px;}' +
+            '.fv-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:rgba(15,23,42,0.6);border:1px solid #1e293b;border-radius:12px;padding:11px 14px;margin-bottom:8px;cursor:pointer;font-family:Inter,sans-serif;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}' +
+            '.fv-row:last-child{margin-bottom:0;}' +
+            '.fv-row:hover{border-color:#ff4d05;transform:translateX(2px);}' +
+            '.fv-ad{font-size:0.92rem;font-weight:800;color:#f1f5f9;flex-shrink:0;max-width:42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+            '.fv-mac{font-size:0.8rem;color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+            '.fv-bugun{color:#fff;background:#ff5a18;padding:1px 7px;border-radius:6px;font-size:0.68rem;font-weight:900;}' +
+            '.fv-yok{font-size:0.8rem;color:#64748b;}' +
+            '.fv-chev{margin-left:auto;color:#475569;font-size:1.2rem;flex-shrink:0;}' +
+            '@media(max-width:560px){.fv-ad{max-width:38%;font-size:0.84rem;}.fv-mac,.fv-yok{font-size:0.74rem;}}';
+        document.head.appendChild(s);
+    }
+
+    function renderFavoriBanner() {
+        var box = document.getElementById('favoriBanner');
+        if (!box) return;
+        var favs = favoriList();
+        if (!favs.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
+        buildFavStil();
+        box.className = 'fav-banner';
+        var bugun = (typeof bugunISO === 'function') ? bugunISO() : '';
+        var rows = favs.map(function (ad) {
+            var q = normalizeText(ad);
+            var ileri = (MACLAR || []).filter(function (m) {
+                return (normalizeText(m.a).indexOf(q) !== -1 || normalizeText(m.b).indexOf(q) !== -1) && m.tarih >= bugun;
+            }).sort(function (a, b) { return (a.tarih + a.saat).localeCompare(b.tarih + b.saat); });
+            var mac = ileri[0], sat;
+            if (mac) {
+                var rakip = normalizeText(mac.a).indexOf(q) !== -1 ? mac.b : mac.a;
+                var ne = (mac.tarih === bugun) ? '<b class="fv-bugun">BUGÜN</b> ' : (puanEsc(mac.td) + ' · ');
+                sat = '<span class="fv-mac">' + ne + puanEsc(mac.saat) + ' · vs ' + puanEsc(rakip) + '</span>';
+            } else {
+                sat = '<span class="fv-yok">Yaklaşan maç yok</span>';
+            }
+            return '<button class="fv-row" onclick="showTakimProfil(\'' + takimAttr(ad) + '\')">' +
+                '<span class="fv-ad">⭐ ' + puanEsc(ad) + '</span>' + sat + '<span class="fv-chev">›</span></button>';
+        }).join('');
+        box.innerHTML = '<div class="fv-head">⭐ Favori Takımların</div>' + rows;
+        box.style.display = '';
+    }
 
     // Puan durumu verisi data/standings.json'dan yuklenir (update_standings.py uretir)
     fetch('data/standings.json', { cache: 'no-store' })
