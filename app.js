@@ -122,7 +122,15 @@
             // Tüm maçlar
             '.tum-btn{display:block;width:100%;padding:11px;border-radius:50px;background:transparent;border:1.5px solid #334155;color:#64748b;font-family:Inter,sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.2s;text-align:center;margin-bottom:20px;}' +
             '.tum-btn:hover{border-color:#94a3b8;color:#94a3b8;}' +
-            '.tum-btn.aktif{background:#ff4d05;border-color:#ff4d05;color:#fff;}';
+            '.tum-btn.aktif{background:#ff4d05;border-color:#ff4d05;color:#fff;}' +
+            // TARİH FİLTRESİ (takvim)
+            '.tarih-filtre{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:18px;}' +
+            '.tf-lbl{font-size:0.82rem;font-weight:700;color:#94a3b8;display:flex;align-items:center;gap:6px;}' +
+            '.tf-input{background:#1e293b;border:1.5px solid #334155;border-radius:50px;color:#f1f5f9;font-family:Inter,sans-serif;font-size:0.88rem;font-weight:600;padding:9px 16px;outline:none;cursor:pointer;transition:border-color 0.2s,box-shadow 0.2s;color-scheme:dark;}' +
+            '.tf-input:focus{border-color:#ff4d05;box-shadow:0 0 0 3px rgba(255,77,5,0.15);}' +
+            '.tf-input.aktif{border-color:#ff4d05;color:#ffb98f;}' +
+            '.tf-temizle{background:transparent;border:1.5px solid #334155;color:#94a3b8;font-family:Inter,sans-serif;font-size:0.8rem;font-weight:600;padding:8px 14px;border-radius:50px;cursor:pointer;transition:all 0.18s;}' +
+            '.tf-temizle:hover{border-color:#ff4d05;color:#fff;}';
         document.head.appendChild(s);
     }
 
@@ -142,6 +150,21 @@
         var yaslar = Object.keys(yasMap).sort();
 
         el.innerHTML = '';
+
+        // TARİH FİLTRESİ (takvim) — sezon aralığıyla sınırlı
+        var macTarihleri = Array.from(new Set(MACLAR.map(function(m){ return m.tarih; }))).sort();
+        var dWrap = document.createElement('div');
+        dWrap.className = 'tarih-filtre';
+        dWrap.innerHTML =
+            '<span class="tf-lbl">📅 Tarihe göre</span>' +
+            '<input type="date" id="macTarihInput" class="tf-input"' +
+                (macTarihleri.length ? ' min="' + macTarihleri[0] + '" max="' + macTarihleri[macTarihleri.length-1] + '"' : '') + '>' +
+            '<button id="macTarihTemizle" class="tf-temizle" style="display:none;">✕ Temizle</button>';
+        el.appendChild(dWrap);
+        var dInp = document.getElementById('macTarihInput');
+        if (dInp) dInp.addEventListener('change', function(){ macTarihSec(dInp.value); });
+        var dTmz = document.getElementById('macTarihTemizle');
+        if (dTmz) dTmz.addEventListener('click', function(){ if (dInp) dInp.value=''; macTarihSec(''); });
 
         // Tüm maçlar butonu
         var tb = document.createElement('button');
@@ -184,7 +207,54 @@
         return yr[yas] || '#94a3b8';
     }
 
+    // Tarih (takvim) filtresini görsel olarak sıfırla
+    function macTarihReset() {
+        var d = document.getElementById('macTarihInput');
+        if (d) { d.value = ''; d.classList.remove('aktif'); }
+        var t = document.getElementById('macTarihTemizle');
+        if (t) t.style.display = 'none';
+    }
+
+    // Takvimden tarih seçilince o günün maçlarını göster
+    function macTarihSec(tarih) {
+        var dInp = document.getElementById('macTarihInput');
+        var dTmz = document.getElementById('macTarihTemizle');
+
+        // Kategori/yaş seçim görselini sıfırla (iki filtre çakışmasın)
+        secilenKat = null;
+        secilenYas = null;
+        var tumu = document.getElementById('btnTumu'); if (tumu) tumu.classList.remove('aktif');
+        var lp = document.getElementById('ligPanel'); if (lp) { lp.classList.remove('ac'); lp.innerHTML = ''; }
+        document.querySelectorAll('.yas-kart').forEach(function (k) {
+            var yr = getYasRenk(k.id.replace('yaskart_', ''));
+            k.style.background = 'transparent'; k.style.color = yr;
+            k.style.borderColor = yr + '55'; k.style.boxShadow = '';
+            k.classList.remove('aktif');
+        });
+
+        if (!tarih) {
+            macTarihReset();
+            if (tumu) tumu.classList.add('aktif');
+            document.getElementById('macListesi').innerHTML = '';
+            document.getElementById('macListesi').style.display = 'block';
+            document.getElementById('macYok').style.display = 'none';
+            var ph = document.getElementById('macSecilmedi'); if (ph) ph.style.display = 'block';
+            return;
+        }
+
+        if (dInp) dInp.classList.add('aktif');
+        if (dTmz) dTmz.style.display = '';
+        var ph2 = document.getElementById('macSecilmedi'); if (ph2) ph2.style.display = 'none';
+        document.getElementById('macYok').textContent = 'Bu tarihte maç yok — başka bir gün seçin.';
+        document.getElementById('macListesi').style.display = 'block';
+        renderMaclar(null, tarih);
+        setTimeout(function () {
+            var ml = document.getElementById('macListesi'); if (ml) ml.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 80);
+    }
+
     function toggleYasPanel(yas, yasRenk) {
+        macTarihReset();
         var panel = document.getElementById('ligPanel');
         var kategoriler = Array.from(new Set(MACLAR.map(function(m){ return m.kat; }))).sort();
 
@@ -300,6 +370,8 @@
 
     function selectKat(kat, renk) {
         secilenKat = kat;
+        macTarihReset();
+        var myDef = document.getElementById('macYok'); if (myDef) myDef.textContent = 'Bu kategoride maç bulunamadı.';
 
         // tüm lig butonlarını sıfırla
         document.querySelectorAll('.lig-btn').forEach(function(b){
@@ -493,6 +565,10 @@
                 '.mg-bugun{border-color:#ff5a18;box-shadow:0 0 0 1px #ff5a1855,0 6px 24px -8px #ff5a1855;}' +
                 '.mg-bugun .mg-hdr{background:linear-gradient(90deg,#2a1810,#1e293b);}' +
                 '.mg-bugun-rozet{display:inline-block;margin-left:8px;font-size:0.62rem;font-weight:900;letter-spacing:0.5px;color:#fff;background:#ff5a18;padding:2px 8px;border-radius:6px;vertical-align:middle;}' +
+                // tarihi gecmis (oynanmis) gunler soluk gosterilir
+                '.mg-gecmis{opacity:0.5;transition:opacity 0.18s;}' +
+                '.mg-gecmis:hover{opacity:0.9;}' +
+                '.mg-gecmis-rozet{display:inline-block;margin-left:8px;font-size:0.62rem;font-weight:800;letter-spacing:0.5px;color:#94a3b8;background:#1e293b;border:1px solid #334155;padding:2px 8px;border-radius:6px;vertical-align:middle;}' +
                 '@media(max-width:680px){.ms{flex-wrap:wrap;}.ms-meta{flex:1 0 100%;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;border-left:none;border-top:1px solid #0d1826;padding:8px 14px;}.ms-rozet,.ms-grup{display:none;}.ms-salon{max-width:none;font-size:0.78rem;}.ms-saat{flex:0 0 80px;}.ms-takim-isim{font-size:0.88rem;}.ms-vs-ic{width:30px;height:30px;font-size:0.58rem;}}';
             document.head.appendChild(st);
         }
@@ -511,11 +587,12 @@
             var ilk  = maclar[0];
             var renk = kat ? getKatRenk(kat) : '#ff4d05';
             var isBugun = (t === bugun);
+            var isGecmis = (t < bugun);
             var bid  = 'mg_' + t.replace(/-/g,'');
             var cid  = bid + '_c';
 
             var blok = document.createElement('div');
-            blok.className = 'mg-blok' + (isBugun ? ' mg-bugun' : '');
+            blok.className = 'mg-blok' + (isBugun ? ' mg-bugun' : '') + (isGecmis ? ' mg-gecmis' : '');
 
             var hdr = document.createElement('div');
             hdr.className = 'mg-hdr';
@@ -523,7 +600,7 @@
                 '<div class="mg-sol">' +
                     '<div class="mg-bar" style="background:' + renk + '"></div>' +
                     '<div>' +
-                        '<div class="mg-tarih">' + ilk.gun + ', ' + ilk.td + (isBugun ? ' <span class="mg-bugun-rozet">BUGÜN</span>' : '') + '</div>' +
+                        '<div class="mg-tarih">' + ilk.gun + ', ' + ilk.td + (isBugun ? ' <span class="mg-bugun-rozet">BUGÜN</span>' : (isGecmis ? ' <span class="mg-gecmis-rozet">OYNANDI</span>' : '')) + '</div>' +
                         '<div class="mg-sayi">' + maclar.length + ' mac</div>' +
                     '</div>' +
                 '</div>' +
