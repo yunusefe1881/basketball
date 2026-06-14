@@ -1281,17 +1281,27 @@
     <!-- PUAN DURUMU -->
     <section id="standings">
         <h2>📊 Puan Durumu</h2>
-        <p id="puanGuncelleme" style="text-align:center;color:#64748b;font-size:0.85rem;margin:-10px auto 28px;"></p>
+        <p id="puanGuncelleme" style="text-align:center;color:#64748b;font-size:0.85rem;margin:-10px auto 24px;"></p>
 
-        <!-- LİG SEÇİCİ (yaş / cinsiyet) -->
-        <div id="puanLigSecici" style="display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:980px;margin:0 auto 14px;"></div>
-        <!-- ALT-LİG SEÇİCİ (U10A / U10B / U10C ...) -->
-        <div id="puanTierSecici" class="puan-chip-row" style="max-width:980px;margin:0 auto;"></div>
-        <!-- GRUP SEÇİCİ (ASYA F, AVRUPA A ...) -->
-        <div id="puanGrupSecici" class="puan-chip-row" style="max-width:980px;margin:0 auto;"></div>
+        <!-- TAKIM ARAMA -->
+        <div id="puanArama" style="max-width:680px;margin:0 auto 26px;position:relative;">
+            <span style="position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:1.1rem;opacity:0.5;pointer-events:none;">🔍</span>
+            <input id="puanAramaInput" type="text" autocomplete="off"
+                placeholder="Takımını ara… (örn: Efes, Fenerbahçe)"
+                oninput="puanTakimArama(this.value)" class="puan-arama">
+            <button id="puanAramaSil" onclick="puanAramaTemizle()" class="puan-arama-sil" aria-label="Aramayı temizle">✕</button>
+        </div>
 
-        <!-- TABLO ALANI (seçilen grubun puan durumu) -->
-        <div id="puanTablolar" style="max-width:980px;margin:16px auto 0;"></div>
+        <!-- ARAMA SONUÇLARI (tam genişlik) -->
+        <div id="puanAramaSonuc" style="display:none;max-width:980px;margin:0 auto;"></div>
+
+        <!-- GÖZATMA: lig seçici + akordeon -->
+        <div id="puanGozat">
+            <!-- LİG SEÇİCİ (yaş / cinsiyet) -->
+            <div id="puanLigSecici" style="display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:980px;margin:0 auto 18px;"></div>
+            <!-- AKORDEON (tier başlıkları + grup kartları) -->
+            <div id="puanAkordeon" style="max-width:980px;margin:0 auto;"></div>
+        </div>
 
         <p id="puanYok" style="text-align:center;color:#64748b;display:none;padding:40px;">Puan durumu şu an yüklenemedi. Lütfen daha sonra tekrar deneyin.</p>
         <div id="puanSecilmedi" style="text-align:center;color:#64748b;padding:60px 20px;">
@@ -1924,6 +1934,34 @@
             '.puan-lig-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:50px;border:1.5px solid #334155;background:transparent;color:#94a3b8;font-family:Inter,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.18s;}' +
             '.puan-lig-btn:hover{border-color:#ff4d05;color:#f1f5f9;transform:translateY(-2px);}' +
             '.puan-lig-btn.aktif{background:#ff4d05;border-color:#ff4d05;color:#fff;box-shadow:0 6px 18px -6px rgba(255,77,5,0.6);}' +
+            /* ---- arama ---- */
+            '.puan-arama{width:100%;padding:15px 48px 15px 50px;background:#1e293b;border:1.5px solid #334155;border-radius:50px;color:#f1f5f9;font-size:0.95rem;font-family:Inter,sans-serif;outline:none;transition:border-color 0.2s,box-shadow 0.2s;}' +
+            '.puan-arama:focus{border-color:#ff4d05;box-shadow:0 0 0 3px rgba(255,77,5,0.15);}' +
+            '.puan-arama::placeholder{color:#64748b;}' +
+            '.puan-arama-sil{display:none;position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;color:#64748b;font-size:1.1rem;cursor:pointer;line-height:1;padding:6px;border-radius:50%;transition:color 0.2s;}' +
+            '.puan-arama-sil:hover{color:#ff4d05;}' +
+            /* ---- breadcrumb (arama sonucu) ---- */
+            '.puan-bread{display:flex;align-items:center;flex-wrap:wrap;gap:7px;font-size:0.8rem;font-weight:700;color:#94a3b8;margin-bottom:14px;}' +
+            '.puan-bread .pb-lig{color:#ffb98f;background:rgba(255,77,5,0.12);border:1px solid rgba(255,77,5,0.3);padding:3px 11px;border-radius:50px;}' +
+            '.puan-bread .pb-sep{color:#475569;}' +
+            '.puan-arama-bos{text-align:center;padding:48px 20px;color:#64748b;}' +
+            '.puan-arama-bos .pab-ico{font-size:2.6rem;margin-bottom:12px;}' +
+            '.puan-arama-bos b{display:block;color:#94a3b8;font-size:1rem;margin-bottom:5px;}' +
+            /* ---- akordeon ---- */
+            '.puan-tier-lbl{font-size:0.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#ff8a45;margin:22px 4px 12px;display:flex;align-items:center;gap:9px;}' +
+            '.puan-tier-lbl::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,138,69,0.35),transparent);}' +
+            '.puan-tier-lbl:first-child{margin-top:0;}' +
+            '.pa-blok{margin-bottom:9px;border-radius:14px;overflow:hidden;border:1px solid #1e293b;background:#0f172a;}' +
+            '.pa-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;background:#161f33;transition:background 0.15s;}' +
+            '.pa-hdr:hover{background:#1c2740;}' +
+            '.pa-hsol{display:flex;align-items:center;gap:13px;min-width:0;}' +
+            '.pa-bar{width:3px;border-radius:2px;height:34px;flex-shrink:0;background:#ff4d05;}' +
+            '.pa-ad{font-size:0.95rem;font-weight:800;color:#f1f5f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+            '.pa-alt{font-size:0.74rem;color:#64748b;margin-top:2px;}' +
+            '.pa-chev{font-size:0.8rem;color:#475569;transition:transform 0.22s;flex-shrink:0;margin-left:10px;}' +
+            '.pa-chev.ac{transform:rotate(180deg);}' +
+            '.pa-body{display:none;background:#0c1221;overflow-x:auto;padding:6px 14px 12px;}' +
+            '.pa-body.ac{display:block;}' +
             '.puan-chip-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin-bottom:12px;}' +
             '.puan-chip-row:empty{display:none;margin:0;}' +
             '.puan-chip-lbl{font-size:0.7rem;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:#475569;margin-right:3px;}' +
@@ -1945,7 +1983,15 @@
             '.puan-tablo td.sira{font-weight:800;color:#64748b;width:34px;}' +
             '.puan-takim{display:flex;align-items:center;gap:10px;font-weight:600;color:#f1f5f9;}' +
             '.puan-takim img{width:24px;height:24px;object-fit:contain;border-radius:5px;flex-shrink:0;background:#1e293b;}' +
+            /* logosuz takimlar icin bas-harf rozeti */
+            '.puan-logo-fb{width:24px;height:24px;border-radius:5px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#cbd5e1;background:linear-gradient(135deg,#334155,#1e293b);}' +
             '.puan-tablo tbody tr:hover td{background:rgba(255,77,5,0.05);}' +
+            /* ilk sira renk kodu */
+            '.puan-tablo td.sira.s1{color:#fbbf24;box-shadow:inset 3px 0 #fbbf24;}' +
+            '.puan-tablo td.sira.s2,.puan-tablo td.sira.s3{color:#34d399;box-shadow:inset 3px 0 #34d399;}' +
+            /* aranan takim vurgusu */
+            '.puan-tablo tr.vurgu td{background:rgba(255,77,5,0.16)!important;}' +
+            '.puan-tablo tr.vurgu td.takim .puan-takim>span:last-child{color:#ffb98f;}' +
             '@media(max-width:560px){' +
                 '.puan-tablo .hide-sm{display:none;}' +
                 '.puan-tablo{min-width:0;font-size:0.8rem;}' +
@@ -1953,10 +1999,14 @@
                 '.puan-tablo td{padding:8px 3px;}' +
                 '.puan-tablo td.sira,.puan-tablo th.sira{width:20px;}' +
                 '.puan-takim{gap:7px;}' +
-                '.puan-takim img{width:18px;height:18px;}' +
+                '.puan-takim img,.puan-logo-fb{width:18px;height:18px;font-size:0.6rem;}' +
                 '.puan-grup-kart{padding:12px 10px 6px;}' +
                 '.puan-grup-baslik{font-size:0.85rem;}' +
                 '.puan-lig-btn{padding:9px 14px;font-size:0.82rem;}' +
+                '.pa-hdr{padding:12px 14px;}' +
+                '.pa-ad{font-size:0.88rem;}' +
+                '.pa-body{padding:4px 10px 10px;}' +
+                '.puan-arama{padding:13px 44px 13px 46px;font-size:0.9rem;}' +
             '}';
         document.head.appendChild(s);
     }
@@ -1986,10 +2036,6 @@
         selectLig(ligler[0].leagueId);
     }
 
-    var _puanTiers = [];
-    var secilenTier = 0;
-    var secilenGrup = 0;
-
     function selectLig(leagueId) {
         secilenLigId = leagueId;
         document.querySelectorAll('.puan-lig-btn').forEach(function (b) {
@@ -1998,17 +2044,14 @@
         var lig = ((STANDINGS && STANDINGS.ligler) || []).filter(function (l) { return l.leagueId === leagueId; })[0];
         document.getElementById('puanSecilmedi').style.display = 'none';
         var py = document.getElementById('puanYok'); py.style.display = 'none';
-        _puanTiers = puanBuildTiers(lig);
-        if (!_puanTiers.length) {
-            document.getElementById('puanTierSecici').innerHTML = '';
-            document.getElementById('puanGrupSecici').innerHTML = '';
-            document.getElementById('puanTablolar').innerHTML = '';
+        var tiers = puanBuildTiers(lig);
+        if (!tiers.length) {
+            document.getElementById('puanAkordeon').innerHTML = '';
             py.style.display = 'block';
             py.textContent = 'Bu lig için henüz puan durumu yok.';
             return;
         }
-        renderTierChips();
-        selectTier(0);
+        renderAkordeon(tiers);
     }
 
     // "ERKEKLER U10C LİGİ ASYA F GRUBU" -> { tier:'U10C', sub:'ASYA F' }
@@ -2040,85 +2083,154 @@
         return tiers;
     }
 
-    function _puanChip(label, sayi, aktif, onClick) {
-        var b = document.createElement('button');
-        b.className = 'puan-chip' + (aktif ? ' aktif' : '');
-        b.innerHTML = puanEsc(label) + (sayi != null ? ' <span class="pc-say">' + sayi + '</span>' : '');
-        b.onclick = onClick;
-        return b;
-    }
+    // Lig akordeonunu kur: tier'lar bölüm başlığı, her grup katlanır kart.
+    function renderAkordeon(tiers) {
+        var wrap = document.getElementById('puanAkordeon');
+        wrap.innerHTML = '';
+        var cokTier = tiers.length > 1;
+        var ilkAcildi = false;
 
-    function renderTierChips() {
-        var row = document.getElementById('puanTierSecici');
-        row.innerHTML = '';
-        if (_puanTiers.length <= 1) return; // tek alt-lig varsa satırı gizle
-        var lbl = document.createElement('span'); lbl.className = 'puan-chip-lbl'; lbl.textContent = 'Lig'; row.appendChild(lbl);
-        _puanTiers.forEach(function (t, i) {
-            row.appendChild(_puanChip(t.tier, null, i === secilenTier,
-                (function (k) { return function () { selectTier(k); }; })(i)));
+        tiers.forEach(function (t) {
+            if (cokTier) {
+                var lbl = document.createElement('div');
+                lbl.className = 'puan-tier-lbl';
+                lbl.textContent = t.tier + ' Ligi';
+                wrap.appendChild(lbl);
+            }
+            t.gruplar.forEach(function (g) {
+                var grup = g.veri;
+                var n = (grup.takimlar || []).length;
+                var basAd = g.sub || t.tier || 'Grup';
+
+                var blok = document.createElement('div');
+                blok.className = 'pa-blok';
+
+                var hdr = document.createElement('div');
+                hdr.className = 'pa-hdr';
+                hdr.innerHTML =
+                    '<div class="pa-hsol">' +
+                        '<span class="pa-bar"></span>' +
+                        '<div><div class="pa-ad">🏆 ' + puanEsc(basAd) + '</div>' +
+                        '<div class="pa-alt">' + (grup.hafta ? grup.hafta + '. hafta · ' : '') + n + ' takım</div></div>' +
+                    '</div>' +
+                    '<span class="pa-chev">▼</span>';
+
+                var body = document.createElement('div');
+                body.className = 'pa-body';
+                body.innerHTML = puanTabloHTML(grup, {});
+
+                hdr.onclick = function () {
+                    body.classList.toggle('ac');
+                    hdr.querySelector('.pa-chev').classList.toggle('ac');
+                };
+
+                blok.appendChild(hdr);
+                blok.appendChild(body);
+                wrap.appendChild(blok);
+
+                if (!ilkAcildi) {
+                    body.classList.add('ac');
+                    hdr.querySelector('.pa-chev').classList.add('ac');
+                    ilkAcildi = true;
+                }
+            });
         });
     }
 
-    function selectTier(i) {
-        secilenTier = i;
-        secilenGrup = 0;
-        document.getElementById('puanTierSecici').querySelectorAll('.puan-chip').forEach(function (b, k) {
-            b.classList.toggle('aktif', k === i);
-        });
-        renderGrupChips();
-        selectGrup(0);
+    // Takım logosu: yoksa baş-harf rozeti
+    function puanLogoHTML(t) {
+        if (t.logo) return '<img src="' + puanEsc(t.logo) + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">';
+        var harf = puanEsc(((t.takim || '?').trim().charAt(0) || '?').toUpperCase());
+        return '<span class="puan-logo-fb">' + harf + '</span>';
     }
 
-    function renderGrupChips() {
-        var row = document.getElementById('puanGrupSecici');
-        row.innerHTML = '';
-        var tier = _puanTiers[secilenTier];
-        if (!tier || tier.gruplar.length <= 1) return; // tek grup varsa satırı gizle
-        var lbl = document.createElement('span'); lbl.className = 'puan-chip-lbl'; lbl.textContent = 'Grup'; row.appendChild(lbl);
-        tier.gruplar.forEach(function (g, j) {
-            var n = (g.veri.takimlar || []).length;
-            row.appendChild(_puanChip(g.sub || 'Grup', n, j === secilenGrup,
-                (function (k) { return function () { selectGrup(k); }; })(j)));
-        });
-    }
-
-    function selectGrup(j) {
-        secilenGrup = j;
-        document.getElementById('puanGrupSecici').querySelectorAll('.puan-chip').forEach(function (b, k) {
-            b.classList.toggle('aktif', k === j);
-        });
-        var tier = _puanTiers[secilenTier];
-        if (!tier) return;
-        var g = tier.gruplar[j] || tier.gruplar[0];
-        var baslik = tier.tier + (g.sub ? ' · ' + g.sub : '');
-        renderTekTablo(g.veri, baslik);
-    }
-
-    function renderTekTablo(grup, baslik) {
-        var wrap = document.getElementById('puanTablolar');
-        if (!grup || !grup.takimlar || !grup.takimlar.length) { wrap.innerHTML = ''; return; }
-        var html = '<div class="puan-grup-kart">';
-        html += '<div class="puan-grup-baslik">🏆 ' + puanEsc(baslik) +
-                '<span class="pg-hafta">' + (grup.hafta ? grup.hafta + '. hafta · ' : '') + grup.takimlar.length + ' takım</span></div>';
-        html += '<table class="puan-tablo"><thead><tr>' +
+    // Tek grup tablosu (string döndürür); opts.highlightSet = vurgulanacak normalize isimler
+    function puanTabloHTML(grup, opts) {
+        opts = opts || {};
+        var hl = opts.highlightSet;
+        if (!grup || !grup.takimlar || !grup.takimlar.length) return '';
+        var html = '<table class="puan-tablo"><thead><tr>' +
                 '<th class="sira">#</th><th class="takim">Takım</th>' +
                 '<th>O</th><th>G</th><th>M</th>' +
                 '<th class="hide-sm">A</th><th class="hide-sm">Y</th>' +
                 '<th>Av</th><th>P</th></tr></thead><tbody>';
         grup.takimlar.forEach(function (t) {
-            var logo = t.logo ? '<img src="' + puanEsc(t.logo) + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' : '';
             var av = (t.av > 0 ? '+' : '') + t.av;
-            html += '<tr>' +
-                '<td class="sira">' + (t.sira || '') + '</td>' +
-                '<td class="takim"><span class="puan-takim">' + logo + '<span>' + puanEsc(t.takim) + '</span></span></td>' +
+            var sCls = (t.sira == 1 ? ' s1' : (t.sira == 2 ? ' s2' : (t.sira == 3 ? ' s3' : '')));
+            var vur = (hl && hl[normalizeText(t.takim)]) ? ' class="vurgu"' : '';
+            html += '<tr' + vur + '>' +
+                '<td class="sira' + sCls + '">' + (t.sira || '') + '</td>' +
+                '<td class="takim"><span class="puan-takim">' + puanLogoHTML(t) + '<span>' + puanEsc(t.takim) + '</span></span></td>' +
                 '<td>' + t.o + '</td><td>' + t.g + '</td><td>' + t.m + '</td>' +
                 '<td class="hide-sm">' + t.a + '</td><td class="hide-sm">' + t.y + '</td>' +
                 '<td>' + av + '</td>' +
                 '<td class="puan">' + t.puan + '</td>' +
                 '</tr>';
         });
-        html += '</tbody></table></div>';
-        wrap.innerHTML = html;
+        html += '</tbody></table>';
+        return html;
+    }
+
+    // Takım arama: tüm ligler/gruplar taranır, eşleşen takımın tablosu vurgulu açılır
+    function puanTakimArama(val) {
+        var sil = document.getElementById('puanAramaSil');
+        var sonuc = document.getElementById('puanAramaSonuc');
+        var gozat = document.getElementById('puanGozat');
+        var py = document.getElementById('puanYok');
+
+        if (!val || val.trim().length < 2) { puanAramaTemizle(); return; }
+
+        sil.style.display = 'block';
+        gozat.style.display = 'none';
+        if (py) py.style.display = 'none';
+        sonuc.style.display = 'block';
+
+        var q = normalizeText(val.trim());
+        var ligler = (STANDINGS && STANDINGS.ligler) || [];
+        var bulunan = [];
+        ligler.forEach(function (lig) {
+            (lig.gruplar || []).forEach(function (grup) {
+                var hlSet = {}, eslesti = false;
+                (grup.takimlar || []).forEach(function (t) {
+                    if (normalizeText(t.takim).indexOf(q) !== -1) { hlSet[normalizeText(t.takim)] = true; eslesti = true; }
+                });
+                if (eslesti) {
+                    var p = puanParcaGrup(grup.grup);
+                    bulunan.push({ lig: lig, tier: p.tier, sub: p.sub, grup: grup, hl: hlSet });
+                }
+            });
+        });
+
+        if (!bulunan.length) {
+            sonuc.innerHTML = '<div class="puan-arama-bos"><div class="pab-ico">🔍</div>' +
+                '<b>Eşleşen takım bulunamadı</b>' +
+                '<div>"' + puanEsc(val) + '" için sonuç yok — farklı bir takım adı deneyin</div></div>';
+            return;
+        }
+
+        var KAP = 24;
+        var fazla = bulunan.length - KAP;
+        if (fazla > 0) bulunan = bulunan.slice(0, KAP);
+
+        var html = '';
+        bulunan.forEach(function (b) {
+            var bread = '<div class="puan-bread"><span class="pb-lig">' + puanEsc(b.lig.etiket) + '</span>' +
+                (b.tier ? '<span class="pb-sep">›</span>' + puanEsc(b.tier) : '') +
+                (b.sub ? '<span class="pb-sep">›</span>' + puanEsc(b.sub) : '') + '</div>';
+            html += '<div class="puan-grup-kart">' + bread + puanTabloHTML(b.grup, { highlightSet: b.hl }) + '</div>';
+        });
+        if (fazla > 0) html += '<p class="calc-note">+' + fazla + ' grup daha — aramayı daraltın.</p>';
+        sonuc.innerHTML = html;
+
+        var ilk = sonuc.querySelector('tr.vurgu');
+        if (ilk && ilk.scrollIntoView) { try { ilk.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }
+    }
+
+    function puanAramaTemizle() {
+        var inp = document.getElementById('puanAramaInput'); if (inp) inp.value = '';
+        var sil = document.getElementById('puanAramaSil'); if (sil) sil.style.display = 'none';
+        var sonuc = document.getElementById('puanAramaSonuc'); if (sonuc) { sonuc.style.display = 'none'; sonuc.innerHTML = ''; }
+        var gozat = document.getElementById('puanGozat'); if (gozat) gozat.style.display = '';
     }
 
     // Puan durumu verisi data/standings.json'dan yuklenir (update_standings.py uretir)
