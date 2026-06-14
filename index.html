@@ -1286,10 +1286,9 @@
         <!-- TAKIM ARAMA -->
         <div id="puanArama" style="max-width:680px;margin:0 auto 26px;position:relative;">
             <span style="position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:1.1rem;opacity:0.5;pointer-events:none;">🔍</span>
-            <input id="puanAramaInput" type="text" autocomplete="off"
-                placeholder="Takımını ara… (örn: Efes, Fenerbahçe)"
-                oninput="puanTakimArama(this.value)" class="puan-arama">
-            <button id="puanAramaSil" onclick="puanAramaTemizle()" class="puan-arama-sil" aria-label="Aramayı temizle">✕</button>
+            <input id="puanAramaInput" type="text" autocomplete="off" enterkeyhint="search"
+                placeholder="Takımını ara… (örn: Efes, Fenerbahçe)" class="puan-arama">
+            <button id="puanAramaSil" type="button" class="puan-arama-sil" aria-label="Aramayı temizle">✕</button>
         </div>
 
         <!-- ARAMA SONUÇLARI (tam genişlik) -->
@@ -2013,10 +2012,20 @@
 
     function initPuanDurumu() {
         buildPuanStil();
+        // Aramayi JS ile bagla (inline oninput bazi mobil tarayicilarda tetiklenmeyebilir)
+        var aramaInp = document.getElementById('puanAramaInput');
+        if (aramaInp && !aramaInp._bagli) {
+            aramaInp._bagli = true;
+            aramaInp.addEventListener('input', function () { puanTakimArama(aramaInp.value); });
+            var silBtn = document.getElementById('puanAramaSil');
+            if (silBtn) silBtn.addEventListener('click', puanAramaTemizle);
+        }
         var sec = document.getElementById('puanLigSecici');
         var ligler = (STANDINGS && STANDINGS.ligler) || [];
         var gun = document.getElementById('puanGuncelleme');
         if (gun) gun.textContent = (STANDINGS && STANDINGS.guncelleme) ? ('Son güncelleme: ' + STANDINGS.guncelleme) : '';
+        var surum = document.getElementById('siteSurum');
+        if (surum) surum.textContent = 'Sürüm 2026.06.14' + ((STANDINGS && STANDINGS.guncelleme) ? (' · Veri ' + STANDINGS.guncelleme) : '');
         sec.innerHTML = '';
         if (!ligler.length) {
             document.getElementById('puanSecilmedi').style.display = 'none';
@@ -3205,6 +3214,7 @@
     <footer>
         <p>&copy; 2024 IST-BASKEPORTAL | İstanbul Basketbol Altyapı Takip Sistemi</p>
         <p style="font-size: 0.8rem; color: #64748b; margin-top: 10px;">Veriler TBF İstanbul İl Temsilciliği kaynak alınarak hazırlanmıştır.</p>
+        <p id="siteSurum" style="font-size: 0.72rem; color: #475569; margin-top: 8px;"></p>
     </footer>
 
     <!-- ========== MODAL ========== -->
