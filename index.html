@@ -1310,6 +1310,14 @@
         </div>
     </section>
 
+    <!-- TAKIM PROFİLİ -->
+    <section id="takim" style="display:none;">
+        <button class="tp-geri" onclick="takimGeri()">← Geri</button>
+        <div id="takimBaslik"></div>
+        <div id="takimPuan"></div>
+        <div id="takimMaclar"></div>
+    </section>
+
     <script>
     // ===== DRAWER NAV =====
     function openMenu() {
@@ -1337,13 +1345,16 @@
         training: { els: ['training'],               label: 'Antrenman',   icon: '💪' },
         diet:     { els: ['diet'],                   label: 'Beslenme',    icon: '🥗' },
         calc:     { els: ['calc'],                   label: 'Hesaplayıcılar', icon: '🧮' },
-        performans:{ els: ['performans'],            label: 'Performans',  icon: '📈' }
+        performans:{ els: ['performans'],            label: 'Performans',  icon: '📈' },
+        takim:    { els: ['takim'],                  label: 'Takım',       icon: '👤' }
     };
-    var ALL_VIEW_ELS = ['heroSection', 'homeHub', 'matches', 'standings', 'training', 'diet', 'calc', 'performans'];
+    var ALL_VIEW_ELS = ['heroSection', 'homeHub', 'matches', 'standings', 'training', 'diet', 'calc', 'performans', 'takim'];
+    var _aktifView = 'home';
 
     function showView(name, ev) {
         if (ev && ev.preventDefault) ev.preventDefault();
         if (!VIEW_MAP[name]) name = 'home';
+        _aktifView = name;
 
         ALL_VIEW_ELS.forEach(function (id) {
             var el = document.getElementById(id); if (el) el.style.display = 'none';
@@ -1853,9 +1864,9 @@
                         '<span class="ms-saat-ico">⏱</span>' +
                     '</div>' +
                     '<div class="ms-orta">' +
-                        '<div class="ms-takim ms-takim-a"><span class="ms-takim-isim">' + m.a + '</span></div>' +
+                        '<div class="ms-takim ms-takim-a"><span class="ms-takim-isim puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(m.a) + '\')">' + m.a + '</span></div>' +
                         '<div class="ms-vs"><div class="ms-vs-ic">VS</div></div>' +
-                        '<div class="ms-takim ms-takim-b"><span class="ms-takim-isim">' + m.b + '</span></div>' +
+                        '<div class="ms-takim ms-takim-b"><span class="ms-takim-isim puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(m.b) + '\')">' + m.b + '</span></div>' +
                     '</div>' +
                     '<div class="ms-meta">' +
                         '<span class="ms-rozet" style="color:' + kr + ';border:1px solid ' + kr + '44;background:' + kr + '18;">' + m.kat + '</span>' +
@@ -1984,6 +1995,8 @@
             '.puan-takim img{width:24px;height:24px;object-fit:contain;border-radius:5px;flex-shrink:0;background:#1e293b;}' +
             /* logosuz takimlar icin bas-harf rozeti */
             '.puan-logo-fb{width:24px;height:24px;border-radius:5px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#cbd5e1;background:linear-gradient(135deg,#334155,#1e293b);}' +
+            '.puan-takim-link{cursor:pointer;transition:color 0.15s;}' +
+            '.puan-takim-link:hover{color:#ff7849!important;text-decoration:underline;}' +
             '.puan-tablo tbody tr:hover td{background:rgba(255,77,5,0.05);}' +
             /* ilk sira renk kodu */
             '.puan-tablo td.sira.s1{color:#fbbf24;box-shadow:inset 3px 0 #fbbf24;}' +
@@ -2169,7 +2182,7 @@
             var vur = (hl && hl[normalizeText(t.takim)]) ? ' class="vurgu"' : '';
             html += '<tr' + vur + '>' +
                 '<td class="sira' + sCls + '">' + (t.sira || '') + '</td>' +
-                '<td class="takim"><span class="puan-takim">' + puanLogoHTML(t) + '<span>' + puanEsc(t.takim) + '</span></span></td>' +
+                '<td class="takim"><span class="puan-takim">' + puanLogoHTML(t) + '<span class="puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(t.takim) + '\')">' + puanEsc(t.takim) + '</span></span></td>' +
                 '<td>' + t.o + '</td><td>' + t.g + '</td><td>' + t.m + '</td>' +
                 '<td class="hide-sm">' + t.a + '</td><td class="hide-sm">' + t.y + '</td>' +
                 '<td>' + av + '</td>' +
@@ -2241,6 +2254,134 @@
         var sonuc = document.getElementById('puanAramaSonuc'); if (sonuc) { sonuc.style.display = 'none'; sonuc.innerHTML = ''; }
         var gozat = document.getElementById('puanGozat'); if (gozat) gozat.style.display = '';
     }
+
+    // ===== TAKIM PROFILI =====
+    // takim adini tek-tirnakli JS string + cift-tirnakli HTML attribute icinde guvenli kilar
+    function takimAttr(ad) {
+        return puanEsc(String(ad == null ? '' : ad).replace(/\\/g, '\\\\').replace(/'/g, "\\'"));
+    }
+
+    function takimLogoBul(takimAdi) {
+        var q = normalizeText(takimAdi);
+        var ligler = (STANDINGS && STANDINGS.ligler) || [];
+        for (var i = 0; i < ligler.length; i++) {
+            var gr = ligler[i].gruplar || [];
+            for (var j = 0; j < gr.length; j++) {
+                var tk = gr[j].takimlar || [];
+                for (var k = 0; k < tk.length; k++) {
+                    if (normalizeText(tk[k].takim) === q && tk[k].logo) return tk[k].logo;
+                }
+            }
+        }
+        return '';
+    }
+
+    function buildTakimStil() {
+        if (document.getElementById('takimSt')) return;
+        var s = document.createElement('style');
+        s.id = 'takimSt';
+        s.textContent =
+            '.tp-geri{background:rgba(148,163,184,0.1);border:1px solid #334155;color:#cbd5e1;font-family:Inter,sans-serif;font-size:0.85rem;font-weight:600;padding:8px 16px;border-radius:50px;cursor:pointer;margin-bottom:20px;transition:all 0.18s;}' +
+            '.tp-geri:hover{border-color:#ff4d05;color:#fff;}' +
+            '.tp-head{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,#1e293b,#141d31);border:1px solid #334155;border-radius:20px;padding:22px 24px;max-width:760px;margin:0 auto 22px;}' +
+            '.tp-logo{width:64px;height:64px;border-radius:16px;flex-shrink:0;object-fit:contain;background:#0f172a;border:1px solid #1e293b;}' +
+            '.tp-logo-fb{width:64px;height:64px;border-radius:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.7rem;font-weight:800;color:#cbd5e1;background:linear-gradient(135deg,#334155,#1e293b);}' +
+            '.tp-ad{font-family:"Space Grotesk",Inter,sans-serif;font-size:1.5rem;font-weight:800;color:#fff;line-height:1.15;min-width:0;word-break:break-word;}' +
+            '.tp-alt{font-size:0.82rem;color:#94a3b8;margin-top:4px;}' +
+            '.tp-sec{max-width:760px;margin:0 auto 14px;}' +
+            '.tp-sec-lbl{font-size:0.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#ff8a45;margin:24px auto 12px;max-width:760px;display:flex;align-items:center;gap:9px;}' +
+            '.tp-sec-lbl::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,138,69,0.35),transparent);}' +
+            '.tp-bos{text-align:center;color:#64748b;padding:24px;font-size:0.9rem;background:#0f172a;border:1px solid #1e293b;border-radius:13px;}' +
+            '.tp-mac{display:flex;align-items:center;gap:12px;background:#0f172a;border:1px solid #1e293b;border-radius:13px;padding:12px 14px;margin-bottom:8px;}' +
+            '.tp-mac-tar{flex:0 0 58px;text-align:center;}' +
+            '.tp-mac-gun{font-size:0.66rem;color:#64748b;text-transform:uppercase;font-weight:700;}' +
+            '.tp-mac-saat{font-size:0.95rem;font-weight:900;color:#ff7849;}' +
+            '.tp-mac-orta{flex:1;min-width:0;}' +
+            '.tp-mac-rakip{font-size:0.92rem;font-weight:700;color:#e2e8f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+            '.tp-mac-rakip b{color:#94a3b8;font-weight:600;font-size:0.8rem;}' +
+            '.tp-mac-alt{font-size:0.72rem;color:#5b738f;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+            '.tp-mac-kat{flex-shrink:0;font-size:0.66rem;font-weight:700;color:#94a3b8;background:#1e293b;border:1px solid #334155;padding:3px 9px;border-radius:8px;}' +
+            '@media(max-width:560px){.tp-head{padding:16px;gap:12px;}.tp-logo,.tp-logo-fb{width:50px;height:50px;font-size:1.3rem;}.tp-ad{font-size:1.2rem;}.tp-mac-kat{display:none;}}';
+        document.head.appendChild(s);
+    }
+
+    var _takimGeri = 'standings';
+
+    function showTakimProfil(takimAdi) {
+        if (!takimAdi) return;
+        buildPuanStil();
+        buildTakimStil();
+        _takimGeri = (_aktifView && _aktifView !== 'takim') ? _aktifView : 'standings';
+
+        var q = normalizeText(takimAdi);
+        var logo = takimLogoBul(takimAdi);
+
+        // --- baslik karti ---
+        var bas = document.getElementById('takimBaslik');
+        var logoHtml = logo
+            ? '<img class="tp-logo" src="' + puanEsc(logo) + '" alt="" onerror="this.style.display=\'none\'">'
+            : '<span class="tp-logo-fb">' + puanEsc((takimAdi.trim().charAt(0) || '?').toUpperCase()) + '</span>';
+        bas.className = 'tp-head';
+        bas.innerHTML = logoHtml + '<div style="min-width:0;"><div class="tp-ad">' + puanEsc(takimAdi) + '</div>' +
+            '<div class="tp-alt">İstanbul Altyapı Basketbol</div></div>';
+
+        // --- puan durumundaki yeri ---
+        var puanEl = document.getElementById('takimPuan');
+        var hl = {}; hl[q] = true;
+        var bulunan = [];
+        ((STANDINGS && STANDINGS.ligler) || []).forEach(function (lig) {
+            (lig.gruplar || []).forEach(function (grup) {
+                var has = (grup.takimlar || []).some(function (t) { return normalizeText(t.takim) === q; });
+                if (has) { var p = puanParcaGrup(grup.grup); bulunan.push({ lig: lig, tier: p.tier, sub: p.sub, grup: grup }); }
+            });
+        });
+        var ph = '<div class="tp-sec-lbl">📊 Puan Durumu</div>';
+        if (bulunan.length) {
+            bulunan.forEach(function (b) {
+                var bread = '<div class="puan-bread"><span class="pb-lig">' + puanEsc(b.lig.etiket) + '</span>' +
+                    (b.tier ? '<span class="pb-sep">›</span>' + puanEsc(b.tier) : '') +
+                    (b.sub ? '<span class="pb-sep">›</span>' + puanEsc(b.sub) : '') + '</div>';
+                ph += '<div class="tp-sec"><div class="puan-grup-kart">' + bread + puanTabloHTML(b.grup, { highlightSet: hl }) + '</div></div>';
+            });
+        } else {
+            ph += '<div class="tp-sec"><div class="tp-bos">Bu takım puan durumu verisinde yok (yalnızca U10–U12 mevcut).</div></div>';
+        }
+        puanEl.innerHTML = ph;
+
+        // --- maclari ---
+        var macEl = document.getElementById('takimMaclar');
+        var maclar = (MACLAR || []).filter(function (m) {
+            return normalizeText(m.a).indexOf(q) !== -1 || normalizeText(m.b).indexOf(q) !== -1;
+        });
+        maclar.sort(function (a, b) { return (a.tarih + a.saat).localeCompare(b.tarih + b.saat); });
+        var mh = '<div class="tp-sec-lbl">🏀 Maçları <span style="color:#64748b;font-weight:600;text-transform:none;letter-spacing:0;">(' + maclar.length + ')</span></div><div class="tp-sec">';
+        if (!maclar.length) {
+            mh += '<div class="tp-bos">Yaklaşan maç bulunamadı.</div>';
+        } else {
+            maclar.forEach(function (m) {
+                var benEv = normalizeText(m.a).indexOf(q) !== -1;
+                var rakip = benEv ? m.b : m.a;
+                var gunKisa = (m.gun || '').slice(0, 3);
+                mh += '<div class="tp-mac">' +
+                    '<div class="tp-mac-tar"><div class="tp-mac-gun">' + puanEsc(gunKisa) + '</div><div class="tp-mac-saat">' + puanEsc(m.saat) + '</div></div>' +
+                    '<div class="tp-mac-orta">' +
+                        '<div class="tp-mac-rakip"><b>vs</b> <span class="puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(rakip) + '\')">' + puanEsc(rakip) + '</span></div>' +
+                        '<div class="tp-mac-alt">' + puanEsc(m.td || '') + ' · ' + puanEsc(m.salon || '') + '</div>' +
+                    '</div>' +
+                    '<span class="tp-mac-kat">' + puanEsc(m.kat || '') + '</span>' +
+                    '</div>';
+            });
+        }
+        mh += '</div>';
+        macEl.innerHTML = mh;
+
+        showView('takim');
+        var lbl = document.getElementById('currentViewLabel');
+        if (lbl) { lbl.innerHTML = '👤 ' + puanEsc(takimAdi); lbl.classList.add('show'); }
+        try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (e) {}
+    }
+
+    function takimGeri() { showView(_takimGeri || 'standings'); }
 
     // Puan durumu verisi data/standings.json'dan yuklenir (update_standings.py uretir)
     fetch('data/standings.json', { cache: 'no-store' })
@@ -2432,11 +2573,11 @@
                     '</div>' +
                     '<div class="ar-orta">' +
                         '<div class="ar-takim ar-takim-a">' +
-                            '<span class="ar-takim-isim">' + m.a + '</span>' +
+                            '<span class="ar-takim-isim puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(m.a) + '\')">' + m.a + '</span>' +
                         '</div>' +
                         '<div class="ar-vs"><div class="ar-vs-ic">VS</div></div>' +
                         '<div class="ar-takim ar-takim-b">' +
-                            '<span class="ar-takim-isim">' + m.b + '</span>' +
+                            '<span class="ar-takim-isim puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(m.b) + '\')">' + m.b + '</span>' +
                         '</div>' +
                     '</div>' +
                     '<div class="ar-meta">' +
