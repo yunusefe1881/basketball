@@ -505,7 +505,7 @@
 
         /* ===================== FOOTER ===================== */
         footer {
-            text-align: center; padding: 56px 40px; background: #060a14;
+            text-align: center; padding: 56px clamp(16px, 5%, 40px); background: #060a14;
             border-top: 1px solid var(--line); color: #7e8ca3; position: relative;
         }
         footer::before {
@@ -561,7 +561,7 @@
 
         /* === 768px === */
         @media (max-width: 768px) {
-            header { padding: 0.8rem 4%; }
+            header { padding: 0.8rem max(4%, 14px); }
             #desktopNav { display: none; }
             .hamburger { display: flex; }
             .logo { font-size: 1.1rem; }
@@ -575,7 +575,7 @@
             .hero-btn { padding: 11px 22px; font-size: 0.88rem; }
             .scroll-cue { display: none; }
 
-            section { padding: 52px 4%; }
+            section { padding: 52px 16px; }
             h2 { margin-bottom: 26px; }
             h2::after { margin-top: 14px; }
 
@@ -638,6 +638,7 @@
             .form-group { margin-bottom: 16px; }
 
             #dietForm > div { padding: 20px 16px !important; border-radius: 16px !important; }
+            #dietForm div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
             #dietStats { grid-template-columns: repeat(3,1fr) !important; gap: 8px !important; }
             #dietMeals { grid-template-columns: 1fr !important; }
             .stat-card .stat-val { font-size: 1.4rem !important; }
@@ -833,9 +834,14 @@
         }
 
         @media (max-width: 600px){
-            .hub-grid { grid-template-columns: 1fr; gap: 14px; }
-            .hub-card { padding: 22px; }
-            .hub-card .hub-ico { width: 52px; height: 52px; font-size: 1.5rem; margin-bottom: 14px; }
+            .hub-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+            .hub-card { padding: 16px 14px; border-radius: 18px; }
+            .hub-card .hub-ico { width: 46px; height: 46px; font-size: 1.35rem; margin-bottom: 11px; border-radius: 14px; }
+            .hub-card h3 { font-size: 1rem; margin-bottom: 5px; }
+            .hub-card p { font-size: 0.75rem; line-height: 1.4; margin-bottom: 11px;
+                display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+            .hub-card .hub-go { font-size: 0.78rem; }
+            .hub-card .hub-tag { top: 11px; right: 11px; font-size: 0.58rem; padding: 3px 8px; }
             .mob-menu { width: 320px; }
             .view-label { margin-left: 12px; padding-left: 12px; font-size: 0.8rem; }
         }
@@ -889,6 +895,9 @@
         @media (max-width: 480px) {
             .hero-cta { flex-direction: column; width: 100%; gap: 10px; }
             .hero-cta .hero-btn { width: 100%; justify-content: center; }
+            .calc-pick { width: 100%; }
+            .calc-picker { gap: 8px; }
+            .recipe-grid { grid-template-columns: 1fr; }
         }
 
         /* ===================== BMI / VÜCUT YAĞI HESAPLAYICI ===================== */
@@ -1680,7 +1689,7 @@
             bs.id = 'bugunStyle';
             bs.textContent =
                 '.bugun-banner{max-width:900px;margin:0 auto 30px;background:linear-gradient(135deg,#1b1205,#1e293b);border:1px solid #ff5a1855;border-radius:18px;padding:18px 22px;box-shadow:0 12px 40px -14px #ff5a1840;}' +
-                '.bb-head{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1rem;color:#ffb98a;letter-spacing:0.3px;}' +
+                '.bb-head{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-weight:900;font-size:0.92rem;color:#ffb98a;letter-spacing:0.3px;}' +
                 '.bb-dot{width:9px;height:9px;border-radius:50%;background:#ff3b30;box-shadow:0 0 0 4px #ff3b3033;animation:bbpulse 1.6s infinite;flex-shrink:0;}' +
                 '@keyframes bbpulse{0%,100%{opacity:1;}50%{opacity:0.35;}}' +
                 '.bb-count{margin-left:auto;font-size:0.75rem;font-weight:800;color:#fff;background:#ff5a18;padding:3px 11px;border-radius:20px;white-space:nowrap;}' +
@@ -1695,7 +1704,8 @@
                 '.bb-bos-alt{margin:10px 0 2px;font-size:0.88rem;color:#94a3b8;}' +
                 '.bb-bos-alt b{color:#e2e8f0;}' +
                 '.bb-dot.bos{background:#475569;box-shadow:none;animation:none;}' +
-                '.bb-head.bos{color:#94a3b8;}';
+                '.bb-head.bos{color:#94a3b8;}' +
+                '.bb-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}';
             document.head.appendChild(bs);
         }
 
@@ -1710,7 +1720,7 @@
             }).join('');
             var kalan = bugunMac.length > 4 ? '<div class="bb-kalan">+' + (bugunMac.length - 4) + ' maç daha</div>' : '';
             box.innerHTML =
-                '<div class="bb-head"><span class="bb-dot"></span>BUGÜN · ' + bugunMac[0].gun + ', ' + bugunMac[0].td +
+                '<div class="bb-head"><span class="bb-dot"></span><span class="bb-title">BUGÜN · ' + bugunMac[0].gun + ', ' + bugunMac[0].td + '</span>' +
                     '<span class="bb-count">' + bugunMac.length + ' maç</span></div>' +
                 '<div class="bb-list">' + satirlar + kalan + '</div>' +
                 '<button class="bb-btn" onclick="gotoBugun()">Bugünün maçlarını gör →</button>';
@@ -1720,7 +1730,7 @@
             if (ileri.length) {
                 var sm = MACLAR.filter(function(m){ return m.tarih === ileri[0]; })[0];
                 box.innerHTML =
-                    '<div class="bb-head bos"><span class="bb-dot bos"></span>Bugün planlanmış maç yok</div>' +
+                    '<div class="bb-head bos"><span class="bb-dot bos"></span><span class="bb-title">Bugün planlanmış maç yok</span></div>' +
                     '<div class="bb-bos-alt">Sıradaki maç günü: <b>' + sm.gun + ', ' + sm.td + '</b></div>' +
                     '<button class="bb-btn" onclick="gotoBugun()">Takvime git →</button>';
                 box.style.display = '';
@@ -1936,7 +1946,18 @@
             '.puan-takim{display:flex;align-items:center;gap:10px;font-weight:600;color:#f1f5f9;}' +
             '.puan-takim img{width:24px;height:24px;object-fit:contain;border-radius:5px;flex-shrink:0;background:#1e293b;}' +
             '.puan-tablo tbody tr:hover td{background:rgba(255,77,5,0.05);}' +
-            '@media(max-width:560px){.puan-tablo .hide-sm{display:none;}.puan-tablo td,.puan-tablo th{padding:8px 4px;}.puan-takim img{width:20px;height:20px;}}';
+            '@media(max-width:560px){' +
+                '.puan-tablo .hide-sm{display:none;}' +
+                '.puan-tablo{min-width:0;font-size:0.8rem;}' +
+                '.puan-tablo th{font-size:0.58rem;padding:7px 3px;}' +
+                '.puan-tablo td{padding:8px 3px;}' +
+                '.puan-tablo td.sira,.puan-tablo th.sira{width:20px;}' +
+                '.puan-takim{gap:7px;}' +
+                '.puan-takim img{width:18px;height:18px;}' +
+                '.puan-grup-kart{padding:12px 10px 6px;}' +
+                '.puan-grup-baslik{font-size:0.85rem;}' +
+                '.puan-lig-btn{padding:9px 14px;font-size:0.82rem;}' +
+            '}';
         document.head.appendChild(s);
     }
 
