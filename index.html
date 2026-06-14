@@ -2006,6 +2006,12 @@
             /* aranan takim vurgusu */
             '.puan-tablo tr.vurgu td{background:rgba(255,77,5,0.16)!important;}' +
             '.puan-tablo tr.vurgu td.takim .puan-takim>span:last-child{color:#ffb98f;}' +
+            // form (son 5 sonuc noktalari)
+            '.puan-tablo th.form,.puan-tablo td.form{text-align:center;white-space:nowrap;}' +
+            '.puan-form{display:inline-flex;gap:3px;align-items:center;justify-content:center;}' +
+            '.pf-dot{width:7px;height:7px;border-radius:50%;display:inline-block;}' +
+            '.pf-w{background:#34d399;}' +
+            '.pf-l{background:#f87171;}' +
             '@media(max-width:560px){' +
                 '.puan-tablo .hide-sm{display:none;}' +
                 '.puan-tablo{min-width:0;font-size:0.8rem;}' +
@@ -2021,6 +2027,7 @@
                 '.pa-ad{font-size:0.88rem;}' +
                 '.pa-body{padding:4px 10px 10px;}' +
                 '.puan-arama{padding:13px 44px 13px 46px;font-size:0.9rem;}' +
+                '.pf-dot{width:6px;height:6px;}.puan-form{gap:2px;}' +
             '}';
         document.head.appendChild(s);
     }
@@ -2177,11 +2184,15 @@
                 '<th class="sira">#</th><th class="takim">Takım</th>' +
                 '<th>O</th><th>G</th><th>M</th>' +
                 '<th class="hide-sm">A</th><th class="hide-sm">Y</th>' +
-                '<th>Av</th><th>P</th></tr></thead><tbody>';
+                '<th>Av</th><th>P</th><th class="form">Form</th></tr></thead><tbody>';
         grup.takimlar.forEach(function (t) {
             var av = (t.av > 0 ? '+' : '') + t.av;
             var sCls = (t.sira == 1 ? ' s1' : (t.sira == 2 ? ' s2' : (t.sira == 3 ? ' s3' : '')));
             var vur = (hl && hl[normalizeText(t.takim)]) ? ' class="vurgu"' : '';
+            var formArr = takimForm(t.takim);
+            var formHtml = formArr.map(function (f) {
+                return '<span class="pf-dot ' + (f.win ? 'pf-w' : 'pf-l') + '" title="' + (f.win ? 'Galibiyet' : 'Mağlubiyet') + '"></span>';
+            }).join('');
             html += '<tr' + vur + '>' +
                 '<td class="sira' + sCls + '">' + (t.sira || '') + '</td>' +
                 '<td class="takim"><span class="puan-takim">' + puanLogoHTML(t) + '<span class="puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(t.takim) + '\')">' + puanEsc(t.takim) + '</span></span></td>' +
@@ -2189,6 +2200,7 @@
                 '<td class="hide-sm">' + t.a + '</td><td class="hide-sm">' + t.y + '</td>' +
                 '<td>' + av + '</td>' +
                 '<td class="puan">' + t.puan + '</td>' +
+                '<td class="form"><span class="puan-form">' + formHtml + '</span></td>' +
                 '</tr>';
         });
         html += '</tbody></table>';
@@ -2518,7 +2530,12 @@
     var RESULTS = [];
     fetch('data/results.json', { cache: 'no-store' })
         .then(function (r) { return r.ok ? r.json() : []; })
-        .then(function (d) { RESULTS = Array.isArray(d) ? d : []; })
+        .then(function (d) {
+            RESULTS = Array.isArray(d) ? d : [];
+            _FORM = null;
+            // Puan durumu zaten cizildiyse formu gostermek icin mevcut ligi yeniden ciz
+            if (secilenLigId != null && typeof selectLig === 'function') { try { selectLig(secilenLigId); } catch (e) {} }
+        })
         .catch(function () { RESULTS = []; });
 
     // leagueId -> etiket (STANDINGS'ten)
@@ -2526,6 +2543,24 @@
         var ligler = (STANDINGS && STANDINGS.ligler) || [];
         for (var i = 0; i < ligler.length; i++) { if (ligler[i].leagueId === lid) return ligler[i].etiket; }
         return '';
+    }
+
+    // ===== FORM (son 5 sonuc) =====
+    var _FORM = null;
+    function formIndexKur() {
+        _FORM = {};
+        (RESULTS || []).forEach(function (r) {
+            var an = normalizeText(r.a), bn = normalizeText(r.b), t = r.tarih + (r.saat || '');
+            (_FORM[an] = _FORM[an] || []).push({ t: t, win: r.as > r.bs });
+            (_FORM[bn] = _FORM[bn] || []).push({ t: t, win: r.bs > r.as });
+        });
+        Object.keys(_FORM).forEach(function (k) {
+            _FORM[k].sort(function (a, b) { return a.t.localeCompare(b.t); });
+        });
+    }
+    function takimForm(ad) {
+        if (_FORM === null) formIndexKur();
+        return (_FORM[normalizeText(ad)] || []).slice(-5); // son 5, eski -> yeni
     }
 
     // ===== TAKIM ARAMA =====
