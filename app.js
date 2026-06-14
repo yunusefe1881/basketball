@@ -324,12 +324,12 @@
                 k.style.borderColor = yr + '55'; k.style.boxShadow = '';
                 k.classList.remove('aktif');
             });
-            // Tüm Maçlar seçildiğinde listeyi gizle
-            document.getElementById('macListesi').innerHTML = '';
+            // Tüm Maçlar seçildiğinde TÜM maçları tarihe göre listele
             document.getElementById('macListesi').style.display = 'block';
             document.getElementById('macYok').style.display = 'none';
             var ph = document.getElementById('macSecilmedi');
-            if (ph) ph.style.display = 'block';
+            if (ph) ph.style.display = 'none';
+            renderMaclar(null);
             return;
         }
         tumuBtn.classList.remove('aktif');
@@ -953,14 +953,13 @@
     }
 
     function takimLogoBul(takimAdi) {
-        var q = normalizeText(takimAdi);
         var ligler = (STANDINGS && STANDINGS.ligler) || [];
         for (var i = 0; i < ligler.length; i++) {
             var gr = ligler[i].gruplar || [];
             for (var j = 0; j < gr.length; j++) {
                 var tk = gr[j].takimlar || [];
                 for (var k = 0; k < tk.length; k++) {
-                    if (normalizeText(tk[k].takim) === q && tk[k].logo) return tk[k].logo;
+                    if (tk[k].logo && ayniTakim(tk[k].takim, takimAdi)) return tk[k].logo;
                 }
             }
         }
@@ -1017,7 +1016,6 @@
         buildTakimStil();
         _takimGeri = (_aktifView && _aktifView !== 'takim') ? _aktifView : 'standings';
 
-        var q = normalizeText(takimAdi);
         var logo = takimLogoBul(takimAdi);
 
         // --- baslik karti ---
@@ -1035,13 +1033,13 @@
         // --- son sonuclari (oynanmis, skorlu) ---
         var sonucEl = document.getElementById('takimSonuc');
         var sonuclar = (RESULTS || []).filter(function (r) {
-            return normalizeText(r.a) === q || normalizeText(r.b) === q;
+            return ayniTakim(r.a, takimAdi) || ayniTakim(r.b, takimAdi);
         });
         sonuclar.sort(function (a, b) { return (b.tarih + b.saat).localeCompare(a.tarih + a.saat); });
         if (sonuclar.length) {
             var sh = '<div class="tp-sec-lbl">📋 Son Sonuçları <span style="color:#64748b;font-weight:600;text-transform:none;letter-spacing:0;">(' + sonuclar.length + ')</span></div><div class="tp-sec">';
             sonuclar.slice(0, 12).forEach(function (r) {
-                var benEv = normalizeText(r.a) === q;
+                var benEv = ayniTakim(r.a, takimAdi);
                 var rakip = benEv ? r.b : r.a;
                 var benS = benEv ? r.as : r.bs;
                 var rakS = benEv ? r.bs : r.as;
@@ -1063,12 +1061,14 @@
 
         // --- puan durumundaki yeri ---
         var puanEl = document.getElementById('takimPuan');
-        var hl = {}; hl[q] = true;
         var bulunan = [];
         ((STANDINGS && STANDINGS.ligler) || []).forEach(function (lig) {
             (lig.gruplar || []).forEach(function (grup) {
-                var has = (grup.takimlar || []).some(function (t) { return normalizeText(t.takim) === q; });
-                if (has) { var p = puanParcaGrup(grup.grup); bulunan.push({ lig: lig, tier: p.tier, sub: p.sub, grup: grup }); }
+                var hlSet = {}, has = false;
+                (grup.takimlar || []).forEach(function (t) {
+                    if (ayniTakim(t.takim, takimAdi)) { hlSet[normalizeText(t.takim)] = true; has = true; }
+                });
+                if (has) { var p = puanParcaGrup(grup.grup); bulunan.push({ lig: lig, tier: p.tier, sub: p.sub, grup: grup, hl: hlSet }); }
             });
         });
         var ph = '<div class="tp-sec-lbl">📊 Puan Durumu</div>';
@@ -1077,7 +1077,7 @@
                 var bread = '<div class="puan-bread"><span class="pb-lig">' + puanEsc(b.lig.etiket) + '</span>' +
                     (b.tier ? '<span class="pb-sep">›</span>' + puanEsc(b.tier) : '') +
                     (b.sub ? '<span class="pb-sep">›</span>' + puanEsc(b.sub) : '') + '</div>';
-                ph += '<div class="tp-sec"><div class="puan-grup-kart">' + bread + puanTabloHTML(b.grup, { highlightSet: hl }) + '</div></div>';
+                ph += '<div class="tp-sec"><div class="puan-grup-kart">' + bread + puanTabloHTML(b.grup, { highlightSet: b.hl }) + '</div></div>';
             });
         } else {
             ph += '<div class="tp-sec"><div class="tp-bos">Bu takım puan durumu verisinde yok (yalnızca U10–U12 mevcut).</div></div>';
@@ -1087,7 +1087,7 @@
         // --- maclari ---
         var macEl = document.getElementById('takimMaclar');
         var maclar = (MACLAR || []).filter(function (m) {
-            return normalizeText(m.a).indexOf(q) !== -1 || normalizeText(m.b).indexOf(q) !== -1;
+            return ayniTakim(m.a, takimAdi) || ayniTakim(m.b, takimAdi);
         });
         maclar.sort(function (a, b) { return (a.tarih + a.saat).localeCompare(b.tarih + b.saat); });
         var mh = '<div class="tp-sec-lbl">🏀 Maçları <span style="color:#64748b;font-weight:600;text-transform:none;letter-spacing:0;">(' + maclar.length + ')</span></div><div class="tp-sec">';
@@ -1095,7 +1095,7 @@
             mh += '<div class="tp-bos">Yaklaşan maç bulunamadı.</div>';
         } else {
             maclar.forEach(function (m) {
-                var benEv = normalizeText(m.a).indexOf(q) !== -1;
+                var benEv = ayniTakim(m.a, takimAdi);
                 var rakip = benEv ? m.b : m.a;
                 var gunKisa = (m.gun || '').slice(0, 3);
                 mh += '<div class="tp-mac">' +
@@ -1249,6 +1249,43 @@
         var map = {'İ':'I','Ş':'S','Ğ':'G','Ü':'U','Ö':'O','Ç':'C',
                    'ı':'I','ş':'S','ğ':'G','ü':'U','ö':'O','ç':'C','i':'I'};
         return str.replace(/[İŞĞÜÖÇışğüöçi]/g, function(c){ return map[c] || c; }).toUpperCase();
+    }
+
+    // ===== TAKIM ADI EŞLEŞTIRME (kaynaklar arası isim farklarını köprüle) =====
+    // Maç takvimi Google Sheets'ten (elle yazılmış isimler), puan/sonuçlar TBF
+    // API'den (resmi isimler) geliyor. Aynı takım farklı yazılabiliyor:
+    // "İSTANBUL MARMARA S.K (A)" ↔ "MARMARA SPOR (A)". Token tabanlı bulanık
+    // eşleştirme (Jaccard ≥ 0.5 + grup harfi kapısı) ile aynı kulübü yakalarız.
+    var _TAKIM_STOP = { SK:1, S:1, K:1, SPOR:1, KULUBU:1, KULUB:1, KULUP:1,
+                        BASKETBOL:1, BSK:1, BK:1, SPORTU:1, SPORTIF:1, VE:1 };
+    var _kanonMemo = {};
+    function takimKanon(ad) {
+        var key = String(ad == null ? '' : ad);
+        if (_kanonMemo[key]) return _kanonMemo[key];
+        var n = normalizeText(key);
+        var grp = '';
+        var mg = n.match(/\(([A-Z0-9])\)\s*$/);   // sondaki (A)/(B)/(1) grup harfi
+        if (mg) grp = mg[1];
+        n = n.replace(/\([^)]*\)/g, ' ').replace(/[^A-Z0-9]+/g, ' ');
+        var toks = {}, arr = n.split(' '), nt = 0;
+        for (var i = 0; i < arr.length; i++) {
+            var t = arr[i];
+            if (t && !_TAKIM_STOP[t] && !toks[t]) { toks[t] = 1; nt++; }
+        }
+        var res = { toks: toks, grp: grp, n: nt };
+        _kanonMemo[key] = res;
+        return res;
+    }
+    // İki ad aynı kulübü mü gösteriyor? Yanlış eşleşme boş profilden kötü olduğu
+    // için eşik muhafazakar (0.5) ve grup harfleri çelişirse asla eşleşmez.
+    function ayniTakim(a, b) {
+        var ka = takimKanon(a), kb = takimKanon(b);
+        if (!ka.n || !kb.n) return false;
+        if (ka.grp && kb.grp && ka.grp !== kb.grp) return false;
+        var inter = 0, t;
+        for (t in ka.toks) { if (kb.toks[t]) inter++; }
+        if (!inter) return false;
+        return (inter / (ka.n + kb.n - inter)) >= 0.5;
     }
 
     // Arama sonuç stilleri — bir kez inject edilir
