@@ -953,15 +953,11 @@
                 '<th class="sira">#</th><th class="takim">Takım</th>' +
                 '<th>O</th><th>G</th><th>M</th>' +
                 '<th class="hide-sm">A</th><th class="hide-sm">Y</th>' +
-                '<th>Av</th><th>P</th><th class="form">Form</th></tr></thead><tbody>';
+                '<th>Av</th><th>P</th></tr></thead><tbody>';
         grup.takimlar.forEach(function (t) {
             var av = (t.av > 0 ? '+' : '') + t.av;
             var sCls = (t.sira == 1 ? ' s1' : (t.sira == 2 ? ' s2' : (t.sira == 3 ? ' s3' : '')));
             var vur = (hl && hl[normalizeText(t.takim)]) ? ' class="vurgu"' : '';
-            var formArr = takimForm(t.takim);
-            var formHtml = formArr.map(function (f) {
-                return '<span class="pf-dot ' + (f.win ? 'pf-w' : 'pf-l') + '" title="' + (f.win ? 'Galibiyet' : 'Mağlubiyet') + '"></span>';
-            }).join('');
             html += '<tr' + vur + '>' +
                 '<td class="sira' + sCls + '">' + (t.sira || '') + '</td>' +
                 '<td class="takim"><span class="puan-takim">' + puanLogoHTML(t) + '<span class="puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(t.takim) + '\')">' + puanEsc(t.takim) + '</span></span></td>' +
@@ -969,7 +965,6 @@
                 '<td class="hide-sm">' + t.a + '</td><td class="hide-sm">' + t.y + '</td>' +
                 '<td>' + av + '</td>' +
                 '<td class="puan">' + t.puan + '</td>' +
-                '<td class="form"><span class="puan-form">' + formHtml + '</span></td>' +
                 '</tr>';
         });
         html += '</tbody></table>';
