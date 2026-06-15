@@ -275,13 +275,51 @@
 
         <!-- ANTRENMAN BÖLÜMÜ -->
     <section id="training" style="background: #111827;">
-        <h2>💪 Özel Antrenman Programları</h2>
+        <h2>💪 Antrenman Programı</h2>
 
-        <!-- SPOR KARTLARI GRİDİ -->
-        <div class="grid-container" style="margin-bottom:40px;">
+        <!-- SPOR SEÇIM EKRANI -->
+        <div id="antSporSec">
+            <p class="ant-sec-alt">Hangi sporla ilgileniyorsun?</p>
+            <div class="ant-spor-grid">
+                <button class="ant-skart" onclick="antSporSec('bball','🏀','#ff4d05','Basketbol')">
+                    <span class="ask-ico">🏀</span>
+                    <span class="ask-ad">Basketbol</span>
+                    <span class="ask-desc">Teknik, kondisyon &amp; taktik</span>
+                </button>
+                <button class="ant-skart" onclick="antSporSec('foot','⚽','#2ecc71','Futbol')">
+                    <span class="ask-ico">⚽</span>
+                    <span class="ask-ad">Futbol</span>
+                    <span class="ask-desc">Top kontrolü, paslaşma &amp; kondisyon</span>
+                </button>
+                <button class="ant-skart" onclick="antSporSec('voley','🏐','#3b82f6','Voleybol')">
+                    <span class="ask-ico">🏐</span>
+                    <span class="ask-ad">Voleybol</span>
+                    <span class="ask-desc">Smaç, blok &amp; sıçrama gücü</span>
+                </button>
+                <button class="ant-skart" onclick="antSporSec('fit','🏋️','#f59e0b','Fitness')">
+                    <span class="ask-ico">🏋️</span>
+                    <span class="ask-ad">Fitness</span>
+                    <span class="ask-desc">Kuvvet, hypertrofi &amp; vücut geliştirme</span>
+                </button>
+                <button class="ant-skart" onclick="antSporSec('run','🏃','#10b981','Koşu')">
+                    <span class="ask-ico">🏃</span>
+                    <span class="ask-ad">Koşu</span>
+                    <span class="ask-desc">Dayanıklılık, hız &amp; interval</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- PLAN BAŞLIĞI (spor seçilince görünür) -->
+        <div id="antPlanHdr" style="display:none;margin-bottom:24px;">
+            <button class="ant-geri" onclick="antGeri()">← Sporu Değiştir</button>
+            <span id="antPlanUnvan"></span>
+        </div>
+
+        <!-- SPOR KARTLARI GRİDİ (spor seçilince görünür) -->
+        <div class="grid-container" id="antGrid" style="display:none;margin-bottom:40px;">
 
             <!-- BASKETBOL -->
-            <div class="card">
+            <div class="card" id="antKart-bball">
                 <h3 style="color:#ff4d05;">🏀 Basketbol Antrenmanı</h3>
                 <p style="color:#64748b;font-size:0.82rem;margin-bottom:14px;">7 günlük kapsamlı program · Tüm seviyeler</p>
                 <div class="sport-tab-btns" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
@@ -336,7 +374,7 @@
             </div>
 
             <!-- FUTBOL -->
-            <div class="card football">
+            <div class="card football" id="antKart-foot">
                 <h3 style="color:#2ecc71;">⚽ Futbol Antrenmanı</h3>
                 <p style="color:#64748b;font-size:0.82rem;margin-bottom:14px;">7 günlük kapsamlı program · Tüm seviyeler</p>
                 <div class="sport-tab-btns" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
@@ -391,7 +429,7 @@
             </div>
 
             <!-- VOLEYBOL -->
-            <div class="card">
+            <div class="card" id="antKart-voley">
                 <h3 style="color:#3b82f6;">🏐 Voleybol Antrenmanı</h3>
                 <p style="color:#64748b;font-size:0.82rem;margin-bottom:14px;">7 günlük kapsamlı program · Tüm seviyeler</p>
                 <div class="sport-tab-btns" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
@@ -446,7 +484,7 @@
             </div>
 
             <!-- FITNESS -->
-            <div class="card">
+            <div class="card" id="antKart-fit">
                 <h3 style="color:#f59e0b;">🏋️ Fitness Antrenmanı</h3>
                 <p style="color:#64748b;font-size:0.82rem;margin-bottom:14px;">7 günlük push/pull/legs split · Tüm seviyeler</p>
                 <div class="sport-tab-btns" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
@@ -501,7 +539,7 @@
             </div>
 
             <!-- KOŞU -->
-            <div class="card">
+            <div class="card" id="antKart-run">
                 <h3 style="color:#10b981;">🏃 Koşu Programı</h3>
                 <p style="color:#64748b;font-size:0.82rem;margin-bottom:14px;">7 günlük periodize program · Tüm seviyeler</p>
                 <div class="sport-tab-btns" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">

@@ -43,6 +43,7 @@
         });
 
         if (name === 'performans' && typeof perfInit === 'function') { perfInit(); }
+        if (name === 'training' && typeof antGeri === 'function') { antGeri(); }
 
         document.querySelectorAll('.drawer-item').forEach(function (d) {
             d.classList.toggle('active', d.getAttribute('data-view') === name);
@@ -732,6 +733,13 @@
             '.puan-tier-lbl{font-size:0.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#ff8a45;margin:22px 4px 12px;display:flex;align-items:center;gap:9px;}' +
             '.puan-tier-lbl::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,138,69,0.35),transparent);}' +
             '.puan-tier-lbl:first-child{margin-top:0;}' +
+            '.puan-kont-lbl{font-size:0.68rem;font-weight:800;letter-spacing:0.9px;text-transform:uppercase;margin:14px 4px 7px;display:flex;align-items:center;gap:8px;}' +
+            '.puan-kont-lbl::after{content:"";flex:1;height:1px;}' +
+            '.puan-kont-lbl:first-child{margin-top:0;}' +
+            '.puan-kont-asya{color:#60a5fa;}' +
+            '.puan-kont-asya::after{background:linear-gradient(90deg,rgba(96,165,250,0.4),transparent);}' +
+            '.puan-kont-avrupa{color:#34d399;}' +
+            '.puan-kont-avrupa::after{background:linear-gradient(90deg,rgba(52,211,153,0.4),transparent);}' +
             '.pa-blok{margin-bottom:9px;border-radius:14px;overflow:hidden;border:1px solid #1e293b;background:#0f172a;}' +
             '.pa-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;background:#161f33;transition:background 0.15s;}' +
             '.pa-hdr:hover{background:#1c2740;}' +
@@ -854,7 +862,7 @@
         renderAkordeon(tiers);
     }
 
-    // "ERKEKLER U10C LİGİ ASYA F GRUBU" -> { tier:'U10C', sub:'ASYA F' }
+    // "ERKEKLER U10C LİGİ ASYA F GRUBU" -> { tier:'U10C', sub:'ASYA F', kontinent:'ASYA' }
     function puanParcaGrup(rawName) {
         var name = (rawName || '').toUpperCase().replace(/\s+/g, ' ').trim();
         var m = name.match(/U\d{1,2}[A-Z]?/);
@@ -866,7 +874,8 @@
             .replace(/U\d{1,2}[A-Z]?/, '')
             .replace(/\s+/g, ' ').trim();
         if (!tier) tier = sub || name;
-        return { tier: tier, sub: sub };
+        var kontinent = /\bASYA\b/.test(sub) ? 'ASYA' : /\bAVRUPA\b/.test(sub) ? 'AVRUPA' : '';
+        return { tier: tier, sub: sub, kontinent: kontinent };
     }
 
     // Ligin gruplarını alt-lig (tier) altında kümele: tier'lar API sırasında, gruplar alfabetik
@@ -875,7 +884,7 @@
         ((lig && lig.gruplar) || []).forEach(function (g) {
             var p = puanParcaGrup(g.grup);
             if (!(p.tier in idx)) { idx[p.tier] = tiers.length; tiers.push({ tier: p.tier, gruplar: [] }); }
-            tiers[idx[p.tier]].gruplar.push({ sub: p.sub, veri: g });
+            tiers[idx[p.tier]].gruplar.push({ sub: p.sub, kontinent: p.kontinent, veri: g });
         });
         tiers.forEach(function (t) {
             t.gruplar.sort(function (a, b) { return a.sub.localeCompare(b.sub, 'tr'); });
@@ -890,6 +899,13 @@
         var cokTier = tiers.length > 1;
         var ilkAcildi = false;
 
+        var KONT_SIRALAMA = ['ASYA', 'AVRUPA', ''];
+        var KONT_CFG = {
+            'ASYA':   { cls: 'puan-kont-asya',   lbl: '🌏 Asya Grubu',   bar: '#3b82f6', ico: '🌏' },
+            'AVRUPA': { cls: 'puan-kont-avrupa',  lbl: '🌍 Avrupa Grubu', bar: '#10b981', ico: '🌍' },
+            '':       { cls: '',                  lbl: '',                bar: '#ff4d05', ico: '🏆' }
+        };
+
         tiers.forEach(function (t) {
             if (cokTier) {
                 var lbl = document.createElement('div');
@@ -897,42 +913,71 @@
                 lbl.textContent = t.tier + ' Ligi';
                 wrap.appendChild(lbl);
             }
+
+            // Kıtaya göre grupla
+            var kontMap = {};
             t.gruplar.forEach(function (g) {
-                var grup = g.veri;
-                var n = (grup.takimlar || []).length;
-                var basAd = g.sub || t.tier || 'Grup';
+                var k = g.kontinent || '';
+                if (!kontMap[k]) kontMap[k] = [];
+                kontMap[k].push(g);
+            });
+            var cokKont = (kontMap['ASYA'] && kontMap['AVRUPA']);
 
-                var blok = document.createElement('div');
-                blok.className = 'pa-blok';
+            KONT_SIRALAMA.forEach(function (k) {
+                if (!kontMap[k] || !kontMap[k].length) return;
+                var cfg = KONT_CFG[k];
 
-                var hdr = document.createElement('div');
-                hdr.className = 'pa-hdr';
-                hdr.innerHTML =
-                    '<div class="pa-hsol">' +
-                        '<span class="pa-bar"></span>' +
-                        '<div><div class="pa-ad">🏆 ' + puanEsc(basAd) + '</div>' +
-                        '<div class="pa-alt">' + (grup.hafta ? grup.hafta + '. hafta · ' : '') + n + ' takım</div></div>' +
-                    '</div>' +
-                    '<span class="pa-chev">▼</span>';
-
-                var body = document.createElement('div');
-                body.className = 'pa-body';
-                body.innerHTML = puanTabloHTML(grup, {});
-
-                hdr.onclick = function () {
-                    body.classList.toggle('ac');
-                    hdr.querySelector('.pa-chev').classList.toggle('ac');
-                };
-
-                blok.appendChild(hdr);
-                blok.appendChild(body);
-                wrap.appendChild(blok);
-
-                if (!ilkAcildi) {
-                    body.classList.add('ac');
-                    hdr.querySelector('.pa-chev').classList.add('ac');
-                    ilkAcildi = true;
+                if (cokKont && k !== '') {
+                    var kLbl = document.createElement('div');
+                    kLbl.className = 'puan-kont-lbl ' + cfg.cls;
+                    kLbl.textContent = cfg.lbl;
+                    wrap.appendChild(kLbl);
                 }
+
+                kontMap[k].forEach(function (g) {
+                    var grup = g.veri;
+                    var n = (grup.takimlar || []).length;
+                    var rawSub = (g.sub || '').trim();
+                    var basAd = !rawSub
+                        ? (t.tier + ' Ligi')
+                        : /^[A-Z]$/.test(rawSub)
+                            ? (rawSub + ' Grubu')
+                            : (cokKont && rawSub === g.kontinent)
+                                ? (t.tier + ' Ligi')
+                                : rawSub;
+
+                    var blok = document.createElement('div');
+                    blok.className = 'pa-blok';
+
+                    var hdr = document.createElement('div');
+                    hdr.className = 'pa-hdr';
+                    hdr.innerHTML =
+                        '<div class="pa-hsol">' +
+                            '<span class="pa-bar" style="background:' + cfg.bar + '"></span>' +
+                            '<div><div class="pa-ad">' + cfg.ico + ' ' + puanEsc(basAd) + '</div>' +
+                            '<div class="pa-alt">' + (grup.hafta ? grup.hafta + '. hafta · ' : '') + n + ' takım</div></div>' +
+                        '</div>' +
+                        '<span class="pa-chev">▼</span>';
+
+                    var body = document.createElement('div');
+                    body.className = 'pa-body';
+                    body.innerHTML = puanTabloHTML(grup, {});
+
+                    hdr.onclick = function () {
+                        body.classList.toggle('ac');
+                        hdr.querySelector('.pa-chev').classList.toggle('ac');
+                    };
+
+                    blok.appendChild(hdr);
+                    blok.appendChild(body);
+                    wrap.appendChild(blok);
+
+                    if (!ilkAcildi) {
+                        body.classList.add('ac');
+                        hdr.querySelector('.pa-chev').classList.add('ac');
+                        ilkAcildi = true;
+                    }
+                });
             });
         });
     }
@@ -1923,6 +1968,46 @@
         });
     }
 
+
+    // SPOR SEÇİM SİHİRBAZI
+    var ANT_SPORLAR = ['bball','foot','voley','fit','run'];
+
+    function antSporSec(id, ico, renk, ad) {
+        var sec = document.getElementById('antSporSec');
+        if (sec) sec.style.display = 'none';
+
+        var hdr = document.getElementById('antPlanHdr');
+        if (hdr) hdr.style.display = 'flex';
+
+        var unvan = document.getElementById('antPlanUnvan');
+        if (unvan) { unvan.textContent = ico + ' ' + ad + ' Antrenmanı'; unvan.style.color = renk; }
+
+        var grid = document.getElementById('antGrid');
+        if (grid) grid.style.display = '';
+
+        ANT_SPORLAR.forEach(function(s) {
+            var el = document.getElementById('antKart-' + s);
+            if (el) el.style.display = (s === id) ? '' : 'none';
+        });
+
+        var card = document.getElementById('antKart-' + id);
+        if (card) {
+            var firstStab = card.querySelector('.stab');
+            if (firstStab) firstStab.click();
+        }
+
+        var sec2 = document.getElementById('training');
+        if (sec2) { try { sec2.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch(e) {} }
+    }
+
+    function antGeri() {
+        var sec = document.getElementById('antSporSec');
+        if (sec) sec.style.display = '';
+        var hdr = document.getElementById('antPlanHdr');
+        if (hdr) hdr.style.display = 'none';
+        var grid = document.getElementById('antGrid');
+        if (grid) grid.style.display = 'none';
+    }
 
     // SPOR PLAN SEKMELERİ
     function showSportPlan(btn, sport, level) {
