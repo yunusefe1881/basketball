@@ -592,14 +592,7 @@
             .mg-sayi { font-size: 0.72rem; }
             .mg-bar { height: 26px; }
 
-            .ms-saat, .ar-saat { flex: 0 0 64px; padding: 0 8px; }
-            .ms-saat-val, .ar-saat-val { font-size: 0.82rem; }
-            .ms-saat-ico, .ar-saat-ico { display: none; }
-            .ms-takim, .ar-takim { padding: 0 8px; }
-            .ms-takim-isim, .ar-takim-isim { font-size: 0.8rem; }
-            .ms-vs, .ar-vs { flex: 0 0 36px; }
-            .ms-vs-ic, .ar-vs-ic { width: 26px; height: 26px; font-size: 0.5rem; }
-            .ms-meta, .ar-meta { display: none !important; }
+            /* Maç/arama satırlarının mobil yerleşimi JS-enjekte stillerde (macStyle / aramaStyle) yönetilir */
 
             .ar-gun-hdr { padding: 12px 16px; }
             .ar-gun-tarih { font-size: 0.88rem; }

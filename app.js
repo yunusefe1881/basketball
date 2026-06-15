@@ -569,7 +569,22 @@
                 '.mg-gecmis{opacity:0.5;transition:opacity 0.18s;}' +
                 '.mg-gecmis:hover{opacity:0.9;}' +
                 '.mg-gecmis-rozet{display:inline-block;margin-left:8px;font-size:0.62rem;font-weight:800;letter-spacing:0.5px;color:#94a3b8;background:#1e293b;border:1px solid #334155;padding:2px 8px;border-radius:6px;vertical-align:middle;}' +
-                '@media(max-width:680px){.ms{flex-wrap:wrap;}.ms-meta{flex:1 0 100%;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;border-left:none;border-top:1px solid #0d1826;padding:8px 14px;}.ms-rozet,.ms-grup{display:none;}.ms-salon{max-width:none;font-size:0.78rem;}.ms-saat{flex:0 0 80px;}.ms-takim-isim{font-size:0.88rem;}.ms-vs-ic{width:30px;height:30px;font-size:0.58rem;}}';
+                // MOBIL: dikey kart — ust satir saat+rozet, orta tam genislik "A vs B", alt satir saha
+                '@media(max-width:768px){' +
+                '.ms{flex-direction:column;align-items:stretch;gap:10px;padding:13px 15px;min-height:0;}' +
+                '.ms-saat{flex:none;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;border-right:none;padding:0;}' +
+                '.ms-saat-val{font-size:0.95rem;}' +
+                '.ms-saat-ico{display:inline;font-size:0.8rem;opacity:0.55;}' +
+                '.ms-orta{flex:none;width:100%;}' +
+                '.ms-takim{padding:0 6px;}' +
+                '.ms-takim-isim{font-size:0.9rem;white-space:normal;}' +
+                '.ms-vs{flex:0 0 42px;}' +
+                '.ms-vs-ic{width:30px;height:30px;font-size:0.55rem;}' +
+                '.ms-meta{display:flex!important;flex:none;width:100%;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:8px;border-left:none;border-top:1px solid #0d1826;padding:10px 0 0;}' +
+                '.ms-rozet{display:inline-flex;font-size:0.7rem;padding:3px 11px;}' +
+                '.ms-grup{display:inline-flex;}' +
+                '.ms-salon{max-width:none;text-align:left;font-size:0.8rem;}' +
+                '}';
             document.head.appendChild(st);
         }
 
@@ -1429,14 +1444,18 @@
             '.ar-bos-alt{font-size:0.85rem;color:#334155;}',
             /* mobil */
             '@media(max-width:768px){',
-            '.ar-meta{display:none;}',
-            '.ar-saat{flex:0 0 64px;padding:0 8px;}',
-            '.ar-saat-val{font-size:0.82rem;}',
-            '.ar-saat-ico{display:none;}',
-            '.ar-takim{padding:0 8px;}',
-            '.ar-takim-isim{font-size:0.8rem;}',
-            '.ar-vs{flex:0 0 36px;}',
-            '.ar-vs-ic{width:26px;height:26px;font-size:0.5rem;}',
+            '.ar-satir{flex-direction:column;align-items:stretch;gap:10px;padding:13px 15px;min-height:0;}',
+            '.ar-saat{flex:none;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;border-right:none;padding:0;}',
+            '.ar-saat-val{font-size:0.95rem;}',
+            '.ar-saat-ico{display:inline;font-size:0.8rem;opacity:0.55;}',
+            '.ar-orta{flex:none;width:100%;}',
+            '.ar-takim{padding:0 6px;}',
+            '.ar-takim-isim{font-size:0.9rem;white-space:normal;}',
+            '.ar-vs{flex:0 0 42px;}',
+            '.ar-vs-ic{width:30px;height:30px;font-size:0.55rem;}',
+            '.ar-meta{display:flex;flex:none;width:100%;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:8px;border-left:none;border-top:1px solid #0d1826;padding:10px 0 0;}',
+            '.ar-rozet{font-size:0.7rem;padding:3px 11px;}',
+            '.ar-salon{max-width:none;text-align:left;font-size:0.8rem;}',
             '.ar-gun-hdr{padding:12px 16px;}',
             '.ar-gun-tarih{font-size:0.88rem;}',
             '}'
