@@ -1960,9 +1960,10 @@
     }
 
     // DİYET SEKMELERİ
-    function showDietTab(tab) {
+    function showDietTab(tab, btn) {
         document.querySelectorAll('.diet-tab').forEach(function(b) { b.classList.remove('active'); });
-        event.target.classList.add('active');
+        var aktif = btn || (window.event && window.event.target);
+        if (aktif && aktif.classList) aktif.classList.add('active');
 
         var tabs = ['ogunler', 'takviye', 'tarifler'];
         tabs.forEach(function(t) {
@@ -1972,9 +1973,10 @@
     }
 
     // ÖĞÜN PLAN SEKMELERİ
-    function showMealPlan(planId) {
+    function showMealPlan(planId, btn) {
         document.querySelectorAll('.meal-tab').forEach(function(b) { b.classList.remove('active'); });
-        event.target.classList.add('active');
+        var aktif = btn || (window.event && window.event.target);
+        if (aktif && aktif.classList) aktif.classList.add('active');
 
         document.querySelectorAll('.meal-plan-content').forEach(function(el) {
             el.style.display = 'none';
@@ -2075,9 +2077,10 @@
     }
 
     // ===== PRATİK TARİF FİLTRESİ =====
-    function filterRecipes(cat) {
+    function filterRecipes(cat, btn) {
         document.querySelectorAll('.rfilter').forEach(function (b) { b.classList.remove('active'); });
-        if (window.event && window.event.target) window.event.target.classList.add('active');
+        var aktif = btn || (window.event && window.event.target);
+        if (aktif && aktif.classList) aktif.classList.add('active');
         document.querySelectorAll('#recipeGrid .recipe-card').forEach(function (c) {
             var cats = c.getAttribute('data-cat') || '';
             var show = (cat === 'hepsi') || (cats.indexOf(cat) > -1);

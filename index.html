@@ -571,18 +571,18 @@
 
         <!-- DİYET SEKMELER -->
         <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:36px;">
-            <button class="diet-tab active" onclick="showDietTab('ogunler')">🍽️ Hazır Öğün Planları</button>
-            <button class="diet-tab" onclick="showDietTab('takviye')">💊 Takviye Rehberi</button>
-            <button class="diet-tab" onclick="showDietTab('tarifler')">⚡ Pratik Tarifler</button>
+            <button class="diet-tab active" onclick="showDietTab('ogunler',this)">🍽️ Hazır Öğün Planları</button>
+            <button class="diet-tab" onclick="showDietTab('takviye',this)">💊 Takviye Rehberi</button>
+            <button class="diet-tab" onclick="showDietTab('tarifler',this)">⚡ Pratik Tarifler</button>
         </div>
 
         <!-- SEKME: HAZIR ÖĞÜN PLANLARI -->
         <div id="diet-tab-ogunler" style="display:block;max-width:980px;margin:0 auto;">
             <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:28px;">
-                <button class="meal-tab active" onclick="showMealPlan('ml-kilo')">⚖️ Kilo Ver</button>
-                <button class="meal-tab" onclick="showMealPlan('ml-koru')">🔄 Kilo Koru</button>
-                <button class="meal-tab" onclick="showMealPlan('ml-kas')">💪 Kas Yap</button>
-                <button class="meal-tab" onclick="showMealPlan('ml-perf')">🏆 Performans</button>
+                <button class="meal-tab active" onclick="showMealPlan('ml-kilo',this)">⚖️ Kilo Ver</button>
+                <button class="meal-tab" onclick="showMealPlan('ml-koru',this)">🔄 Kilo Koru</button>
+                <button class="meal-tab" onclick="showMealPlan('ml-kas',this)">💪 Kas Yap</button>
+                <button class="meal-tab" onclick="showMealPlan('ml-perf',this)">🏆 Performans</button>
             </div>
 
             <!-- KİLO VER PLANI -->
@@ -704,11 +704,11 @@
         <div id="diet-tab-tarifler" style="display:none;max-width:1040px;margin:0 auto;">
             <p style="color:#94a3b8;text-align:center;margin-bottom:22px;">10 dakikada hazırlayabileceğin, sporcuya uygun pratik öğünler — süre ve makro bilgileriyle.</p>
             <div class="recipe-filter">
-                <button class="rfilter active" onclick="filterRecipes('hepsi')">Hepsi</button>
-                <button class="rfilter" onclick="filterRecipes('kahvalti')">🍳 Kahvaltı</button>
-                <button class="rfilter" onclick="filterRecipes('ara')">🥪 Ara Öğün</button>
-                <button class="rfilter" onclick="filterRecipes('ana')">🍽️ Ana Öğün</button>
-                <button class="rfilter" onclick="filterRecipes('shake')">🥤 Shake</button>
+                <button class="rfilter active" onclick="filterRecipes('hepsi',this)">Hepsi</button>
+                <button class="rfilter" onclick="filterRecipes('kahvalti',this)">🍳 Kahvaltı</button>
+                <button class="rfilter" onclick="filterRecipes('ara',this)">🥪 Ara Öğün</button>
+                <button class="rfilter" onclick="filterRecipes('ana',this)">🍽️ Ana Öğün</button>
+                <button class="rfilter" onclick="filterRecipes('shake',this)">🥤 Shake</button>
             </div>
             <div class="recipe-grid" id="recipeGrid">
 
