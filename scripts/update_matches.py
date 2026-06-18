@@ -125,7 +125,11 @@ def parse_sheet(file_id: str, title: str):
         "kat": _col_index(headers, "KATEGORİ"),
         "grup": _col_index(headers, "GRUP"),
     }
-    if idx["tarih"] is None or idx["a"] is None or idx["b"] is None:
+    # Tarih daima ilk sutundur; ancak bazi haftalarda bu sutunun basligi yanlis
+    # girilebiliyor (or. "TARİH" yerine "1"). Basliktan bulunamazsa 0. sutuna dus.
+    if idx["tarih"] is None:
+        idx["tarih"] = 0
+    if idx["a"] is None or idx["b"] is None:
         print(f"  ! Beklenen sutunlar bulunamadi, atlaniyor: {title}", file=sys.stderr)
         return []
 
