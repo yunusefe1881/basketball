@@ -24,6 +24,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Logo optimizasyonu için Pillow kur
+        run: python -m pip install --quiet Pillow
+
       - name: Maç verilerini çek (TBF İstanbul)
         run: python scripts/update_matches.py
 
@@ -37,7 +40,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/matches.json data/standings.json data/results.json
+          git add data/matches.json data/standings.json data/results.json data/logos
           if git diff --cached --quiet; then
             echo "Değişiklik yok — commit atlanıyor."
           else
