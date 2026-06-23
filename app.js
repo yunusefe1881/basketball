@@ -512,7 +512,12 @@
         }
     }
 
+    var _sonRenderKat = null, _sonRenderTarih = null, _macCizildi = false;
+
     function renderMaclar(kat, sadeceTarih) {
+        _macCizildi = true;
+        // Son cizim argumanlari saklanir; STANDINGS gec yuklenince logolar icin yeniden cizilebilir
+        _sonRenderKat = kat; _sonRenderTarih = sadeceTarih;
         var liste = document.getElementById('macListesi');
         var yok   = document.getElementById('macYok');
         var placeholder = document.getElementById('macSecilmedi');
@@ -551,7 +556,7 @@
                 '.ms-saat-val{font-size:1.05rem;font-weight:900;letter-spacing:0.5px;}' +
                 '.ms-saat-ico{font-size:0.7rem;opacity:0.4;}' +
                 '.ms-orta{flex:1;display:flex;align-items:center;gap:0;min-width:0;}' +
-                '.ms-takim{flex:1;display:flex;align-items:center;min-width:0;padding:0 20px;}' +
+                '.ms-takim{flex:1;display:flex;align-items:center;gap:9px;min-width:0;padding:0 20px;}' +
                 '.ms-takim-a{justify-content:flex-end;}' +
                 '.ms-takim-b{justify-content:flex-start;}' +
                 '.ms-takim-isim{font-size:1rem;font-weight:700;color:#e2e8f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
@@ -636,9 +641,9 @@
                         '<span class="ms-saat-ico">⏱</span>' +
                     '</div>' +
                     '<div class="ms-orta">' +
-                        '<div class="ms-takim ms-takim-a"><span class="ms-takim-isim puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(m.a) + '\')">' + puanEsc(m.a) + '</span></div>' +
+                        '<div class="ms-takim ms-takim-a"><span class="ms-takim-isim puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(m.a) + '\')">' + puanEsc(m.a) + '</span>' + takimLogoMiniHTML(m.a) + '</div>' +
                         '<div class="ms-vs"><div class="ms-vs-ic">VS</div></div>' +
-                        '<div class="ms-takim ms-takim-b"><span class="ms-takim-isim puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(m.b) + '\')">' + puanEsc(m.b) + '</span></div>' +
+                        '<div class="ms-takim ms-takim-b">' + takimLogoMiniHTML(m.b) + '<span class="ms-takim-isim puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(m.b) + '\')">' + puanEsc(m.b) + '</span></div>' +
                     '</div>' +
                     '<div class="ms-meta">' +
                         '<span class="ms-rozet" style="color:' + kr + ';border:1px solid ' + kr + '44;background:' + kr + '18;">' + puanEsc(m.kat) + '</span>' +
@@ -1084,18 +1089,47 @@
         return puanEsc(String(ad == null ? '' : ad).replace(/\\/g, '\\\\').replace(/'/g, "\\'"));
     }
 
+    // Ad-bazli logo onbellegi; STANDINGS yuklenince temizlenir (her cagri tum tablolari taradigi icin)
+    var _logoMemo = {};
+
     function takimLogoBul(takimAdi) {
+        var anahtar = String(takimAdi == null ? '' : takimAdi);
+        if (anahtar in _logoMemo) return _logoMemo[anahtar];
+        var sonuc = '';
         var ligler = (STANDINGS && STANDINGS.ligler) || [];
-        for (var i = 0; i < ligler.length; i++) {
+        bul: for (var i = 0; i < ligler.length; i++) {
             var gr = ligler[i].gruplar || [];
             for (var j = 0; j < gr.length; j++) {
                 var tk = gr[j].takimlar || [];
                 for (var k = 0; k < tk.length; k++) {
-                    if (tk[k].logo && ayniTakim(tk[k].takim, takimAdi)) return tk[k].logo;
+                    if (tk[k].logo && ayniTakim(tk[k].takim, takimAdi)) { sonuc = tk[k].logo; break bul; }
                 }
             }
         }
-        return '';
+        _logoMemo[anahtar] = sonuc;
+        return sonuc;
+    }
+
+    // Takim adi -> kucuk inline logo (bulunamazsa bas-harf rozeti). Tum gorunumlerde kullanilir.
+    function takimLogoMiniHTML(ad) {
+        buildTakimLogoStil();
+        var url = takimLogoBul(ad);
+        if (url) return '<img class="takim-logo-mini" src="' + puanEsc(url) +
+            '" alt="" loading="lazy" onerror="this.style.display=\'none\'">';
+        var harf = puanEsc(((String(ad || '?')).trim().charAt(0) || '?').toUpperCase());
+        return '<span class="takim-logo-mini-fb">' + harf + '</span>';
+    }
+
+    // Mini logo stilleri — bir kez enjekte edilir (optimize: kucuk boyut + lazy + object-fit)
+    function buildTakimLogoStil() {
+        if (document.getElementById('takimLogoStil')) return;
+        var s = document.createElement('style');
+        s.id = 'takimLogoStil';
+        s.textContent =
+            '.takim-logo-mini{width:20px;height:20px;border-radius:5px;object-fit:contain;flex-shrink:0;background:#0f172a;vertical-align:middle;}' +
+            '.takim-logo-mini-fb{width:20px;height:20px;border-radius:5px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;color:#cbd5e1;background:linear-gradient(135deg,#334155,#1e293b);vertical-align:middle;}' +
+            '@media(max-width:560px){.takim-logo-mini,.takim-logo-mini-fb{width:16px;height:16px;}}';
+        document.head.appendChild(s);
     }
 
     function buildTakimStil() {
@@ -1180,7 +1214,7 @@
                 sh += '<div class="tp-son">' +
                     '<div class="tp-son-skor ' + (gal ? 'win' : 'loss') + '"><span class="tp-son-gm">' + (gal ? 'G' : 'M') + '</span>' + benS + '<i>-</i>' + rakS + '</div>' +
                     '<div class="tp-son-orta">' +
-                        '<div class="tp-son-rakip"><b>vs</b> <span class="puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(rakip) + '\')">' + puanEsc(rakip) + '</span></div>' +
+                        '<div class="tp-son-rakip"><b>vs</b> ' + takimLogoMiniHTML(rakip) + ' <span class="puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(rakip) + '\')">' + puanEsc(rakip) + '</span></div>' +
                         '<div class="tp-son-alt">' + puanEsc(r.tarih) + (etk ? ' · ' + puanEsc(etk) : '') + '</div>' +
                     '</div>' +
                     '</div>';
@@ -1233,7 +1267,7 @@
                 mh += '<div class="tp-mac">' +
                     '<div class="tp-mac-tar"><div class="tp-mac-gun">' + puanEsc(gunKisa) + '</div><div class="tp-mac-saat">' + puanEsc(m.saat) + '</div></div>' +
                     '<div class="tp-mac-orta">' +
-                        '<div class="tp-mac-rakip"><b>vs</b> <span class="puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(rakip) + '\')">' + puanEsc(rakip) + '</span></div>' +
+                        '<div class="tp-mac-rakip"><b>vs</b> ' + takimLogoMiniHTML(rakip) + ' <span class="puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(rakip) + '\')">' + puanEsc(rakip) + '</span></div>' +
                         '<div class="tp-mac-alt">' + puanEsc(m.td || '') + ' · ' + puanEsc(m.salon || '') + '</div>' +
                     '</div>' +
                     '<span class="tp-mac-kat">' + puanEsc(m.kat || '') + '</span>' +
@@ -1316,12 +1350,12 @@
             if (mac) {
                 var rakip = normalizeText(mac.a).indexOf(q) !== -1 ? mac.b : mac.a;
                 var ne = (mac.tarih === bugun) ? '<b class="fv-bugun">BUGÜN</b> ' : (puanEsc(mac.td) + ' · ');
-                sat = '<span class="fv-mac">' + ne + puanEsc(mac.saat) + ' · vs ' + puanEsc(rakip) + '</span>';
+                sat = '<span class="fv-mac">' + ne + puanEsc(mac.saat) + ' · vs ' + takimLogoMiniHTML(rakip) + ' ' + puanEsc(rakip) + '</span>';
             } else {
                 sat = '<span class="fv-yok">Yaklaşan maç yok</span>';
             }
             return '<button class="fv-row" onclick="showTakimProfil(\'' + takimAttr(ad) + '\')">' +
-                '<span class="fv-ad">⭐ ' + puanEsc(ad) + '</span>' + sat + '<span class="fv-chev">›</span></button>';
+                '<span class="fv-ad">⭐ ' + takimLogoMiniHTML(ad) + ' ' + puanEsc(ad) + '</span>' + sat + '<span class="fv-chev">›</span></button>';
         }).join('');
         box.innerHTML = '<div class="fv-head">⭐ Favori Takımların</div>' + rows;
         box.style.display = '';
@@ -1330,7 +1364,14 @@
     // Puan durumu verisi data/standings.json'dan yuklenir (update_standings.py uretir)
     fetch('data/standings.json', { cache: 'no-store' })
         .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-        .then(function (data) { STANDINGS = data || { ligler: [] }; initPuanDurumu(); })
+        .then(function (data) {
+            STANDINGS = data || { ligler: [] };
+            _logoMemo = {}; // standings geldi: bos eslesmeler yeniden cozulsun
+            initPuanDurumu();
+            // Maç listesi / favori banner STANDINGS'ten once cizilmis olabilir → logolar icin yeniden ciz
+            if (_macCizildi) renderMaclar(_sonRenderKat, _sonRenderTarih);
+            renderFavoriBanner();
+        })
         .catch(function (e) {
             console.error('standings.json yuklenemedi:', e);
             var ps = document.getElementById('puanSecilmedi'); if (ps) ps.style.display = 'none';
@@ -1459,7 +1500,7 @@
             '.ar-saat-ico{font-size:0.7rem;opacity:0.4;}',
             /* orta */
             '.ar-orta{flex:1;display:flex;align-items:center;gap:0;min-width:0;}',
-            '.ar-takim{flex:1;display:flex;align-items:center;min-width:0;padding:0 20px;}',
+            '.ar-takim{flex:1;display:flex;align-items:center;gap:9px;min-width:0;padding:0 20px;}',
             '.ar-takim-a{justify-content:flex-end;}',
             '.ar-takim-b{justify-content:flex-start;}',
             '.ar-takim-isim{font-size:1rem;font-weight:700;color:#e2e8f0;',
@@ -1597,10 +1638,10 @@
                     '</div>' +
                     '<div class="ar-orta">' +
                         '<div class="ar-takim ar-takim-a">' +
-                            '<span class="ar-takim-isim puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(m.a) + '\')">' + puanEsc(m.a) + '</span>' +
+                            '<span class="ar-takim-isim puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(m.a) + '\')">' + puanEsc(m.a) + '</span>' + takimLogoMiniHTML(m.a) +
                         '</div>' +
                         '<div class="ar-vs"><div class="ar-vs-ic">VS</div></div>' +
-                        '<div class="ar-takim ar-takim-b">' +
+                        '<div class="ar-takim ar-takim-b">' + takimLogoMiniHTML(m.b) +
                             '<span class="ar-takim-isim puan-takim-link" onclick="showTakimProfil(\'' + takimAttr(m.b) + '\')">' + puanEsc(m.b) + '</span>' +
                         '</div>' +
                     '</div>' +
